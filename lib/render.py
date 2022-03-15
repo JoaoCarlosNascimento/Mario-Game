@@ -12,10 +12,15 @@ class render:
         for entity in entities:
             pass
 
-        if ((state == -11) or
-            (state == -12)):
+        if(state == -11):
             self.__render_camera(img)
             self.__render_hand_command(command)
+        elif(state == -12):
+            self.__render_camera(img)
+            self.__render_face_command(command)
+        elif(state == -13):
+            self.__render_camera(img)
+            self.__render_body_command(command)
 
         pygame.display.update()
 
@@ -27,9 +32,23 @@ class render:
 
     def __render_hand_command(self,command = []):
         if command != []:
+            print(command)
             for com in command:
                 if com != (-1,-1):
                     pygame.draw.circle(self.__window, (191, 39, 28), com, 15)
+            # BUG Dedo aparecendo
+
+    def __render_face_command(self,command = []):
+        if command != []:
+            for com in command:
+                if com != (-1,-1):
+                    pygame.draw.circle(self.__window, (191, 39, 28), com, 15)
+    
+    def __render_body_command(self,command = []):
+        if command:
+            print(command)
+            for com in command:
+                if com != (-1,-1):
+                    pygame.draw.circle(self.__window, (191, 39, 28), (com.x,com.y), 15)
             # if command[1] != (-1,-1):
             #     pygame.draw.circle(self.__window, (148, 25, 134), command[1], 15)
-    

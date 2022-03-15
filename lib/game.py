@@ -16,6 +16,7 @@ from lib.camera import camera
 # Utilizar valores negativos para os cenarios de testes
 # -11 - Teste de inputs de mãos
 # -12 - Teste de inputs de face
+# -13 - Teste de inputs de corpo
 
 
 class game:

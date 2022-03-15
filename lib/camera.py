@@ -13,12 +13,12 @@ class camera:
 
         self.__vid_stream = VideoStream(src=camSrc).start()
 
-        self.frame_count = 0
+        self.__frame_count = -1
         
 
     def take_image(self, Sampling=1):
-        if self.frame_count-1 <= 0:
+        if self.__frame_count-1 <= 0:
             self.last_frame = self.__vid_stream.read()
-            self.frame_count = Sampling
-        self.frame_count -= 1
+            self.__frame_count = Sampling
+        self.__frame_count -= 1
         return self.last_frame
