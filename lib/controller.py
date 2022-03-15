@@ -1,7 +1,7 @@
-# from mediapipe.framework.formats import NormalizedLandmak
 import mediapipe as mp
-# from mediapipe import NormalizedLandmakList
 from google.protobuf.json_format import MessageToDict
+import numpy as np
+# from mediapipe.framework.formats import landmark_pb2
 
 import cv2
 hand_detector = mp.solutions.hands
@@ -9,6 +9,25 @@ face_detector = mp.solutions.face_detection
 body_detector = mp.solutions.pose
 
 class controller:
+    ## MOVE L/R ##
+    # move Left/Right parameters
+    __move_LR_distance_lim = 999
+    __move_LR_angle_lim = 999
+    __move_LR_visibility_lim = -999
+
+    ## CROUCH ##
+    # crouch parameters
+    __crouch_angle_lim = 999
+    __crouch_visibility_lim = -999
+
+    ## JUMP ##
+    # jump parameters
+    __jump_delta_lim = 0
+    __buffer_samples = 5
+    # jump variables
+    __jump_hips_pose_k = []
+    __jump_hips_pose_km1 = []
+
     def __init__(self):
         
         self.__detectors = {}
@@ -109,7 +128,8 @@ class controller:
         self.__detectors['Hands']['LastCommands']['Left']=(-1,-1)
         self.__detectors['Hands']['LastCommands']['Right']=(-1,-1)
 
-    def __body_detector(self,img):
+    def __body_detector(self,img,state = 1):
+        # result = 
         if self.__res == (0,0):
             self.__res = (img.shape[1],img.shape[0])
 
@@ -123,24 +143,178 @@ class controller:
                 landmark.x = self.__res[0] - landmark.x*self.__res[0]
                 landmark.y = landmark.y*self.__res[1]
             
+            if state == 0:
+                self.__detect_move_right(self.__detectors['Body']['Landmarks'].landmark)
+                self.__detect_move_left(self.__detectors['Body']['Landmarks'].landmark)
+                self.__detect_crouch(self.__detectors['Body']['Landmarks'].landmark)
+                self.__detect_jump(self.__detectors['Body']['Landmarks'].landmark)
+            elif state == 1:
+                self.__detect_move_right(self.__detectors['Body']['Landmarks'].landmark)
+            elif state == 2:
+                self.__detect_move_left(self.__detectors['Body']['Landmarks'].landmark)
+            elif state == 3:
+                self.__detect_crouch(self.__detectors['Body']['Landmarks'].landmark)
+            elif state == 4:
+                self.__detect_jump(self.__detectors['Body']['Landmarks'].landmark)
+
             return self.__detectors['Body']['Landmarks'].landmark
         else:
             return [(-1,-1)]
 
-    def __move_right(self,landmarks):
+    def __detect_move_right(self,landmarks):
+        d_list = [
+                landmarks[12], # right_shouder
+                landmarks[11], # left_shouder
+                landmarks[24], # right_hip
+                landmarks[14]  # right_elbow
+            ]
+        if controller.__cehck_visibility(d_list, self.__move_LR_visibility_lim):
+            a_list = [
+                    landmarks[12],  # right_shouder
+                    landmarks[24],  # right_hip
+                    landmarks[14]  # right_elbow
+                ]
+            distance = controller.__dist_plane(
+                landmarks=controller.__landmarks_to_npArray(d_list)
+            )
+            angle = controller.__3p_angle(
+                landmarks=controller.__landmarks_to_npArray(a_list)
+            )
+            print('Distance: ', distance, ' Angle: ', angle)
+            if( (angle != np.nan) and 
+                (angle <= self.__move_LR_angle_lim) and
+                (distance != np.nan) and 
+                (distance <= self.__move_LR_distance_lim)):
+                    print("Move Right!")
+                    return True
+        return False
+
+    def __detect_move_left(self,landmarks):
         pass
 
-    def __move_left(self,landmarks):
-        pass
+    def __detect_crouch(self,landmarks):
+        a_r_list = [
+                landmarks[26],  # right_knee
+                landmarks[24],  # right_hip
+                landmarks[28]   # right_ankle
+            ]
+        a_l_list = [
+            landmarks[25],  # left_knee
+                landmarks[23],  # left_hip
+                landmarks[27]   # left_ankle
+            ]
+        if controller.__cehck_visibility(a_r_list, self.__crouch_visibility_lim) and controller.__cehck_visibility(a_l_list, self.__crouch_visibility_lim):
+            angle_r = controller.__3p_angle(
+                landmarks=controller.__landmarks_to_npArray(a_r_list)
+            )
+            angle_l = controller.__3p_angle(
+                landmarks=controller.__landmarks_to_npArray(a_l_list)
+            )
+            print('Angle R: ', angle_r, ' Angle L: ', angle_l)
+            if( (angle_r != np.nan) and
+                (angle_r <= self.__crouch_angle_lim) and
+                (angle_l != np.nan) and
+                (angle_l <= self.__crouch_angle_lim)):
+                print("Crouch!")
+                return True
+        return False
 
-    def __body_rightArm(self,landmarks):
-        pass
+    def __detect_jump(self,landmarks):
+        h_list = [
+            landmarks[23],  # left_hip
+            landmarks[24],  # right_hip
+        ]
+        a_r_list = [
+            landmarks[26],  # right_knee
+            landmarks[24],  # right_hip
+            landmarks[28]   # right_ankle
+        ]
+        a_l_list = [
+            landmarks[25],  # left_knee
+            landmarks[23],  # left_hip
+            landmarks[27]   # left_ankle
+        ]
+        if controller.__cehck_visibility(a_r_list, self.__crouch_visibility_lim) and controller.__cehck_visibility(a_l_list, self.__crouch_visibility_lim):
+            mean_hip_pos = (h_list[0].y+h_list[1].y)/2
+            self.__jump_buffer(mean_hip_pos)
+            delta = 0
+            for p in range(self.__buffer_samples):
+                delta += self.__jump_hips_pose_k[p] - self.__jump_hips_pose_km1[p]
+            delta /= self.__buffer_samples
 
-    def __body_leftArm(self,landmarks):
-        pass
+            angle_r = controller.__3p_angle(
+                landmarks=controller.__landmarks_to_npArray(a_r_list)
+            )
+            angle_l = controller.__3p_angle(
+                landmarks=controller.__landmarks_to_npArray(a_l_list)
+            )
+            print('Delta: ',delta,'Angle R: ', angle_r, ' Angle L: ', angle_l)
+            if((angle_r != np.nan) and
+                (angle_r <= self.__crouch_angle_lim) and
+                (angle_l != np.nan) and
+                (angle_l <= self.__crouch_angle_lim) and
+                (delta >= self.__jump_delta_lim)):
+                print("Jump!")
+                return True
+        return False
 
-    def __body_rightLeg(self,lanfmarks):
-        pass
+    # def __body_rightArm(self,landmarks):
+    #     pass
 
-    def __body_leftLeg(self,landmarks):
-        pass
+    # def __body_leftArm(self,landmarks):
+    #     pass
+
+    # def __body_rightLeg(self,lanfmarks):
+    #     pass
+
+    # def __body_leftLeg(self,landmarks):
+    #     pass
+
+    def __cehck_visibility(landmarks,lim):
+        for landmark in landmarks:
+            if(landmark.visibility < lim):
+                return False
+        return True
+
+    def __landmarks_to_npArray(landmarks):
+        ret = np.zeros((len(landmarks),3))
+        count = 0
+        for landmark in landmarks:
+            ret[count,0] = landmark.x
+            ret[count,1] = landmark.y
+            ret[count,2] = landmark.z
+            count += 1
+            # ret[count,3] = landmark.visibility
+        return ret
+
+    def __dist_plane(landmarks):
+        seg1 = landmarks[0,:] - landmarks[1,:]
+        seg2 = landmarks[0,:] - landmarks[2,:]
+        Nvec = np.cross(seg1,seg2)
+        k = 0
+        for i in range(3):
+            k -= landmarks[0,i]*Nvec[i]
+        Num = 0
+        for j in range(3):
+            Num += Nvec[j]*landmarks[3,j]
+        Num += k
+        Den = np.sqrt(Nvec[0]**2+Nvec[1]**2+Nvec[2]**2)
+        return np.abs(Num)/Den
+
+    def __3p_angle(landmarks):
+        seg1 = landmarks[0,:] - landmarks[1,:]
+        seg2 = landmarks[0,:] - landmarks[2,:]
+        return np.arccos(np.dot(seg1,seg2)/(np.linalg.norm(seg1)*np.linalg.norm(seg2)))
+
+    def __jump_buffer(self,value):
+        if len(self.__jump_hips_pose_km1) == 0:
+            for i in range(self.__buffer_samples):
+                self.__jump_hips_pose_k.append(value)
+                self.__jump_hips_pose_km1.append(value)
+        else:
+            self.__jump_hips_pose_km1.pop(0)
+            self.__jump_hips_pose_km1.append(self.__jump_hips_pose_k[0])
+            self.__jump_hips_pose_k.pop(0)
+            self.__jump_hips_pose_k.append(value)
+
+        # print('K: ', self.__jump_hips_pose_k,'K-1: ', self.__jump_hips_pose_km1)

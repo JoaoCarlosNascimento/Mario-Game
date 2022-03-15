@@ -14,9 +14,16 @@ from lib.camera import camera
 ## States
 #
 # Utilizar valores negativos para os cenarios de testes
-# -11 - Teste de inputs de mãos
-# -12 - Teste de inputs de face
-# -13 - Teste de inputs de corpo
+#
+#
+# -1xx  - Testes de inputs
+# -11   - Teste de inputs de mãos
+# -12   - Teste de inputs de face
+# -13   - Teste de inputs de corpo
+# -131  - Teste de inputs move right
+# -132  - Teste de inputs move left
+# -133  - Teste de inputs crouch
+# -134  - Teste de inputs jump
 
 
 class game:
@@ -35,7 +42,7 @@ class game:
         self.__scoreboard = scoreboard()
         self.__camera = camera()
 
-        self.__state = -11
+        self.__state = -134
 
     def start(self):
         self.__entities.append(entity("Player"))
