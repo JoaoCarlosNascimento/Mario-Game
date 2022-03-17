@@ -8,6 +8,12 @@ import pyautogui
 Screen_Width, Screen_Height = pyautogui.size()
 pygame.init()
 
+font = pygame.font.Font('font.TTF', 64)
+
+Loser_Text = font.render('Loser', True, (255, 255, 255), (0, 0, 0))
+LoserRect = Loser_Text.get_rect()
+LoserRect.center = (Screen_Width // 2, Screen_Height // 2)
+
 clock = pygame.time.Clock()
 
 window = pygame.display.set_mode((Screen_Width, Screen_Height))
@@ -49,13 +55,12 @@ class player(object):
         else:
             jump.append(jump_ArmsUp)
 
-    # Animação Duck(11)
-
+    # Animação Duck
     Duck = pygame.image.load("Sprite/Mario/Duck.png")
     Duck = pygame.transform.scale(Duck, (Screen_Width / 12, Screen_Width / 12))
     Duck = pygame.transform.flip(Duck, True, False)
     duck = []
-    for i in range(0,10):
+    for i in range(0, 10):
         duck.append(Duck)
 
     jumpList = [1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4]
@@ -72,7 +77,8 @@ class player(object):
         self.runCount = 0
         self.duckUp = False
 
-    def draw(self, window):
+    def draw(self, window, Movement_x, y):
+
         count = random.randint(0, 1)
         if self.jumping:
             self.y -= self.jumpList[self.jumpCount] * 1.2
@@ -107,10 +113,14 @@ class player(object):
             window.blit(self.run[self.runCount], (self.x, self.y))
 
 
-def redrawWindow():
+def redrawWindow(Movement_x, Loser_Text, LoserRect):
+
     window.blit(BackGround, (BackGroundX, 0))  # draws our first BackGround image
     window.blit(BackGround, (BackGroundX2, 0))  # draws the seconf BackGround image
-    runner.draw(window)  # NEW
+    runner.draw(window, Movement_x, 95)  # NEW
+
+    if Movement_x <= -70:
+        window.blit(Loser_Text, LoserRect)
     pygame.display.update()  # updates the screen
 
 
@@ -120,9 +130,12 @@ runner = player(200, Screen_Height /1.3, 100, 95)
 speed = 30
 run = True
 while run:
-    redrawWindow()
+    redrawWindow(runner.x, Loser_Text, LoserRect)
     BackGroundX -= 1  # Move both background images back
     BackGroundX2 -= 1
+
+    #Movimentação Default
+    runner.x -= Screen_Width / 4000
 
     # 1º BackGround Image starts at (0,0)
     if BackGroundX < BackGround.get_width() * -1:  # If our BackGround is at the -width then reset its position
@@ -150,6 +163,15 @@ while run:
         if keys[pygame.K_SPACE] or keys[pygame.K_UP]:
             if not(runner.jumping):
                 runner.jumping = True
+
+        # Mover Para a Direita
+        if keys[pygame.K_RIGHT]:
+            runner.x += Screen_Width / 60
+
+        # Mover Para a Esquerda
+        if keys[pygame.K_LEFT]:
+            runner.x -= Screen_Width / 60
+        print(runner.x)
 
         if keys[pygame.K_DOWN]:
             if not(runner.ducking):
