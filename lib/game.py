@@ -25,6 +25,8 @@ from lib.camera import camera
 # -133  - Teste de inputs crouch
 # -134  - Teste de inputs jump
 
+# -135  - Teste De Geração do Mapa
+
 
 class game:
     __loop_cond = True
@@ -58,17 +60,17 @@ class game:
             image = self.__camera.take_image()
 
             # Recebe commandos
-            command = self.__controller.get_commands(state=self.__state,img=image)
+            command = self.__controller.get_commands(state=self.__state, img=image)
 
             # Atualização das entidades
             for entity in self.__entities:
                 if entity.name == "Player":
-                    entity.update(state=self.__state,command=command)
+                    entity.update(state=self.__state, command=command)
                 else:
                     entity.update(state=self.__state)
 
             # Aplica fisica
-            self.__physics.update(state=self.__state,entities=self.__entities)
+            self.__physics.update(state=self.__state, entities=self.__entities)
 
             # Aplica logica
             self.__state = self.__logic.update(state=self.__state)
