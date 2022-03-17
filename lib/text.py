@@ -4,6 +4,8 @@ import pygame
 white = (255, 255, 255)
 
 class TextBox:
+    # First, create instance with foo = TextBox(window)
+    # Then display it with foo.display()
     def __init__(self, surface, contents="Bla", position=[0,0], size=30, bgcolor=white, color=(0,0,0)):
         self.contents=[]
         if(contents.find("\n")!=-1):
