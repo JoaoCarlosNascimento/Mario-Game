@@ -2,7 +2,7 @@ import pygame
 import numpy as np
 import cv2
 from lib.entity import entity
-
+from lib.text import TextBox
 class render:
     def __init__(self,window_size=(200,100)):
         self.__window = pygame.display.set_mode(window_size)
@@ -11,6 +11,14 @@ class render:
 
         for entity in entities:
             pass
+        
+        if(state == -10):
+            self.__render_camera(img)
+            mytext = TextBox(self.__window, size=20)
+            mytext.updateText("Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n"+
+                              "Proin vestibulum, justo lobortis. \n"+
+                              "Ut libero sem, eleifend eu maximus suscipit, convallis ac massa.")
+            mytext.display()
 
         if(state == -11):
             self.__render_camera(img)
