@@ -44,7 +44,7 @@ class game:
         self.__scoreboard = scoreboard()
         self.__camera = camera()
 
-        self.__state = -134
+        self.__state = -10
 
     def start(self):
         self.__entities.append(entity("Player"))
@@ -77,7 +77,7 @@ class game:
 
             # Desenha cena
             self.__render.draw(state=self.__state, img=image, entities=self.__entities, command=command)
-
+            
             # Controle de Ticks
             self.__clock.tick(self.__fps)
 

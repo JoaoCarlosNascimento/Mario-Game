@@ -5,7 +5,7 @@ class camera:
     def __init__(self):
         if(len(sys.argv) > 1):
             if(sys.argv[1] == '--cam' and sys.argv[2] == '1'):
-                camSrc = 'https://192.168.1.169:8080/video'
+                camSrc = 'https://192.168.1.118:8080/video'
             else:
                 camSrc = 0
         else:
