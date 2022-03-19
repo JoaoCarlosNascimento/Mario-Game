@@ -36,7 +36,7 @@ class game:
         self.__fps = 60
         self.__clock = pygame.time.Clock()
 
-        self.__render = render((1280,720))
+        self.__render = render(window_size=(1280, 720))
         self.__controller = controller()
         self.__logic = logic()
         self.__physics = physics()
@@ -44,7 +44,7 @@ class game:
         self.__scoreboard = scoreboard()
         self.__camera = camera()
 
-        self.__state = -7
+        self.__state = -13
 
     def start(self):
         self.__entities.append(entity("Player"))

@@ -23,7 +23,7 @@ class render:
 
             self.scoreboard.show(self.__window)
 
-        if state == -9:
+        elif state == -9:
             self.__render_camera(img)
             my_scoreboard = scoreboard()
 
@@ -33,8 +33,7 @@ class render:
             mytext.updateText("Say cheese!")
             mytext.display()
             
-
-        if state == -8:
+        elif state == -8:
             self.__render_camera(img)
             my_scoreboard = scoreboard()
 
@@ -44,8 +43,7 @@ class render:
 
             my_scoreboard.snapshot(self.__window, command[0][0], command[1][0], command[2][0], 1)
             
-
-        if(state == -10):
+        elif(state == -10):
             self.__render_camera(img)
             mytext = TextBox(self.__window, size=20)
             mytext.updateText("Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n"+
@@ -61,7 +59,13 @@ class render:
             self.__render_face_command(command)
         elif(state == -13):
             self.__render_camera(img)
-            self.__render_body_command(command)
+            # print(command['landmarks'])
+            if command != [(-1,-1)]:
+                self.__render_body_command(command['landmarks'])
+                print(command['debug'])
+                mytext = TextBox(self.__window, size=20)
+                mytext.updateText(command['debug'])
+                mytext.display()
         
         pygame.display.update()
 
