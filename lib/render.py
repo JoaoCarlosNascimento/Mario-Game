@@ -3,15 +3,48 @@ import numpy as np
 import cv2
 from lib.entity import entity
 from lib.text import TextBox
+from lib.scoreboard import scoreboard
+import time
+
+
 class render:
     def __init__(self,window_size=(200,100)):
         self.__window = pygame.display.set_mode(window_size)
+        # self.currenttime = int(round(time.time() * 1000))
 
     def draw(self, state=0, img=[], entities=[],command=[]):
 
         for entity in entities:
             pass
         
+        if state == -7:
+            self.__render_camera(img)
+            my_scoreboard = scoreboard()
+
+            my_scoreboard.show(self.__window)
+
+        if state == -9:
+            self.__render_camera(img)
+            my_scoreboard = scoreboard()
+
+            my_scoreboard.snapshot(self.__window, command[0][0], command[1][0], command[2][0])
+
+            mytext = TextBox(self.__window, size=40)
+            mytext.updateText("Say cheese!")
+            mytext.display()
+            
+
+        if state == -8:
+            self.__render_camera(img)
+            my_scoreboard = scoreboard()
+
+            mytext = TextBox(self.__window, size=40)
+            mytext.updateText("ITAP!!")
+            mytext.display()
+
+            my_scoreboard.snapshot(self.__window, command[0][0], command[1][0], command[2][0], 1)
+            
+
         if(state == -10):
             self.__render_camera(img)
             mytext = TextBox(self.__window, size=20)
@@ -29,7 +62,7 @@ class render:
         elif(state == -13):
             self.__render_camera(img)
             self.__render_body_command(command)
-
+        
         pygame.display.update()
 
     def __render_camera(self, img=[]):

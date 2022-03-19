@@ -61,6 +61,8 @@ class controller:
 
     def get_commands(self, state=0, img=[], Sampling=1):
         if self.__frame_count-1 <= 0:
+            if state== -9 or state == -8:
+                return self.__face_detector(img), self.__face_detector(img, key_point=4), self.__face_detector(img, key_point=5)
             if state == -11:
                 return self.__hand_detector(img)
             elif state == -12:
@@ -71,7 +73,7 @@ class controller:
         self.__frame_count -= 1
         return (-1,-1)
 
-    def __face_detector(self,img):
+    def __face_detector(self,img,key_point=2):
 
         if self.__res == (0,0):
             self.__res = (img.shape[1],img.shape[0])
@@ -88,8 +90,8 @@ class controller:
                 # Indice 2: Nariz
                 # Indice 3: Meio da Boca
                 # Indice 4: Ouvido Direito
-                # Indice 5: Olho
-                kp = detection.location_data.relative_keypoints[2]
+                # Indice 5: Orelha Esquerda
+                kp = detection.location_data.relative_keypoints[key_point]
                 if kp is not None:
                     self.__detectors['Face']['LastCommands'] = (self.__res[0]-int(kp.x * self.__res[0]),kp.y * self.__res[1])
             return [self.__detectors['Face']['LastCommands']]

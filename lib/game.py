@@ -36,7 +36,7 @@ class game:
         self.__fps = 60
         self.__clock = pygame.time.Clock()
 
-        self.__render = render((640,480))
+        self.__render = render((1280,720))
         self.__controller = controller()
         self.__logic = logic()
         self.__physics = physics()
@@ -44,7 +44,7 @@ class game:
         self.__scoreboard = scoreboard()
         self.__camera = camera()
 
-        self.__state = -10
+        self.__state = -7
 
     def start(self):
         self.__entities.append(entity("Player"))
@@ -80,7 +80,6 @@ class game:
             
             # Controle de Ticks
             self.__clock.tick(self.__fps)
-
     def __gameOver(self):
         self.__scoreboard.update()
         self.__scoreboard.show()
