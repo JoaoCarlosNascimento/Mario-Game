@@ -43,7 +43,11 @@ class TextBox:
         self.Background.fill(self.bgcolor)
 
     def parse(self, text):
-        aux = text.split("\n")
+        aux = text.split("\t")
+        newText = ""
+        for t in aux:
+            newText += t+"   "
+        aux = newText.split("\n")
         for t in aux:
             self.contents.append(t)
 
