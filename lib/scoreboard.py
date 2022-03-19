@@ -11,8 +11,9 @@ class scoreboard:
         self.load()
         self.screensize = [1280, 720]
 
-        self.con = sqlite3.connect("./history/leaderboards.db")
-        self.cur = self.con.cursor()
+        self.connection = sqlite3.connect("./history/leaderboards.db")
+        self.cursor = self.connection.cursor()
+
     def snapshot(self, window, nose_position, ear_position_1, ear_position_2, picture = 0, score = 0):
         if nose_position[0] < 0 or nose_position[1] < 0:
             return
@@ -42,8 +43,9 @@ class scoreboard:
     
             pygame.image.save(face, "./test/"+str(index)+".png")
 
-            self.cur.execute("INSERT INTO leaderboard VALUES ('"+ str(index) + "', '"+str(score)+"')")
-            self.con.commit()
+            self.cursor.execute("INSERT INTO leaderboard VALUES ('"+ str(index) + "', '"+str(score)+"')")
+            
+            self.connection.commit()
             return index
 
     def update(self):
@@ -54,18 +56,12 @@ class scoreboard:
 
     def show(self, window):
         txt = "HIGHSCORES:\n"
-        images = []
-        image_pos = []
-        for row in self.cur.execute('SELECT * FROM leaderboard ORDER BY score'):
-            txt = txt + "\n" + str(row)
-            images.append(pygame.image.load("./test/"+str(row[0]) + ".png").convert_alpha())
         
-        for i in range(len(images)):
-            image_pos.append(images[i].get_rect())
+        entries = []
         # background
         leaderboard_screen = pygame.Surface((0.95*window.get_width(), 0.95*window.get_height()))
         leaderboard_screen.fill(white)
-        leaderboard_screen.set_alpha(70)
+        leaderboard_screen.set_alpha(100)
         
         vertical_line = pygame.Surface((0.01*leaderboard_screen.get_width(), leaderboard_screen.get_height()))
         vertical_line.fill(black)
@@ -80,24 +76,71 @@ class scoreboard:
         text = font.render("LEADERBOARD", 1, black)
         
         score_screen = pygame.Surface((leaderboard_screen.get_width(), leaderboard_screen.get_height() - fontsize - 30))
-        # score_screen.fill(black)
-        leaderboard_screen.blit(score_screen, (0, fontsize + 30))
+        i = 0
+        for row in self.cursor.execute('SELECT * FROM leaderboard ORDER BY score'):
+            if entries:
+                entries.append(leaderboardEntry(row[0], row[1], score_screen, entries[-1]))
+            else:
+                entries.append(leaderboardEntry(row[0], row[1], score_screen, None))
+            if i >= 8:
+                break
+            i = i + 1
+        
         leaderboard_screen.blit(horizontal_line, (0, fontsize+20))
         leaderboard_screen.blit(vertical_line, (leaderboard_screen.get_width()/2+vertical_line.get_width(), fontsize+20))
         leaderboard_screen.blit(text, (leaderboard_screen.get_width()/2-fontsize*len("LEADERBOARD")/3,10))
-
-        window.blit(leaderboard_screen, (round(0.025*self.screensize[0]),round(0.025*self.screensize[1])))
         
-        # add images
-        ###########################################
-        # debug
-        mytext = TextBox(window, size=20)
-        mytext.updateText(txt)
-        mytext.display()
+        for e in entries:
+            e.render()
+        leaderboard_screen.blit(score_screen, (0, fontsize + 30))
+        window.blit(leaderboard_screen, (round(0.025*self.screensize[0]),round(0.025*self.screensize[1])))
+
 
 class leaderboardEntry:
-    def __init__(self, picture_id, score, window):
-        self.id = picture_id
-        self.score = score
+    def __init__(self, picture_id, score, window, parent = None):
+        self.id = picture_id        
+        self.parent = parent
 
+        self.width = window.get_width()/2
+        self.height = window.get_height()/4
+
+        if self.parent == None:
+            self.pos = (10,10)
+            self.ranking = 1
+        else:
+            self.ranking = self.parent.ranking + 1
+            if self.ranking ==5:
+                self.pos = (self.width, 10)
+            else:
+                self.pos = (self.parent.pos[0], self.parent.pos[1] + self.height)
+            
+        
         self.window = window
+        picturename = str(picture_id) + ".png"
+        picturepath = "./test/"+picturename
+        
+        if picturename not in os.listdir("./test"):
+            self.picture = pygame.image.load("./resources/shyguy.png").convert_alpha()
+        else:
+            self.picture = pygame.image.load(picturepath).convert_alpha()
+        self.picture = pygame.transform.scale(self.picture, (0.8*self.height, 0.8*self.height))
+        
+        self.surface = pygame.Surface((self.width, self.height))
+
+        font = pygame.font.Font("./resources/SuperMario256.ttf", int(self.height))
+        if self.ranking == 1:
+            self.text = font.render("1", 1, (255,215,0))
+        elif self.ranking == 2:
+            self.text = font.render("2", 1, (192,192,192))
+        elif self.ranking == 3:
+            self.text = font.render("3", 1, (176, 141, 87))
+        else:
+            self.text = font.render(str(self.ranking), 1, white)
+        
+        font = pygame.font.Font("./resources/SuperMario256.ttf", int(self.height*0.9))
+        self.score = font.render(str(score), 1, white)
+    def render(self):
+        self.surface.blit(self.picture, (self.height+10,0), self.picture.get_rect())
+        self.surface.blit(self.text, (10,0))
+        self.surface.blit(self.score, (self.height*2+10, 0.05*self.height))
+        self.window.blit(self.surface, self.pos)
