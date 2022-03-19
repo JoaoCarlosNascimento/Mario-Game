@@ -44,7 +44,7 @@ class game:
         self.__scoreboard = scoreboard()
         self.__camera = camera()
 
-        self.__state = -13
+        self.__state = -7
 
     def start(self):
         self.__entities.append(entity("Player"))

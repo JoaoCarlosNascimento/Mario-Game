@@ -4,3 +4,5 @@ lib/__pycache__/
 
 test.py
 .vscode/launch.json
+.vscode/settings.json
+.vscode/launch.json

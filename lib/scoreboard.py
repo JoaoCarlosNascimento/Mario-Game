@@ -5,6 +5,7 @@ import os
 
 white = (255, 255, 255)
 black = (0, 0, 0)
+
 class scoreboard:
     # TODO: Enquadrar rosto corretamente e tirar foto
     def __init__(self):
@@ -60,24 +61,25 @@ class scoreboard:
         entries = []
         # background
         leaderboard_screen = pygame.Surface((0.95*window.get_width(), 0.95*window.get_height()))
-        leaderboard_screen.fill(white)
+        leaderboard_screen.fill(black)
         leaderboard_screen.set_alpha(100)
         
         vertical_line = pygame.Surface((0.01*leaderboard_screen.get_width(), leaderboard_screen.get_height()))
-        vertical_line.fill(black)
+        vertical_line.fill(white)
         vertical_line.set_alpha(100)
 
         horizontal_line = pygame.Surface((leaderboard_screen.get_width(), 0.02*leaderboard_screen.get_height()))
-        horizontal_line.fill(black)
+        horizontal_line.fill(white)
         horizontal_line.set_alpha(100)
         
         fontsize = 80
         font = pygame.font.Font("./resources/PolygonParty.ttf", fontsize)
-        text = font.render("LEADERBOARD", 1, black)
+        text = font.render("LEADERBOARD", 1, white)
         
         score_screen = pygame.Surface((leaderboard_screen.get_width(), leaderboard_screen.get_height() - fontsize - 30))
         i = 0
-        for row in self.cursor.execute('SELECT * FROM leaderboard ORDER BY score'):
+        # self.cursor.execute("ORDER BY score DESC")
+        for row in self.cursor.execute('SELECT * FROM leaderboard ORDER BY score DESC'):
             if entries:
                 entries.append(leaderboardEntry(row[0], row[1], score_screen, entries[-1]))
             else:
@@ -86,13 +88,15 @@ class scoreboard:
                 break
             i = i + 1
         
-        leaderboard_screen.blit(horizontal_line, (0, fontsize+20))
-        leaderboard_screen.blit(vertical_line, (leaderboard_screen.get_width()/2+vertical_line.get_width(), fontsize+20))
-        leaderboard_screen.blit(text, (leaderboard_screen.get_width()/2-fontsize*len("LEADERBOARD")/3,10))
+        leaderboard_screen.blit(horizontal_line, (0, fontsize+7))
+        leaderboard_screen.blit(text, (leaderboard_screen.get_width()/2-fontsize*len("LEADERBOARD")/3,5))
         
         for e in entries:
             e.render()
+        
         leaderboard_screen.blit(score_screen, (0, fontsize + 30))
+        leaderboard_screen.blit(vertical_line, (leaderboard_screen.get_width()/2, fontsize+20))
+
         window.blit(leaderboard_screen, (round(0.025*self.screensize[0]),round(0.025*self.screensize[1])))
 
 
@@ -105,12 +109,12 @@ class leaderboardEntry:
         self.height = window.get_height()/4
 
         if self.parent == None:
-            self.pos = (10,10)
+            self.pos = (0,10)
             self.ranking = 1
         else:
             self.ranking = self.parent.ranking + 1
             if self.ranking ==5:
-                self.pos = (self.width, 10)
+                self.pos = (self.width + self.height*0.1, 10)
             else:
                 self.pos = (self.parent.pos[0], self.parent.pos[1] + self.height)
             
@@ -129,18 +133,18 @@ class leaderboardEntry:
 
         font = pygame.font.Font("./resources/SuperMario256.ttf", int(self.height))
         if self.ranking == 1:
-            self.text = font.render("1", 1, (255,215,0))
+            self.rank = font.render("1", 1, (255,215,0))
         elif self.ranking == 2:
-            self.text = font.render("2", 1, (192,192,192))
+            self.rank = font.render("2", 1, (192,192,192))
         elif self.ranking == 3:
-            self.text = font.render("3", 1, (176, 141, 87))
+            self.rank = font.render("3", 1, (176, 141, 87))
         else:
-            self.text = font.render(str(self.ranking), 1, white)
+            self.rank = font.render(str(self.ranking), 1, white)
         
         font = pygame.font.Font("./resources/SuperMario256.ttf", int(self.height*0.9))
         self.score = font.render(str(score), 1, white)
     def render(self):
-        self.surface.blit(self.picture, (self.height+10,0), self.picture.get_rect())
-        self.surface.blit(self.text, (10,0))
-        self.surface.blit(self.score, (self.height*2+10, 0.05*self.height))
+        self.surface.blit(self.picture, (self.height,0), self.picture.get_rect())
+        self.surface.blit(self.rank, (0.1*self.height,0))
+        self.surface.blit(self.score, (self.height*2-10, 0.05*self.height))
         self.window.blit(self.surface, self.pos)
