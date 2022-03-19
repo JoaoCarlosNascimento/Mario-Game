@@ -67,7 +67,7 @@ class render:
             # print(command['landmarks'])
             if command != [(-1,-1)]:
                 self.__render_body_command(command['landmarks'])
-                print(command['debug'])
+                # print(command['debug'])
                 mytext = TextBox(self.__window, size=20)
                 mytext.updateText(command['debug'])
                 mytext.display()

@@ -36,15 +36,16 @@ class game:
         self.__fps = 60
         self.__clock = pygame.time.Clock()
 
-        self.__render = render(window_size=(1280, 720))
+        self.__camera = camera()
+        image = self.__camera.take_image()
+        self.__render = render(window_size=(image.shape[1], image.shape[0]))
         self.__controller = controller()
         self.__logic = logic()
         self.__physics = physics()
         self.__entities = []
         self.__scoreboard = scoreboard()
-        self.__camera = camera()
 
-        self.__state = -9
+        self.__state = -13
 
     def start(self):
         self.__entities.append(entity("Player"))

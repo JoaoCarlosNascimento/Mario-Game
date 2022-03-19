@@ -38,7 +38,7 @@ class TextBox:
 
     def updateBackground(self, bgcolor = white):
         self.Background = pygame.Surface((self.size*len(max(self.contents, key=len)),10+ self.size*len(self.Text)))
-        self.Background.set_alpha(50)
+        self.Background.set_alpha(200)
         self.bgcolor = bgcolor
         self.Background.fill(self.bgcolor)
 
