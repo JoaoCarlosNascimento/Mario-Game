@@ -9,8 +9,10 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}\\mario.py",
+            "args": ["--cam","1"],
             "console": "integratedTerminal",
             "justMyCode": true
+            
         }
     ]
 }

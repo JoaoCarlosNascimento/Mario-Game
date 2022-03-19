@@ -15,7 +15,7 @@ class scoreboard:
         self.connection = sqlite3.connect("./history/leaderboards.db")
         self.cursor = self.connection.cursor()
 
-    def snapshot(self, window, nose_position, ear_position_1, ear_position_2, picture = 0, score = 0):
+    def snapshot(self, window, nose_position, ear_position_1, ear_position_2, picture = 0, score = 9999):
         if nose_position[0] < 0 or nose_position[1] < 0:
             return
         nose = []
@@ -33,18 +33,17 @@ class scoreboard:
         
         pygame.draw.rect(window, color=(120, 0, 255), rect=rect, width=1)
         if picture==1:
-            arr=os.listdir("./test")
-            if arr:
-                index= int("".join(x for x in arr[-1] if x.isdigit())) + 1 
+            aux = []
+            for row in self.cursor.execute('SELECT * FROM leaderboard ORDER BY id DESC'):
+                aux.append([row[0], row[1]])
+            if aux:
+                index = int(aux[0][0]) + 1
             else:
                 index = 1
-            mytext = TextBox(window, size=20)
-            mytext.updateText(str(index))
-            mytext.display()
-    
+            
             pygame.image.save(face, "./test/"+str(index)+".png")
 
-            self.cursor.execute("INSERT INTO leaderboard VALUES ('"+ str(index) + "', '"+str(score)+"')")
+            self.cursor.execute("INSERT INTO leaderboard (id, score) VALUES ('"+ str(index) + "', '"+str(score)+"')")
             
             self.connection.commit()
             return index

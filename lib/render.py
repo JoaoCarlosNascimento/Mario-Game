@@ -12,12 +12,17 @@ class render:
         self.__window = pygame.display.set_mode(window_size)
         # self.currenttime = int(round(time.time() * 1000))
         self.scoreboard = scoreboard()
-
+        self.counter = 3
     def draw(self, state=0, img=[], entities=[],command=[]):
 
         for entity in entities:
             pass
-        
+        if state == -6:
+            self.__render_camera(img)
+            font = pygame.font.SysFont("Calibri", int(self.__window.get_height()/3), bold=True)
+            text = font.render(str(self.counter), 1, (0,0,0))
+            self.__window.blit(text, (self.__window.get_width()/2, self.__window.get_height()/3))
+            self.counter = self.counter - 1
         if state == -7:
             self.__render_camera(img)
 
