@@ -94,4 +94,10 @@ class scoreboard:
         mytext = TextBox(window, size=20)
         mytext.updateText(txt)
         mytext.display()
-    
+
+class leaderboardEntry:
+    def __init__(self, picture_id, score, window):
+        self.id = picture_id
+        self.score = score
+
+        self.window = window

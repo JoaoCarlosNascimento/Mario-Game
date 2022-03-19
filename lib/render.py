@@ -11,6 +11,7 @@ class render:
     def __init__(self,window_size=(200,100)):
         self.__window = pygame.display.set_mode(window_size)
         # self.currenttime = int(round(time.time() * 1000))
+        self.scoreboard = scoreboard()
 
     def draw(self, state=0, img=[], entities=[],command=[]):
 
@@ -19,9 +20,8 @@ class render:
         
         if state == -7:
             self.__render_camera(img)
-            my_scoreboard = scoreboard()
 
-            my_scoreboard.show(self.__window)
+            self.scoreboard.show(self.__window)
 
         if state == -9:
             self.__render_camera(img)
