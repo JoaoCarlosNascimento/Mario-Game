@@ -4,6 +4,8 @@ import sys
 import random
 import math
 import pyautogui
+import time
+import datetime
 
 Screen_Width, Screen_Height = pyautogui.size()
 pygame.init()
@@ -25,6 +27,12 @@ BackGround = pygame.transform.scale(BackGround, (Screen_Width, Screen_Height))
 BackGroundX = 0
 BackGroundX2 = BackGround.get_width()
 
+# Bloco terra
+Dirt_block = pygame.image.load("Sprite/Ground/GrassWall.PNG").convert_alpha()
+Dirt_blockX = 0
+Dirt_blockX2 = Dirt_block.get_width()
+#rectDirt_block = Dirt_block.get_rect()
+#rectDirt_block.x, rectDirt_block.y = 0, 0
 
 class player(object):
 
@@ -112,11 +120,30 @@ class player(object):
                 self.runCount = 1
             window.blit(self.run[self.runCount], (self.x, self.y))
 
+# to random sprites
+def random_sprites():
 
-def redrawWindow(Movement_x, Loser_Text, LoserRect):
+    # generate random number to make sprites appear
+    n = random.randint(0, 3)
 
+    return n
+
+def redrawWindow(Movement_x, Loser_Text, LoserRect, n):
+
+    #ran = random_sprites()
+    j = 0
+    n = random.randint(1, 3)
+    m = n
     window.blit(BackGround, (BackGroundX, 0))  # draws our first BackGround image
-    window.blit(BackGround, (BackGroundX2, 0))  # draws the seconf BackGround image
+    window.blit(BackGround, (BackGroundX2, 0))  # draws the second BackGround image
+
+    while (j < 3):
+        window.blit(Dirt_block, (BackGroundX + Screen_Width + m*100, Screen_Height / 2 + 301))
+        window.blit(Dirt_block, (BackGroundX2 + Screen_Width + m*100, Screen_Height / 2 + 301))
+        window.blit(Dirt_block, (BackGroundX + Screen_Width + m*100, Screen_Height/2 + 301))
+        window.blit(Dirt_block, (BackGroundX2 + Screen_Width + m*100, Screen_Height / 2 + 301))
+        j += 1
+
     runner.draw(window, Movement_x, 95)  # NEW
 
     if Movement_x <= -70:
@@ -129,10 +156,18 @@ pygame.time.set_timer(USEREVENT+1, 500)
 runner = player(200, Screen_Height /1.3, 100, 95)
 speed = 30
 run = True
+# Timer starts
+startime = time.time()
+lasttime = startime
 while run:
-    redrawWindow(runner.x, Loser_Text, LoserRect)
+    n = random.randint(1,3)
+    totaltime = round((time.time() - startime), 2)
+
+    redrawWindow(runner.x, Loser_Text, LoserRect, n)
     BackGroundX -= 1  # Move both background images back
     BackGroundX2 -= 1
+
+    Dirt_blockX -= 1
 
     #Movimentação Default
     runner.x -= Screen_Width / 4000
