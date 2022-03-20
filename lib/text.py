@@ -38,12 +38,16 @@ class TextBox:
 
     def updateBackground(self, bgcolor = white):
         self.Background = pygame.Surface((self.size*len(max(self.contents, key=len)),10+ self.size*len(self.Text)))
-        self.Background.set_alpha(50)
+        self.Background.set_alpha(200)
         self.bgcolor = bgcolor
         self.Background.fill(self.bgcolor)
 
     def parse(self, text):
-        aux = text.split("\n")
+        aux = text.split("\t")
+        newText = ""
+        for t in aux:
+            newText += t+"   "
+        aux = newText.split("\n")
         for t in aux:
             self.contents.append(t)
 

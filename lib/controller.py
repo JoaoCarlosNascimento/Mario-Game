@@ -11,13 +11,14 @@ body_detector = mp.solutions.pose
 class controller:
     ## MOVE L/R ##
     # move Left/Right parameters
-    __move_LR_distance_lim = 999
-    __move_LR_angle_lim = 999
+    __move_LR_distance_lim = 999#(75,105)
+    __move_LR_angle_lim = (72, 105) #90
+    # __move_L_angle_lim = (75, 105) #45(35, 53) #45
     __move_LR_visibility_lim = -999
 
     ## CROUCH ##
     # crouch parameters
-    __crouch_angle_lim = 999
+    __crouch_angle_lim = 160
     __crouch_visibility_lim = -999
 
     ## JUMP ##
@@ -61,17 +62,19 @@ class controller:
 
     def get_commands(self, state=0, img=[], Sampling=1):
         if self.__frame_count-1 <= 0:
+            if state== -9 or state == -8:
+                return self.__face_detector(img), self.__face_detector(img, key_point=4), self.__face_detector(img, key_point=5)
             if state == -11:
                 return self.__hand_detector(img)
             elif state == -12:
                 return self.__face_detector(img)
             elif state == -13:
-                return self.__body_detector(img)
+                return self.__body_detector(img,0)
             self.__frame_count = Sampling
         self.__frame_count -= 1
         return (-1,-1)
 
-    def __face_detector(self,img):
+    def __face_detector(self,img,key_point=2):
 
         if self.__res == (0,0):
             self.__res = (img.shape[1],img.shape[0])
@@ -88,8 +91,8 @@ class controller:
                 # Indice 2: Nariz
                 # Indice 3: Meio da Boca
                 # Indice 4: Ouvido Direito
-                # Indice 5: Olho
-                kp = detection.location_data.relative_keypoints[2]
+                # Indice 5: Orelha Esquerda
+                kp = detection.location_data.relative_keypoints[key_point]
                 if kp is not None:
                     self.__detectors['Face']['LastCommands'] = (self.__res[0]-int(kp.x * self.__res[0]),kp.y * self.__res[1])
             return [self.__detectors['Face']['LastCommands']]
@@ -144,12 +147,31 @@ class controller:
                 landmark.y = landmark.y*self.__res[1]
             
             if state == 0:
-                self.__detect_move_right(self.__detectors['Body']['Landmarks'].landmark)
-                self.__detect_move_left(self.__detectors['Body']['Landmarks'].landmark)
-                self.__detect_crouch(self.__detectors['Body']['Landmarks'].landmark)
-                self.__detect_jump(self.__detectors['Body']['Landmarks'].landmark)
+                command = 0 # |R|L|C|J|
+                ret = {}
+                ret['debug'] = "Controller Debug:\n"
+                movR, retB = self.__detect_move_right(self.__detectors['Body']['Landmarks'].landmark)
+                command = command | (0b1000 & movR << 3)
+                ret['debug'] += ('\t'+'Move R: ({stat})'.format(stat=movR)+'\n'+'\t\t'+retB+'\n')
+                movL, retB = self.__detect_move_left(self.__detectors['Body']['Landmarks'].landmark)
+                command = command | (0b0100 & movL << 2)
+                ret['debug'] += ('\t' +'Move L: ({stat})'.format(stat=movL)+'\n'+'\t\t'+retB+'\n')
+                movC, retB = self.__detect_crouch(self.__detectors['Body']['Landmarks'].landmark)
+                command = command | (0b0010 & movC << 1)
+                ret['debug'] += ('\t' +'Crouch: ({stat})'.format(stat=movC)+'\n'+'\t\t'+retB+'\n')
+
+                ret['debug'] += ('\t'+"Command: {0:b}".format(command)+'\n')
+                # self.__detect_move_left(self.__detectors['Body']['Landmarks'].landmark)
+                # self.__detect_jump(self.__detectors['Body']['Landmarks'].landmark)
+                # ret['debug'] = "Right: {movR}\nLeft: {movL}\nCrouch: {crouch}\nJump: {jump}\n".format(movR=movR,movL=False,crouch=False,jump=False)
+                ret['landmarks'] = self.__detectors['Body']['Landmarks'].landmark
+                ret['com'] = command
+                return ret
             elif state == 1:
-                self.__detect_move_right(self.__detectors['Body']['Landmarks'].landmark)
+                ret = {}
+                mov, ret['debug'] = self.__detect_move_right(self.__detectors['Body']['Landmarks'].landmark)
+                ret['landmarks'] = self.__detectors['Body']['Landmarks'].landmark
+                return ret
             elif state == 2:
                 self.__detect_move_left(self.__detectors['Body']['Landmarks'].landmark)
             elif state == 3:
@@ -162,62 +184,61 @@ class controller:
             return [(-1,-1)]
 
     def __detect_move_right(self,landmarks):
-        d_list = [
-                landmarks[12], # right_shouder
-                landmarks[11], # left_shouder
-                landmarks[24], # right_hip
-                landmarks[14]  # right_elbow
-            ]
-        if controller.__cehck_visibility(d_list, self.__move_LR_visibility_lim):
-            a_list = [
-                    landmarks[12],  # right_shouder
-                    landmarks[24],  # right_hip
-                    landmarks[14]  # right_elbow
-                ]
-            distance = controller.__dist_plane(
-                landmarks=controller.__landmarks_to_npArray(d_list)
-            )
-            angle = controller.__3p_angle(
+        a_list = [
+            landmarks[12],  # right_shouder
+            landmarks[24],  # right_hip
+            landmarks[14]   # right_elbow
+        ]
+        if controller.__cehck_visibility(a_list, self.__move_LR_visibility_lim):
+            angle = np.rad2deg(controller.__3p_angle(
                 landmarks=controller.__landmarks_to_npArray(a_list)
-            )
-            print('Distance: ', distance, ' Angle: ', angle)
-            if( (angle != np.nan) and 
-                (angle <= self.__move_LR_angle_lim) and
-                (distance != np.nan) and 
-                (distance <= self.__move_LR_distance_lim)):
-                    print("Move Right!")
-                    return True
-        return False
+            ))
+            cond = ((angle != np.nan) and
+                    (angle >= self.__move_LR_angle_lim[0]) and
+                    (angle <= self.__move_LR_angle_lim[1]))
+            return cond, "Angle: {ang:3.2f}".format(ang=angle)
+        return False, "Distance: {dist:3.2f} | Angle: {ang:3.2f}".format(dist=-1, ang=-1)
 
     def __detect_move_left(self,landmarks):
-        pass
+        a_list = [
+            landmarks[11],  # right_shouder
+            landmarks[23],  # left_hip
+            landmarks[13]   # left_elbow
+        ]
+        if controller.__cehck_visibility(a_list, self.__move_LR_visibility_lim):
+            angle = np.rad2deg(controller.__3p_angle(
+                landmarks=controller.__landmarks_to_npArray(a_list)
+            ))
+            cond = ((angle != np.nan) and
+                    (angle >= self.__move_LR_angle_lim[0]) and
+                    (angle <= self.__move_LR_angle_lim[1]))
+            return cond, "Angle: {ang:3.2f}".format(ang=angle)
+        return False, "Angle: {ang:3.2f}".format(ang=-1)
 
     def __detect_crouch(self,landmarks):
         a_r_list = [
-                landmarks[26],  # right_knee
-                landmarks[24],  # right_hip
-                landmarks[28]   # right_ankle
-            ]
+            landmarks[26],  # right_knee
+            landmarks[24],  # right_hip
+            landmarks[28]   # right_ankle
+        ]
         a_l_list = [
             landmarks[25],  # left_knee
-                landmarks[23],  # left_hip
-                landmarks[27]   # left_ankle
-            ]
-        if controller.__cehck_visibility(a_r_list, self.__crouch_visibility_lim) and controller.__cehck_visibility(a_l_list, self.__crouch_visibility_lim):
-            angle_r = controller.__3p_angle(
+            landmarks[23],  # left_hip
+            landmarks[27]   # left_ankle
+        ]
+        if controller.__cehck_visibility(a_r_list, self.__crouch_visibility_lim) and (controller.__cehck_visibility(a_l_list, self.__crouch_visibility_lim)):
+            angle_r = np.rad2deg(controller.__3p_angle(
                 landmarks=controller.__landmarks_to_npArray(a_r_list)
-            )
-            angle_l = controller.__3p_angle(
+            ))
+            angle_l = np.rad2deg(controller.__3p_angle(
                 landmarks=controller.__landmarks_to_npArray(a_l_list)
-            )
-            print('Angle R: ', angle_r, ' Angle L: ', angle_l)
-            if( (angle_r != np.nan) and
-                (angle_r <= self.__crouch_angle_lim) and
-                (angle_l != np.nan) and
-                (angle_l <= self.__crouch_angle_lim)):
-                print("Crouch!")
-                return True
-        return False
+            ))
+            cond = ((angle_r != np.nan) and
+                    (angle_r <= self.__crouch_angle_lim) and 
+                    (angle_l != np.nan) and
+                    (angle_l <= self.__crouch_angle_lim))
+            return cond, "AngleR: {angR:3.2f} | AngleL: {angL:3.2f}".format(angR=angle_r,angL=angle_l)
+        return False, "AngleR: {angR:3.2f} | AngleL: {angL:3.2f}".format(angR=-1,angL=-1)
 
     def __detect_jump(self,landmarks):
         h_list = [
@@ -248,13 +269,13 @@ class controller:
             angle_l = controller.__3p_angle(
                 landmarks=controller.__landmarks_to_npArray(a_l_list)
             )
-            print('Delta: ',delta,'Angle R: ', angle_r, ' Angle L: ', angle_l)
+            # print('Delta: ',delta,'Angle R: ', angle_r, ' Angle L: ', angle_l)
             if((angle_r != np.nan) and
                 (angle_r <= self.__crouch_angle_lim) and
                 (angle_l != np.nan) and
                 (angle_l <= self.__crouch_angle_lim) and
                 (delta >= self.__jump_delta_lim)):
-                print("Jump!")
+                # print("Jump!")
                 return True
         return False
 

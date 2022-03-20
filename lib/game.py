@@ -15,7 +15,7 @@ from lib.camera import camera
 #
 # Utilizar valores negativos para os cenarios de testes
 #
-#
+# -9/-8 - Teste de foto
 # -1xx  - Testes de inputs
 # -11   - Teste de inputs de mãos
 # -12   - Teste de inputs de face
@@ -36,15 +36,16 @@ class game:
         self.__fps = 60
         self.__clock = pygame.time.Clock()
 
-        self.__render = render((640,480))
+        self.__camera = camera()
+        image = self.__camera.take_image()
+        self.__render = render(window_size=(image.shape[1], image.shape[0]))
         self.__controller = controller()
         self.__logic = logic()
         self.__physics = physics()
         self.__entities = []
         self.__scoreboard = scoreboard()
-        self.__camera = camera()
 
-        self.__state = -10
+        self.__state = -13
 
     def start(self):
         self.__entities.append(entity("Player"))
@@ -80,7 +81,6 @@ class game:
             
             # Controle de Ticks
             self.__clock.tick(self.__fps)
-
     def __gameOver(self):
         self.__scoreboard.update()
         self.__scoreboard.show()

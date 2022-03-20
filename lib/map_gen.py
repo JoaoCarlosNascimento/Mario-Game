@@ -13,7 +13,8 @@ class map_gen:
 
     def draw(self, win):
         if self.jumping:
-            self.y -=
+            pass
+            # self.y -=
 
 
         pass

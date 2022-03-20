@@ -3,16 +3,52 @@ import numpy as np
 import cv2
 from lib.entity import entity
 from lib.text import TextBox
+from lib.scoreboard import scoreboard
+import time
+
+
 class render:
     def __init__(self,window_size=(200,100)):
         self.__window = pygame.display.set_mode(window_size)
-
+        # self.currenttime = int(round(time.time() * 1000))
+        self.scoreboard = scoreboard()
+        self.counter = 3
     def draw(self, state=0, img=[], entities=[],command=[]):
 
         for entity in entities:
             pass
-        
-        if(state == -10):
+        if state == -6:
+            self.__render_camera(img)
+            font = pygame.font.SysFont("Calibri", int(self.__window.get_height()/3), bold=True)
+            text = font.render(str(self.counter), 1, (0,0,0))
+            self.__window.blit(text, (self.__window.get_width()/2, self.__window.get_height()/3))
+            self.counter = self.counter - 1
+        if state == -7:
+            self.__render_camera(img)
+
+            self.scoreboard.show(self.__window)
+
+        elif state == -9:
+            self.__render_camera(img)
+            my_scoreboard = scoreboard()
+
+            my_scoreboard.snapshot(self.__window, command[0][0], command[1][0], command[2][0])
+
+            mytext = TextBox(self.__window, size=40)
+            mytext.updateText("Say cheese!")
+            mytext.display()
+            
+        elif state == -8:
+            self.__render_camera(img)
+            my_scoreboard = scoreboard()
+
+            mytext = TextBox(self.__window, size=40)
+            mytext.updateText("ITAP!!")
+            mytext.display()
+
+            my_scoreboard.snapshot(self.__window, command[0][0], command[1][0], command[2][0], 1)
+            
+        elif(state == -10):
             self.__render_camera(img)
             mytext = TextBox(self.__window, size=20)
             mytext.updateText("Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n"+
@@ -28,8 +64,14 @@ class render:
             self.__render_face_command(command)
         elif(state == -13):
             self.__render_camera(img)
-            self.__render_body_command(command)
-
+            # print(command['landmarks'])
+            if command != [(-1,-1)]:
+                self.__render_body_command(command['landmarks'])
+                # print(command['debug'])
+                mytext = TextBox(self.__window, size=20)
+                mytext.updateText(command['debug'])
+                mytext.display()
+        
         pygame.display.update()
 
     def __render_camera(self, img=[]):
