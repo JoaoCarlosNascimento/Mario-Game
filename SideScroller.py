@@ -30,14 +30,12 @@ BackGroundX2 = BackGround.get_width()
 # Bloco terra
 Dirt_block = pygame.image.load("Sprite/Ground/GrassWall.png").convert_alpha()
 rectDirt = Dirt_block.get_rect()
-Dirt_blockX = 0
-Dirt_blockX2 = Dirt_block.get_width()
+rectDirt.x, rectDirt.y = random.randrange(Screen_Width/2, Screen_Width), Screen_Height/2 + 301
 
 # Bloco terra
 Dirt_block2 = pygame.image.load("Sprite/Ground/IceWall.png").convert_alpha()
 rectDirt2 = Dirt_block2.get_rect()
-Dirt_block2X = 0
-Dirt_block2X2 = Dirt_block2.get_width()
+rectDirt2.x, rectDirt2.y = random.randrange(Screen_Width/2, Screen_Width), Screen_Height/2 + 301
 
 # Bloco terra
 Dirt_block3 = pygame.image.load("Sprite/Ground/BlueGround.png").convert_alpha()
@@ -48,8 +46,7 @@ Dirt_blockX32 = Dirt_block3.get_width()
 # coin1
 coin1 = pygame.image.load("Sprite/Bonus/Coin.png").convert_alpha()
 rectcoin1 = coin1.get_rect()
-coin1_blockX = 0
-coin1_blockX2 = coin1.get_width()
+rectcoin1.x, rectcoin1.y = random.randrange(Screen_Width/2, Screen_Width), random.randrange(Screen_Height/2, Screen_Height/2 + 20)
 
 # coin2
 coin2 = pygame.image.load("Sprite/Bonus/RedCoin.png").convert_alpha()
@@ -202,6 +199,7 @@ class Obstacle(Enemie):
         window.blit(self.img, (self.x, self.y))
         pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
 
+def redrawWindow(Movement_x, Loser_Text, LoserRect):
 
 # to random sprites
 def random_sprites():
@@ -249,7 +247,6 @@ objects = []
 
 speed = 30
 run = True
-startime = time.time()
 while run:
     # n = random.randint(1, 3)
     # totaltime = round((time.time() - startime), 2)
