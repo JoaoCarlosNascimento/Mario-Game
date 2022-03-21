@@ -23,7 +23,9 @@ class controller:
 
     ## JUMP ##
     # jump parameters
-    __jump_delta_lim = 0
+    __jump_ang_lim = 173
+    __jump_pos_lim = 10
+    __jump_delta_lim = 20
     __buffer_samples = 5
     # jump variables
     __jump_hips_pose_k = []
@@ -160,6 +162,10 @@ class controller:
                 command = command | (0b0010 & movC << 1)
                 ret['debug'] += ('\t' +'Crouch: ({stat})'.format(stat=movC)+'\n'+'\t\t'+retB+'\n')
 
+                movC, retB = self.__detect_jump(self.__detectors['Body']['Landmarks'].landmark)
+                command = command | (0b0001 & movC << 0)
+                ret['debug'] += ('\t' +'Jump: ({stat})'.format(stat=movC)+'\n'+'\t\t'+retB+'\n')
+
                 ret['debug'] += ('\t'+"Command: {0:b}".format(command)+'\n')
                 # self.__detect_move_left(self.__detectors['Body']['Landmarks'].landmark)
                 # self.__detect_jump(self.__detectors['Body']['Landmarks'].landmark)
@@ -241,10 +247,6 @@ class controller:
         return False, "AngleR: {angR:3.2f} | AngleL: {angL:3.2f}".format(angR=-1,angL=-1)
 
     def __detect_jump(self,landmarks):
-        h_list = [
-            landmarks[23],  # left_hip
-            landmarks[24],  # right_hip
-        ]
         a_r_list = [
             landmarks[26],  # right_knee
             landmarks[24],  # right_hip
@@ -255,30 +257,36 @@ class controller:
             landmarks[23],  # left_hip
             landmarks[27]   # left_ankle
         ]
-        if controller.__cehck_visibility(a_r_list, self.__crouch_visibility_lim) and controller.__cehck_visibility(a_l_list, self.__crouch_visibility_lim):
-            mean_hip_pos = (h_list[0].y+h_list[1].y)/2
-            self.__jump_buffer(mean_hip_pos)
-            delta = 0
-            for p in range(self.__buffer_samples):
-                delta += self.__jump_hips_pose_k[p] - self.__jump_hips_pose_km1[p]
-            delta /= self.__buffer_samples
-
-            angle_r = controller.__3p_angle(
+        if controller.__cehck_visibility(a_r_list, self.__crouch_visibility_lim) and (controller.__cehck_visibility(a_l_list, self.__crouch_visibility_lim)):
+            angle_r = np.rad2deg(controller.__3p_angle(
                 landmarks=controller.__landmarks_to_npArray(a_r_list)
-            )
-            angle_l = controller.__3p_angle(
+            ))
+            angle_l = np.rad2deg(controller.__3p_angle(
                 landmarks=controller.__landmarks_to_npArray(a_l_list)
-            )
-            # print('Delta: ',delta,'Angle R: ', angle_r, ' Angle L: ', angle_l)
-            if((angle_r != np.nan) and
-                (angle_r <= self.__crouch_angle_lim) and
-                (angle_l != np.nan) and
-                (angle_l <= self.__crouch_angle_lim) and
-                (delta >= self.__jump_delta_lim)):
-                # print("Jump!")
-                return True
-        return False
-
+            ))
+            cond_c = ((angle_r != np.nan) and
+                    (angle_r >= self.__jump_ang_lim) and
+                    (angle_l != np.nan) and
+                    (angle_l >= self.__jump_ang_lim))
+            cond_c = True
+            cond = False
+            if cond_c:
+                m1 = (landmarks[23].y + landmarks[24].y)/2
+                self.__jump_buffer(m1)
+                print("Act: ",m1," Mean: ",sum(self.__jump_hips_pose_k)/self.__buffer_samples)
+                # __jump_delta_lim
+                mean = (sum(self.__jump_hips_pose_k)/self.__buffer_samples)
+                delta = []
+                for sample in range(self.__buffer_samples):
+                    delta.append(self.__jump_hips_pose_k[sample]-self.__jump_hips_pose_km1[sample])
+                cond = m1 >= mean*(1+self.__jump_pos_lim/100) and sum(delta)/self.__buffer_samples > self.__jump_delta_lim
+                if cond:
+                    vc = "True\nTrue\nTrue\nTrue\nTrue\nTrue\nTrue\nTrue\n\n\n\n\n\n\nTrueTrueTrueTrueTrueTrueTrueTrueTrue"
+                else:
+                    vc = "False"
+            return cond, "AngleR: {angR:3.2f} | AngleL: {angL:3.2f} | {cond}".format(angR=angle_r, angL=angle_l, mean=mean, act=m1, cond=vc)
+        return False, "AngleR: {angR:3.2f} | AngleL: {angL:3.2f}".format(angR=-1, angL=-1)
+        
     # def __body_rightArm(self,landmarks):
     #     pass
 
