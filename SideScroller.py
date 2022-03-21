@@ -136,29 +136,10 @@ class player(object):
                 self.runCount = 1
             window.blit(self.run[self.runCount], (self.x, self.y))
 
-
-# to random sprites
-def random_sprites():
-    # generate random number to make sprites appear
-    n = random.randint(0, 3)
-
-    return n
-
-
 def redrawWindow(Movement_x, Loser_Text, LoserRect, n):
-    # ran = random_sprites()
-    j = 0
-    n = random.randint(1, 3)
-    m = n
+
     window.blit(BackGround, (BackGroundX, 0))  # draws our first BackGround image
     window.blit(BackGround, (BackGroundX2, 0))  # draws the second BackGround image
-
-    while (j < 3):
-        window.blit(Dirt_block, (BackGroundX + Screen_Width + m * 100, Screen_Height / 2 + 301))
-        window.blit(Dirt_block, (BackGroundX2 + Screen_Width + m * 100, Screen_Height / 2 + 301))
-        window.blit(Dirt_block, (BackGroundX + Screen_Width + m * 100, Screen_Height / 2 + 301))
-        window.blit(Dirt_block, (BackGroundX2 + Screen_Width + m * 100, Screen_Height / 2 + 301))
-        j += 1
 
     runner.draw(window,95)  # NEW
 
@@ -172,12 +153,10 @@ pygame.time.set_timer(USEREVENT + 1, 500)
 runner = player(200, Screen_Height / 1.3, 100, 95, True)
 speed = 30
 run = True
-startime = time.time()
-while run:
-    n = random.randint(1, 3)
-    totaltime = round((time.time() - startime), 2)
 
-    redrawWindow(runner.x, Loser_Text, LoserRect,n)
+while run:
+
+    redrawWindow(runner.x, Loser_Text, LoserRect)
 
     BackGroundX -= 1  # Move both background images back
     BackGroundX2 -= 1
