@@ -28,10 +28,29 @@ BackGroundX = 0
 BackGroundX2 = BackGround.get_width()
 
 # Bloco terra
-Dirt_block = pygame.image.load("Sprite/Ground/GrassWall.PNG").convert_alpha()
-Dirt_blockX = 0
-Dirt_blockX2 = Dirt_block.get_width()
+Dirt_block = pygame.image.load("Sprite/Ground/GrassWall.png").convert_alpha()
+rectDirt = Dirt_block.get_rect()
+rectDirt.x, rectDirt.y = random.randrange(Screen_Width/2, Screen_Width), Screen_Height/2 + 301
 
+# Bloco terra
+Dirt_block2 = pygame.image.load("Sprite/Ground/IceWall.png").convert_alpha()
+rectDirt2 = Dirt_block2.get_rect()
+rectDirt2.x, rectDirt2.y = random.randrange(Screen_Width/2, Screen_Width), Screen_Height/2 + 301
+
+# Bloco terra
+Dirt_block3 = pygame.image.load("Sprite/Ground/BlueGround.png").convert_alpha()
+rectDirt3 = Dirt_block3.get_rect()
+rectDirt3.x, rectDirt3.y = random.randrange(Screen_Width/2, Screen_Width), Screen_Height/2 + 301
+
+#coin1
+coin1 = pygame.image.load("Sprite/Bonus/Coin.png").convert_alpha()
+rectcoin1 = coin1.get_rect()
+rectcoin1.x, rectcoin1.y = random.randrange(Screen_Width/2, Screen_Width), random.randrange(Screen_Height/2, Screen_Height/2 + 20)
+
+#coin2
+coin2 = pygame.image.load("Sprite/Bonus/RedCoin.png").convert_alpha()
+rectcoin2 = coin2.get_rect()
+rectcoin2.x, rectcoin2.y = random.randrange(Screen_Width/2, Screen_Width), random.randrange(Screen_Height/2, Screen_Height/2 + 20)
 
 # rectDirt_block = Dirt_block.get_rect()
 # rectDirt_block.x, rectDirt_block.y = 0, 0
@@ -109,29 +128,17 @@ class player(object):
                 self.runCount = 1
             window.blit(self.run[self.runCount], (self.x, self.y))
 
+def redrawWindow(Movement_x, Loser_Text, LoserRect):
 
-# to random sprites
-def random_sprites():
-    # generate random number to make sprites appear
-    n = random.randint(0, 3)
-
-    return n
-
-
-def redrawWindow(Movement_x, Loser_Text, LoserRect, n):
-    # ran = random_sprites()
-    j = 0
-    n = random.randint(1, 3)
-    m = n
     window.blit(BackGround, (BackGroundX, 0))  # draws our first BackGround image
     window.blit(BackGround, (BackGroundX2, 0))  # draws the second BackGround image
 
-    while (j < 3):
-        window.blit(Dirt_block, (BackGroundX + Screen_Width + m * 100, Screen_Height / 2 + 301))
-        window.blit(Dirt_block, (BackGroundX2 + Screen_Width + m * 100, Screen_Height / 2 + 301))
-        window.blit(Dirt_block, (BackGroundX + Screen_Width + m * 100, Screen_Height / 2 + 301))
-        window.blit(Dirt_block, (BackGroundX2 + Screen_Width + m * 100, Screen_Height / 2 + 301))
-        j += 1
+    window.blit(Dirt_block, rectDirt)  # draws the second BackGround image
+    window.blit(Dirt_block2, rectDirt2)  # draws the second BackGround image
+    window.blit(Dirt_block3, rectDirt3)  # draws the second BackGround image
+
+    window.blit(coin1, rectcoin1)  # draws the second BackGround image
+    window.blit(coin2, rectcoin2)  # draws the second BackGround image
 
     runner.draw(window,95)  # NEW
 
@@ -146,8 +153,6 @@ runner = player(200, Screen_Height / 1.3, 100, 95, True)
 speed = 30
 run = True
 while run:
-    n = random.randint(1, 3)
-    totaltime = round((time.time() - startime), 2)
 
     redrawWindow(runner.x, Loser_Text, LoserRect)
 
