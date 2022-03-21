@@ -145,18 +145,21 @@ pygame.time.set_timer(USEREVENT + 1, 500)
 runner = player(200, Screen_Height / 1.3, 100, 95, True)
 speed = 30
 run = True
-# Timer starts
-startime = time.time()
-lasttime = startime
 while run:
     n = random.randint(1, 3)
     totaltime = round((time.time() - startime), 2)
 
-    redrawWindow(runner.x, Loser_Text, LoserRect, n)
+    redrawWindow(runner.x, Loser_Text, LoserRect)
+
     BackGroundX -= 1  # Move both background images back
     BackGroundX2 -= 1
 
-    Dirt_blockX -= 1
+    rectDirt.x -= 1
+    rectDirt2.x -= 1
+    rectDirt3.x -= 1
+
+    rectcoin1.x -= 1
+    rectcoin2.x -= 1
 
     # Movimentação Default
     runner.x -= Screen_Width / 4000
@@ -167,6 +170,18 @@ while run:
 
     if BackGroundX2 < BackGround.get_width() * -1:
         BackGroundX2 = BackGround.get_width()
+
+    if rectDirt.x < Dirt_block.get_width() * -1:
+        rectDirt.x = random.randrange(Screen_Width/2 + 50, Screen_Width)
+    if rectDirt2.x < Dirt_block2.get_width() * -1:
+        rectDirt2.x = random.randrange(Screen_Width/2 + 100, Screen_Width)
+    if rectDirt3.x < Dirt_block3.get_width() * -1:
+        rectDirt3.x = random.randrange(Screen_Width/2 + 150, Screen_Width)
+
+    if rectcoin1.x < coin1.get_width() * -1:
+        rectcoin1.x = random.randrange(Screen_Width/2 + 150, Screen_Width)
+    if rectcoin2.x < coin2.get_width() * -1:
+        rectcoin2.x = random.randrange(Screen_Width/2 + 150, Screen_Width)
 
     for event in pygame.event.get():  # Loop through a list of events
         if event.type == pygame.QUIT:  # See if the user clicks the red x
