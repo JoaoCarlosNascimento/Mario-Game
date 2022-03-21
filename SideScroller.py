@@ -28,9 +28,36 @@ BackGroundX = 0
 BackGroundX2 = BackGround.get_width()
 
 # Bloco terra
-Dirt_block = pygame.image.load("Sprite/Ground/GrassWall.PNG").convert_alpha()
+Dirt_block = pygame.image.load("Sprite/Ground/GrassWall.png").convert_alpha()
+rectDirt = Dirt_block.get_rect()
 Dirt_blockX = 0
 Dirt_blockX2 = Dirt_block.get_width()
+
+# Bloco terra
+Dirt_block2 = pygame.image.load("Sprite/Ground/IceWall.png").convert_alpha()
+rectDirt2 = Dirt_block2.get_rect()
+Dirt_block2X = 0
+Dirt_block2X2 = Dirt_block2.get_width()
+
+# Bloco terra
+Dirt_block3 = pygame.image.load("Sprite/Ground/BlueGround.png").convert_alpha()
+rectDirt3 = Dirt_block3.get_rect()
+Dirt_block3X = 0
+Dirt_blockX32 = Dirt_block3.get_width()
+
+
+#coin1
+coin1 = pygame.image.load("Sprite/Bonus/Coin.png").convert_alpha()
+rectcoin1 = coin1.get_rect()
+coin1_blockX = 0
+coin1_blockX2 = coin1.get_width()
+
+#coin2
+coin2 = pygame.image.load("Sprite/Bonus/RedCoin.png").convert_alpha()
+rectcoin2 = coin2.get_rect()
+coin2_blockX = 0
+coin2_blockX2 = coin2.get_width()
+
 
 
 # rectDirt_block = Dirt_block.get_rect()
@@ -145,11 +172,12 @@ pygame.time.set_timer(USEREVENT + 1, 500)
 runner = player(200, Screen_Height / 1.3, 100, 95, True)
 speed = 30
 run = True
+startime = time.time()
 while run:
     n = random.randint(1, 3)
     totaltime = round((time.time() - startime), 2)
 
-    redrawWindow(runner.x, Loser_Text, LoserRect)
+    redrawWindow(runner.x, Loser_Text, LoserRect,n)
 
     BackGroundX -= 1  # Move both background images back
     BackGroundX2 -= 1
