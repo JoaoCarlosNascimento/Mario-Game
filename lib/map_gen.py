@@ -9,7 +9,7 @@ class map_gen:
         self.jumping = False
         self.jumpCount = 0
         self.runCount = 0
-        BackGround = pygame.image.load(".../Sprite/BackGround/BackGround.jpg")
+        BackGround = pygame.image.load("Sprite/BackGround/BackGround.jpg")
 
     def draw(self, win):
         if self.jumping:
