@@ -21,7 +21,7 @@ clock = pygame.time.Clock()
 window = pygame.display.set_mode((Screen_Width, Screen_Height))
 pygame.display.set_caption("Test")
 
-#Mover BackGround
+# Mover BackGround
 BackGround = pygame.image.load("Sprite/BackGround/BackGround.jpg").convert()
 BackGround = pygame.transform.scale(BackGround, (Screen_Width, Screen_Height))
 BackGroundX = 0
@@ -31,49 +31,13 @@ BackGroundX2 = BackGround.get_width()
 Dirt_block = pygame.image.load("Sprite/Ground/GrassWall.PNG").convert_alpha()
 Dirt_blockX = 0
 Dirt_blockX2 = Dirt_block.get_width()
-#rectDirt_block = Dirt_block.get_rect()
-#rectDirt_block.x, rectDirt_block.y = 0, 0
+
+
+# rectDirt_block = Dirt_block.get_rect()
+# rectDirt_block.x, rectDirt_block.y = 0, 0
 
 class player(object):
-
-    # Animação Run
-    run_1 = pygame.image.load("Sprite/Mario/WalkingArmsUp.png")
-    run_2 = pygame.image.load("Sprite/Mario/StandingArmsUp.png")
-
-    run_1 = pygame.transform.flip(run_1, True, False)
-    run_2 = pygame.transform.flip(run_2, True, False)
-    run_1 = pygame.transform.scale(run_1, (Screen_Width / 12, Screen_Width / 12))
-    run_2 = pygame.transform.scale(run_2, (Screen_Width / 12, Screen_Width / 12))
-
-    run = [run_1, run_2]
-
-    # Animação Jumping
-    jump_Victorius = pygame.image.load("Sprite/Mario/JumpVictorius.png")
-    jump_Victorius = pygame.transform.scale(jump_Victorius, (Screen_Width / 12, Screen_Width / 12))
-    jump_Victorius = pygame.transform.flip(jump_Victorius, True, False)
-
-    jump_ArmsUp = pygame.image.load("Sprite/Mario/JumpingArmsUp.png")
-    jump_ArmsUp = pygame.transform.scale(jump_ArmsUp, (Screen_Width / 12, Screen_Width / 12))
-    jump_ArmsUp = pygame.transform.flip(jump_ArmsUp, True, False)
-    jump = []
-
-    for i in range(0, 7):
-        if i < 4:
-            jump.append(jump_Victorius)
-        else:
-            jump.append(jump_ArmsUp)
-
-    # Animação Duck
-    Duck = pygame.image.load("Sprite/Mario/Duck.png")
-    Duck = pygame.transform.scale(Duck, (Screen_Width / 12, Screen_Width / 12))
-    Duck = pygame.transform.flip(Duck, True, False)
-    duck = []
-    for i in range(0, 10):
-        duck.append(Duck)
-
-    jumpList = [1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4]
-
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height, LookingRight):
         self.x = x
         self.y = y
         self.width = width
@@ -84,8 +48,33 @@ class player(object):
         self.jumpCount = 0
         self.runCount = 0
         self.duckUp = False
+        self.LookingRight = LookingRight
 
-    def draw(self, window, Movement_x, y):
+    def create_anim(self, image, scale, number_images, LookingRight):
+        animation = []
+        for i in range(number_images):
+            animation.append(pygame.image.load(image[i]))
+            if LookingRight:
+                animation[i] = pygame.transform.flip(animation[i], True, False)
+            animation[i] = pygame.transform.scale(animation[i], (Screen_Width / scale[0], Screen_Width / scale[1]))
+
+        return animation
+
+    jumpList = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4,
+                4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1,
+                -1, -1, -1, -1, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3,
+                -3, -3, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4]
+
+    def draw(self, window, y):
+
+        run_string = ["Sprite/Mario/WalkingArmsUp.png", "Sprite/Mario/StandingArmsUp.png"]
+        jump_string = ["Sprite/Mario/JumpVictorius.png", "Sprite/Mario/JumpVictorius.png", "Sprite/Mario/JumpVictorius.png", "Sprite/Mario/JumpVictorius.png","Sprite/Mario/JumpingArmsUp.png", "Sprite/Mario/JumpingArmsUp.png", "Sprite/Mario/JumpingArmsUp.png", "Sprite/Mario/JumpingArmsUp.png"]
+        duck_string = ["Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png"]
+        scale = [12, 12]
+
+        self.run = self.create_anim(run_string, scale, 2, self.LookingRight)
+        self.jump = self.create_anim(jump_string, scale, 8, self.LookingRight)
+        self.duck = self.create_anim(duck_string, scale, 11, self.LookingRight)
 
         count = random.randint(0, 1)
         if self.jumping:
@@ -107,7 +96,7 @@ class player(object):
                 self.duckCount = 0
                 self.duckUp = False
                 self.runCount = 0
-            window.blit(self.duck[self.duckCount//10], (self.x, self.y + Screen_Height / 25))
+            window.blit(self.duck[self.duckCount // 10], (self.x, self.y + Screen_Height / 25))
             self.duckCount += 1
 
         else:
@@ -120,17 +109,17 @@ class player(object):
                 self.runCount = 1
             window.blit(self.run[self.runCount], (self.x, self.y))
 
+
 # to random sprites
 def random_sprites():
-
     # generate random number to make sprites appear
     n = random.randint(0, 3)
 
     return n
 
-def redrawWindow(Movement_x, Loser_Text, LoserRect, n):
 
-    #ran = random_sprites()
+def redrawWindow(Movement_x, Loser_Text, LoserRect, n):
+    # ran = random_sprites()
     j = 0
     n = random.randint(1, 3)
     m = n
@@ -138,29 +127,29 @@ def redrawWindow(Movement_x, Loser_Text, LoserRect, n):
     window.blit(BackGround, (BackGroundX2, 0))  # draws the second BackGround image
 
     while (j < 3):
-        window.blit(Dirt_block, (BackGroundX + Screen_Width + m*100, Screen_Height / 2 + 301))
-        window.blit(Dirt_block, (BackGroundX2 + Screen_Width + m*100, Screen_Height / 2 + 301))
-        window.blit(Dirt_block, (BackGroundX + Screen_Width + m*100, Screen_Height/2 + 301))
-        window.blit(Dirt_block, (BackGroundX2 + Screen_Width + m*100, Screen_Height / 2 + 301))
+        window.blit(Dirt_block, (BackGroundX + Screen_Width + m * 100, Screen_Height / 2 + 301))
+        window.blit(Dirt_block, (BackGroundX2 + Screen_Width + m * 100, Screen_Height / 2 + 301))
+        window.blit(Dirt_block, (BackGroundX + Screen_Width + m * 100, Screen_Height / 2 + 301))
+        window.blit(Dirt_block, (BackGroundX2 + Screen_Width + m * 100, Screen_Height / 2 + 301))
         j += 1
 
-    runner.draw(window, Movement_x, 95)  # NEW
+    runner.draw(window,95)  # NEW
 
     if Movement_x <= -70:
         window.blit(Loser_Text, LoserRect)
     pygame.display.update()  # updates the screen
 
 
-#Acelerar Segundo Eventos do Jogo
-pygame.time.set_timer(USEREVENT+1, 500)
-runner = player(200, Screen_Height /1.3, 100, 95)
+# Acelerar Segundo Eventos do Jogo
+pygame.time.set_timer(USEREVENT + 1, 500)
+runner = player(200, Screen_Height / 1.3, 100, 95, True)
 speed = 30
 run = True
 # Timer starts
 startime = time.time()
 lasttime = startime
 while run:
-    n = random.randint(1,3)
+    n = random.randint(1, 3)
     totaltime = round((time.time() - startime), 2)
 
     redrawWindow(runner.x, Loser_Text, LoserRect, n)
@@ -169,7 +158,7 @@ while run:
 
     Dirt_blockX -= 1
 
-    #Movimentação Default
+    # Movimentação Default
     runner.x -= Screen_Width / 4000
 
     # 1º BackGround Image starts at (0,0)
@@ -190,29 +179,27 @@ while run:
                 pygame.quit()
                 sys.exit()
 
-        if event.type == USEREVENT+1:
+        if event.type == USEREVENT + 1:
             speed += 1
 
         # Quando várias keys pressionadas, seleciona a 1º
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE] or keys[pygame.K_UP]:
-            if not(runner.jumping):
+            if not (runner.jumping):
                 runner.jumping = True
 
         # Mover Para a Direita
         if keys[pygame.K_RIGHT]:
             runner.x += Screen_Width / 60
-
+            runner.LookingRight = True
         # Mover Para a Esquerda
         if keys[pygame.K_LEFT]:
             runner.x -= Screen_Width / 60
-        print(runner.x)
+            runner.LookingRight = False
+        # print(runner.x)
 
         if keys[pygame.K_DOWN]:
-            if not(runner.ducking):
+            if not (runner.ducking):
                 runner.ducking = True
 
         clock.tick(speed)
-
-
-

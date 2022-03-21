@@ -9,6 +9,7 @@ from lib.controller import controller
 from lib.physics import physics
 from lib.entity import entity
 from lib.scoreboard import scoreboard
+from lib.map_gen import map_gen
 from lib.camera import camera
 
 ## States
@@ -44,6 +45,7 @@ class game:
         self.__physics = physics()
         self.__entities = []
         self.__scoreboard = scoreboard()
+        self.__map_gen = map_gen()
 
         self.__state = -13
 
