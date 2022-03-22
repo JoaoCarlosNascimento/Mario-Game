@@ -21,10 +21,6 @@ from lib.camera import camera
 # -11   - Teste de inputs de mãos
 # -12   - Teste de inputs de face
 # -13   - Teste de inputs de corpo
-# -131  - Teste de inputs move right
-# -132  - Teste de inputs move left
-# -133  - Teste de inputs crouch
-# -134  - Teste de inputs jump
 
 # -135  - Teste De Geração do Mapa
 
@@ -57,29 +53,23 @@ class game:
     def __loop(self):
         while(self.__loop_cond):
             # Detecta Inputs do teclado
-            self.__keyboard_event()
+            fake_command = self.__keyboard_event()
 
             # Recebe imagem da camera
             image = self.__camera.take_image()
 
             # Recebe commandos
-            command = self.__controller.get_commands(state=self.__state, img=image)
-
-            # Atualização das entidades
-            for entity in self.__entities:
-                if entity.name == "Player":
-                    entity.update(state=self.__state, command=command)
-                else:
-                    entity.update(state=self.__state)
+            command, debug, landmarks = self.__controller.get_commands(state=self.__state, img=image)
 
             # Aplica fisica
-            self.__physics.update(state=self.__state, entities=self.__entities)
+            self.__physics.update(state=self.__state, entities=self.__entities, commands=fake_command)
 
             # Aplica logica
             self.__state = self.__logic.update(state=self.__state)
 
             # Desenha cena
-            self.__render.draw(state=self.__state, img=image, entities=self.__entities, command=command)
+            self.__render.draw(state=self.__state, img=image,
+                               entities=self.__entities, landmarks=landmarks,debug=debug)
             
             # Controle de Ticks
             self.__clock.tick(self.__fps)
@@ -101,3 +91,23 @@ class game:
                     self.__close()
                     pygame.quit()
                     sys.exit()
+        return game.__fake_inputs()
+        
+
+    def __fake_inputs():
+        pressed_keys = pygame.key.get_pressed()
+        command = 0b0000
+        if pressed_keys[pygame.K_d]:
+            command = command | 0b1000
+            print("Fake Input (D)")
+        if pressed_keys[pygame.K_a]:
+            command = command | 0b0100
+            print("Fake Input (A)")
+        if pressed_keys[pygame.K_w]:
+            command = command | 0b0010
+            print("Fake Input (W)")
+        if pressed_keys[pygame.K_s]:
+            command = command | 0b0001
+            print("Fake Input (S)")
+
+        return command

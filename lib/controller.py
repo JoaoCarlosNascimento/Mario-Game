@@ -149,45 +149,42 @@ class controller:
                 landmark.y = landmark.y*self.__res[1]
             
             if state == 0:
-                command = 0 # |R|L|C|J|
+                command = 0b0000 # |R|L|C|J|
                 ret = {}
-                ret['debug'] = "Controller Debug:\n"
+                debug = "Controller Debug:\n"
                 movR, retB = self.__detect_move_right(self.__detectors['Body']['Landmarks'].landmark)
                 command = command | (0b1000 & movR << 3)
-                ret['debug'] += ('\t'+'Move R: ({stat})'.format(stat=movR)+'\n'+'\t\t'+retB+'\n')
+                debug += ('\t'+'Move R: ({stat})'.format(stat=movR)+'\n'+'\t\t'+retB+'\n')
                 movL, retB = self.__detect_move_left(self.__detectors['Body']['Landmarks'].landmark)
                 command = command | (0b0100 & movL << 2)
-                ret['debug'] += ('\t' +'Move L: ({stat})'.format(stat=movL)+'\n'+'\t\t'+retB+'\n')
+                debug += ('\t' +'Move L: ({stat})'.format(stat=movL)+'\n'+'\t\t'+retB+'\n')
                 movC, retB = self.__detect_crouch(self.__detectors['Body']['Landmarks'].landmark)
                 command = command | (0b0010 & movC << 1)
-                ret['debug'] += ('\t' +'Crouch: ({stat})'.format(stat=movC)+'\n'+'\t\t'+retB+'\n')
+                debug += ('\t' +'Crouch: ({stat})'.format(stat=movC)+'\n'+'\t\t'+retB+'\n')
 
                 movC, retB = self.__detect_jump(self.__detectors['Body']['Landmarks'].landmark)
                 command = command | (0b0001 & movC << 0)
-                ret['debug'] += ('\t' +'Jump: ({stat})'.format(stat=movC)+'\n'+'\t\t'+retB+'\n')
+                debug += ('\t' +'Jump: ({stat})'.format(stat=movC)+'\n'+'\t\t'+retB+'\n')
 
-                ret['debug'] += ('\t'+"Command: {0:b}".format(command)+'\n')
-                # self.__detect_move_left(self.__detectors['Body']['Landmarks'].landmark)
-                # self.__detect_jump(self.__detectors['Body']['Landmarks'].landmark)
-                # ret['debug'] = "Right: {movR}\nLeft: {movL}\nCrouch: {crouch}\nJump: {jump}\n".format(movR=movR,movL=False,crouch=False,jump=False)
-                ret['landmarks'] = self.__detectors['Body']['Landmarks'].landmark
-                ret['com'] = command
-                return ret
-            elif state == 1:
-                ret = {}
-                mov, ret['debug'] = self.__detect_move_right(self.__detectors['Body']['Landmarks'].landmark)
-                ret['landmarks'] = self.__detectors['Body']['Landmarks'].landmark
-                return ret
-            elif state == 2:
-                self.__detect_move_left(self.__detectors['Body']['Landmarks'].landmark)
-            elif state == 3:
-                self.__detect_crouch(self.__detectors['Body']['Landmarks'].landmark)
-            elif state == 4:
-                self.__detect_jump(self.__detectors['Body']['Landmarks'].landmark)
+                debug += ('\t'+"Command: {0:b}".format(command)+'\n')
+                # ret['landmarks'] = self.__detectors['Body']['Landmarks'].landmark
+                # ret['com'] = command
+                return command, debug, self.__detectors['Body']['Landmarks'].landmark
+            # elif state == 1:
+            #     ret = {}
+            #     mov, ret['debug'] = self.__detect_move_right(self.__detectors['Body']['Landmarks'].landmark)
+            #     ret['landmarks'] = self.__detectors['Body']['Landmarks'].landmark
+            #     return ret
+            # elif state == 2:
+            #     self.__detect_move_left(self.__detectors['Body']['Landmarks'].landmark)
+            # elif state == 3:
+            #     self.__detect_crouch(self.__detectors['Body']['Landmarks'].landmark)
+            # elif state == 4:
+            #     self.__detect_jump(self.__detectors['Body']['Landmarks'].landmark)
 
-            return self.__detectors['Body']['Landmarks'].landmark
+            return 0b0000, "", self.__detectors['Body']['Landmarks'].landmark
         else:
-            return [(-1,-1)]
+            return 0b0000, "", []
 
     def __detect_move_right(self,landmarks):
         a_list = [
@@ -273,7 +270,7 @@ class controller:
             if cond_c:
                 m1 = (landmarks[23].y + landmarks[24].y)/2
                 self.__jump_buffer(m1)
-                print("Act: ",m1," Mean: ",sum(self.__jump_hips_pose_k)/self.__buffer_samples)
+                # print("Act: ",m1," Mean: ",sum(self.__jump_hips_pose_k)/self.__buffer_samples)
                 # __jump_delta_lim
                 mean = (sum(self.__jump_hips_pose_k)/self.__buffer_samples)
                 delta = []

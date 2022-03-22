@@ -13,7 +13,8 @@ class render:
         # self.currenttime = int(round(time.time() * 1000))
         self.scoreboard = scoreboard()
         self.counter = 3
-    def draw(self, state=0, img=[], entities=[],command=[]):
+
+    def draw(self, state=0, img=[], entities=[], command=[], landmarks=[],debug=""):
 
         for entity in entities:
             pass
@@ -65,11 +66,11 @@ class render:
         elif(state == -13):
             self.__render_camera(img)
             # print(command['landmarks'])
-            if command != [(-1,-1)]:
-                self.__render_body_command(command['landmarks'])
-                # print(command['debug'])
+            # if command != [(-1,-1)]:
+            if landmarks:
+                self.__render_body_command(landmarks)
                 mytext = TextBox(self.__window, size=20)
-                mytext.updateText(command['debug'])
+                mytext.updateText(debug)
                 mytext.display()
         
         pygame.display.update()
