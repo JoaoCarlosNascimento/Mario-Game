@@ -81,10 +81,16 @@ class player(object):
 
         count = random.randint(0, 1)
         if self.jumping:
-            self.y -= file.jumpList[self.jumpCount] * 1.2
-            window.blit(self.jump[self.jumpCount // 18], (self.x, self.y))
-            # Hitbox do Mario a Saltar
-            self.hitbox = (self.x + x_offset, self.y + 30, self.width - 24, self.height + 20)
+            if self.falling:
+                self.hitbox = (0, 0, 0, 0)
+                self.y -= file.jumpList[self.jumpCount] * 1.2
+                window.blit(self.fall[0], (self.x, self.y))
+            else:
+                # Hitbox do Mario a Saltar
+                self.hitbox = (self.x + x_offset, self.y + 30, self.width - 24, self.height + 20)
+                self.y -= file.jumpList[self.jumpCount] * 1.2
+                window.blit(self.jump[self.jumpCount // 18], (self.x, self.y))
+
             self.jumpCount += 1
             if self.jumpCount > 108:
                 self.jumpCount = 0
@@ -92,6 +98,13 @@ class player(object):
                 self.runCount = 0
 
         elif self.ducking or self.duckUp:
+            if self.falling:
+                self.hitbox = (0, 0, 0, 0)
+                window.blit(self.fall[0], (self.x, self.y))
+            else:
+                # Hitbox do Mario a Fazer Duck
+                self.hitbox = (self.x + x_offset, self.y + 60, self.width - 24, self.height - 30)
+
             if self.duckCount < 20:
                 self.y += 1
             elif self.duckCount == 70:
@@ -99,16 +112,20 @@ class player(object):
                 self.ducking = False
                 self.duckUp = True
             elif 20 < self.duckCount < 80:
-                # Hitbox do Mario a Fazer Duck
-                self.hitbox = (self.x + x_offset, self.y + 60, self.width - 8, self.height - 35)
+                if self.falling:
+                    self.hitbox = (0, 0, 0, 0)
+                else:
+                    # Hitbox do Mario a Fazer Duck
+                    self.hitbox = (self.x + x_offset, self.y + 60, self.width - 8, self.height - 35)
             if self.duckCount >= 100:
                 self.duckCount = 0
                 self.duckUp = False
                 self.runCount = 0
-            window.blit(self.duck[self.duckCount // 10], (self.x, self.y + file.Screen_Height / 25))
+            if not self.falling:
+                window.blit(self.duck[self.duckCount // 10], (self.x, self.y + file.Screen_Height / 25))
+            else:
+                window.blit(self.fall[0], (self.x, self.y))
 
-            # Hitbox do Mario a Fazer Duck
-            self.hitbox = (self.x + x_offset, self.y + 60, self.width - 24, self.height - 30)
             self.duckCount += 1
 
         elif self.falling:
@@ -122,8 +139,11 @@ class player(object):
             else:
                 self.runCount = 1
             window.blit(self.run[self.runCount], (self.x, self.y))
-            # Hitbox do Mario a Correr
-            self.hitbox = (self.x + x_offset, self.y + 30, self.width - 24, self.height + 20)
+            if self.falling:
+                self.hitbox = (0, 0, 0, 0)
+            else:
+                # Hitbox do Mario a Correr
+                self.hitbox = (self.x + x_offset, self.y + 30, self.width - 24, self.height + 20)
         # Desenhar Hitbox Do Mario
         if not self.falling:
             pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
@@ -207,7 +227,7 @@ objects = []
 speed = 30
 run = True
 lives = 3
-
+flag = False
 while run:
     score = speed // 5 - 6
     redrawWindow(runner.x, Loser_Text, LoserRect)
@@ -217,9 +237,6 @@ while run:
         if objectts.collide(runner.hitbox):
             runner.falling = True
             anim_start_timer = time.time()
-
-            # Mudança Hitbox Para Perder Apenas Uma Vida
-            runner.hitbox = (0, 0, 0, 0)
             pygame.mixer.Sound.play(file.Bump)
             lives -= 1
             # Game Over
@@ -233,8 +250,10 @@ while run:
         anim_end_timer = time.time()
 
         #Duração da Animação Hitted
-        if anim_end_timer - anim_start_timer > 0.5:
+        if anim_end_timer - anim_start_timer > 0.8:
             runner.falling = False
+        else:
+            runner.hitbox = (0, 0, 0, 0)
 
         # Quando Não Aparece no Ecrã
         if objectts.x < -objectts.width * -1:
@@ -280,7 +299,7 @@ while run:
         # Quando várias keys pressionadas, seleciona a 1º
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE] or keys[pygame.K_UP]:
-            if not (runner.jumping):
+            if not (runner.jumping) and not (runner.falling):
                 runner.jumping = True
                 pygame.mixer.Sound.play(file.Jump)
 
@@ -295,7 +314,7 @@ while run:
             runner.LookingRight = False
 
         if keys[pygame.K_DOWN]:
-            if not (runner.ducking):
+            if not (runner.ducking) and not(runner.falling):
                 runner.ducking = True
                 pygame.mixer.Sound.play(file.Duck)
 
