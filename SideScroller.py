@@ -10,6 +10,25 @@ import datetime
 Screen_Width, Screen_Height = pyautogui.size()
 pygame.init()
 
+
+def create_anim(image, scale, number_images):
+    animation = []
+    for i in range(number_images):
+        animation.append(pygame.image.load(image[i]))
+        animation[i] = pygame.transform.scale(animation[i], (Screen_Width / scale[0], Screen_Width / scale[1]))
+        animation[i] = pygame.transform.flip(animation[i], True, False)
+
+    return animation
+
+
+def flip_anim(image, number_images):
+    animation = []
+    for i in range(number_images):
+        animation.append(image[i])
+        animation[i] = pygame.transform.flip(animation[i], True, False)
+    return animation
+
+
 font = pygame.font.Font('font.TTF', 64)
 
 Loser_Text = font.render('Loser', True, (255, 255, 255), (0, 0, 0))
@@ -54,6 +73,29 @@ rectcoin2 = coin2.get_rect()
 coin2_blockX = 0
 coin2_blockX2 = coin2.get_width()
 
+run_string = ["Sprite/Mario/WalkingArmsUp.png", "Sprite/Mario/StandingArmsUp.png"]
+jump_string = ["Sprite/Mario/JumpVictorius.png", "Sprite/Mario/JumpVictorius.png",
+                   "Sprite/Mario/JumpVictorius.png", "Sprite/Mario/JumpVictorius.png",
+                   "Sprite/Mario/JumpingArmsUp.png", "Sprite/Mario/JumpingArmsUp.png",
+                   "Sprite/Mario/JumpingArmsUp.png", "Sprite/Mario/JumpingArmsUp.png"]
+duck_string = ["Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png",
+                   "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png",
+                   "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png",
+                   "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png"]
+fall_string = ["Sprite/Mario/Scared.png"]
+scale = [12, 12]
+
+run_anim = create_anim(run_string, scale, 2)
+jump = create_anim(jump_string, scale, 8)
+duck = create_anim(duck_string, scale, 11)
+fall = create_anim(fall_string, scale, 1)
+
+flip_run_anim = flip_anim(run_anim, 2)
+flip_jump = flip_anim(jump, 8)
+flip_duck = flip_anim(duck, 11)
+flip_fall = flip_anim(fall, 1)
+
+
 
 class player(object):
     def __init__(self, x, y, width, height, LookingRight):
@@ -70,16 +112,6 @@ class player(object):
         self.duckUp = False
         self.LookingRight = LookingRight
 
-    def create_anim(self, image, scale, number_images, LookingRight):
-        animation = []
-        for i in range(number_images):
-            animation.append(pygame.image.load(image[i]))
-            if LookingRight:
-                animation[i] = pygame.transform.flip(animation[i], True, False)
-            animation[i] = pygame.transform.scale(animation[i], (Screen_Width / scale[0], Screen_Width / scale[1]))
-
-        return animation
-
     jumpList = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4,
                 4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1,
                 -1, -1, -1, -1, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3,
@@ -87,28 +119,19 @@ class player(object):
 
     def draw(self, window, y):
 
-        run_string = ["Sprite/Mario/WalkingArmsUp.png", "Sprite/Mario/StandingArmsUp.png"]
-        jump_string = ["Sprite/Mario/JumpVictorius.png", "Sprite/Mario/JumpVictorius.png",
-                       "Sprite/Mario/JumpVictorius.png", "Sprite/Mario/JumpVictorius.png",
-                       "Sprite/Mario/JumpingArmsUp.png", "Sprite/Mario/JumpingArmsUp.png",
-                       "Sprite/Mario/JumpingArmsUp.png", "Sprite/Mario/JumpingArmsUp.png"]
-        duck_string = ["Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png",
-                       "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png",
-                       "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png",
-                       "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png"]
-        fall_string = ["Sprite/Mario/Scared.png"]
-        scale = [12, 12]
-        x_offset = 0
-
-        self.run = self.create_anim(run_string, scale, 2, self.LookingRight)
-        self.jump = self.create_anim(jump_string, scale, 8, self.LookingRight)
-        self.duck = self.create_anim(duck_string, scale, 11, self.LookingRight)
-        self.fall = self.create_anim(fall_string, scale, 1, self.LookingRight)
-
         if self.LookingRight:
+            self.run = run_anim
+            self.jump = jump
+            self.duck = duck
+            self.fall = fall
             x_offset = 50
         else:
             x_offset = 30
+            print("Entrei")
+            self.run = flip_run_anim
+            self.jump = flip_jump
+            self.duck = flip_duck
+            self.fall = flip_fall
 
         count = random.randint(0, 1)
         if self.jumping:
@@ -199,9 +222,6 @@ class Obstacle(Enemie):
         window.blit(self.img, (self.x, self.y))
         pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
 
-def redrawWindow(Movement_x, Loser_Text, LoserRect):
-
-# to random sprites
 def random_sprites():
     # generate random number to make sprites appear
     n = random.randint(0, 3)
@@ -214,8 +234,10 @@ def redrawWindow(Movement_x, Loser_Text, LoserRect):
     # j = 0
     # n = random.randint(1, 3)
     # m = n
+    Score = font.render("Score: " + str(score), 1, (0, 0, 0))
     window.blit(BackGround, (BackGroundX, 0))  # draws our first BackGround image
     window.blit(BackGround, (BackGroundX2, 0))  # draws the second BackGround image
+    window.blit(Score, (Screen_Width/2.5, 250))
     for x in objects:
         x.draw(window)
     """
@@ -247,7 +269,9 @@ objects = []
 
 speed = 30
 run = True
+
 while run:
+    score = speed // 5 - 6
     # n = random.randint(1, 3)
     # totaltime = round((time.time() - startime), 2)
 
@@ -334,6 +358,7 @@ while run:
         if keys[pygame.K_RIGHT]:
             runner.x += Screen_Width / 60
             runner.LookingRight = True
+            #runner.change_anim()
         # Mover Para a Esquerda
         if keys[pygame.K_LEFT]:
             runner.x -= Screen_Width / 60
