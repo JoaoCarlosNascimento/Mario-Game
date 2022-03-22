@@ -27,11 +27,11 @@ BackGround = pygame.transform.scale(BackGround, (Screen_Width, Screen_Height))
 
 
 #Load Imagens Lives
-Hearts_3 = pygame.image.load("Sprite/Lives/Hearts_3.png").convert_alpha()
+Hearts_3 = pygame.image.load("Sprite/Lives/noback.png").convert_alpha()
 Hearts_3 = pygame.transform.scale(Hearts_3, (Screen_Width / 6, Screen_Height / 10))
-Hearts_2 = pygame.image.load("Sprite/Lives/Hearts_2.png").convert_alpha()
+Hearts_2 = pygame.image.load("Sprite/Lives/noback1.png").convert_alpha()
 Hearts_2 = pygame.transform.scale(Hearts_2, (Screen_Width / 6, Screen_Height / 10))
-Hearts_1 = pygame.image.load("Sprite/Lives/Hearts_1.png").convert_alpha()
+Hearts_1 = pygame.image.load("Sprite/Lives/noback2.png").convert_alpha()
 Hearts_1 = pygame.transform.scale(Hearts_1, (Screen_Width / 6, Screen_Height / 10))
 
 #Load das Imagens Bonus
