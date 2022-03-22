@@ -1,13 +1,9 @@
 import pygame
-from pygame import *
 from pygame.locals import *
 import sys
 import random
-import math
-import pyautogui
 import time
 import load_files as file
-import datetime
 
 
 Loser_Text = file.font.render('Loser', True, (255, 255, 255), (0, 0, 0))
@@ -20,24 +16,8 @@ window = pygame.display.set_mode((file.Screen_Width, file.Screen_Height))
 pygame.display.set_caption("Test")
 
 # Mover BackGround
-BackGround = pygame.image.load("Sprite/BackGround/BackGround.jpg").convert()
-BackGround = pygame.transform.scale(BackGround, (file.Screen_Width, file.Screen_Height))
 BackGroundX = 0
-BackGroundX2 = BackGround.get_width()
-
-# Sons
-mixer.init()
-Jump = mixer.Sound("Sounds/Jump (Small Mario).wav")
-Coin = mixer.Sound("Sounds/Coin.wav")
-Game_Over = mixer.Sound("Sounds/Game Over.wav")
-Bump = mixer.Sound("Sounds/Bump.mp3")
-Duck = mixer.Sound("Sounds/Fire Works.wav")
-Mario_Dies = mixer.Sound("Sounds/Mario Dies.wav")
-
-# BackGround Music
-mixer.music.load("Sounds/BackGroundMusic.wav")
-mixer.music.play(-1)
-mixer.music.set_volume(0.05)
+BackGroundX2 = file.BackGround.get_width()
 
 
 def create_anim(image, scale, number_images):
@@ -84,11 +64,6 @@ class player(object):
         self.duckUp = False
         self.LookingRight = LookingRight
 
-    jumpList = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4,
-                4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1,
-                -1, -1, -1, -1, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3,
-                -3, -3, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4]
-
     def draw(self, window, y):
 
         if self.LookingRight:
@@ -106,7 +81,7 @@ class player(object):
 
         count = random.randint(0, 1)
         if self.jumping:
-            self.y -= self.jumpList[self.jumpCount] * 1.2
+            self.y -= file.jumpList[self.jumpCount] * 1.2
             window.blit(self.jump[self.jumpCount // 18], (self.x, self.y))
             # Hitbox do Mario a Saltar
             self.hitbox = (self.x + x_offset, self.y + 30, self.width - 24, self.height + 20)
@@ -123,7 +98,7 @@ class player(object):
                 self.y -= 19
                 self.ducking = False
                 self.duckUp = True
-            elif self.duckCount > 20 and self.duckCount < 80:
+            elif 20 < self.duckCount < 80:
                 # Hitbox do Mario a Fazer Duck
                 self.hitbox = (self.x + x_offset, self.y + 60, self.width - 8, self.height - 35)
             if self.duckCount >= 100:
@@ -154,32 +129,6 @@ class player(object):
             pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
 
 
-def pick_enemie(x):
-    return{
-        0 : file.FatTurtle,
-        1 : file.Gumba,
-        2 : file.LeftBullet,
-        3 : file.RedGhost,
-        4 : file.RedTurtleSpikes,
-        5 : file.Animal,
-        6 : file.BlackFlower,
-        7 : file.FlowerLeftObstacle,
-        8 : file.ScaredRedFish,
-        9 : file.SmallBowser,
-        10 : file.SurprisedFish,
-        11 : file.TurtleGhost,
-        12 : file.TurtleShell,
-        13 : file.TurtleWithSpike,
-    }[x]
-
-def pick_obstacle(x):
-    return{
-        0 : file.FirePipe,
-        1 : file.DarkFirePipe,
-        2 : file.Vine,
-    }[x]
-
-
 # Classe Obstaculo
 class Enemie(object):
     def __init__(self, x, y, width, height, random_pick):
@@ -192,7 +141,7 @@ class Enemie(object):
         self.random_pick = random_pick
 
     def draw(self, window):
-        img = pick_enemie(self.random_pick)
+        img = file.pick_enemie(self.random_pick)
         self.hitbox = (self.x + 5, self.y + 5, self.width - 10, self.height)
         window.blit(img, (self.x, self.y))
         # Desenho da Hitbox
@@ -213,27 +162,26 @@ class Enemie(object):
 
 class Obstacle(Enemie):
     def draw(self, window):
-        img = pick_obstacle(self.random_pick)
+        img = file.pick_obstacle(self.random_pick)
         self.hitbox = (self.x + 10, self.y, self.width, self.height)
         window.blit(img, (self.x, self.y))
         pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
 
-def random_sprites():
-    # generate random number to make sprites appear
-    n = random.randint(0, 3)
-
-    return n
-
 
 def redrawWindow(Movement_x, Loser_Text, LoserRect):
     Score = file.font.render("Score: " + str(score), 1, (0, 0, 0))
-    Lives = file.font.render("Lives: " + str(lives), 1, (0, 0, 0))
+    if lives == 3:
+        Heart_img = file.Hearts_3
+    elif lives == 2:
+        Heart_img = file.Hearts_2
+    elif lives == 1:
+        Heart_img = file.Hearts_1
 
-    window.blit(BackGround, (BackGroundX, 0))  # draws our first BackGround image
-    window.blit(BackGround, (BackGroundX2, 0))  # draws the second BackGround image
+    window.blit(file.BackGround, (BackGroundX, 0))  # draws our first BackGround image
+    window.blit(file.BackGround, (BackGroundX2, 0))  # draws the second BackGround image
 
-    window.blit(Score, (file.Screen_Width/1.3, 50))
-    window.blit(Lives, (50, 50))
+    window.blit(Heart_img, (file.Screen_Width / 40, file.Screen_Height / 30))
+    window.blit(Score, (file.Screen_Width/1.3, file.Screen_Height / 20))
     for x in objects:
         x.draw(window)
 
@@ -252,7 +200,7 @@ pygame.time.set_timer(USEREVENT + 1, 500)
 pygame.time.set_timer(USEREVENT + 2, random.randrange(3000, 5000))
 
 # Declaração dos Objectos
-runner = player(200, file.Screen_Height / 1.3, 100, 95, True)
+runner = player(file.Screen_Width / 10, file.Screen_Height / 1.3, 100, 95, True)
 
 objects = []
 
@@ -272,11 +220,12 @@ while run:
 
             # Mudança Hitbox Para Perder Apenas Uma Vida
             runner.hitbox = (0, 0, 0, 0)
-            pygame.mixer.Sound.play(Bump)
+            pygame.mixer.Sound.play(file.Bump)
             lives -= 1
             # Game Over
             if lives <= 0:
-                pygame.mixer.Sound.play(Mario_Dies)
+                pygame.mixer.Sound.play(file.Mario_Dies)
+                # Colocar Aqui Função GameOver
                 lives = 3
         objectts.x -= 1.4
 
@@ -298,11 +247,11 @@ while run:
     runner.x -= file.Screen_Width / 4000
 
     # 1º BackGround Image starts at (0,0)
-    if BackGroundX < BackGround.get_width() * -1:  # If our BackGround is at the -width then reset its position
-        BackGroundX = BackGround.get_width()
+    if BackGroundX < file.BackGround.get_width() * -1:  # If our BackGround is at the -width then reset its position
+        BackGroundX = file.BackGround.get_width()
 
-    if BackGroundX2 < BackGround.get_width() * -1:
-        BackGroundX2 = BackGround.get_width()
+    if BackGroundX2 < file.BackGround.get_width() * -1:
+        BackGroundX2 = file.BackGround.get_width()
 
     for event in pygame.event.get():  # Loop through a list of events
         if event.type == pygame.QUIT:  # See if the user clicks the red x
@@ -333,7 +282,7 @@ while run:
         if keys[pygame.K_SPACE] or keys[pygame.K_UP]:
             if not (runner.jumping):
                 runner.jumping = True
-                pygame.mixer.Sound.play(Jump)
+                pygame.mixer.Sound.play(file.Jump)
 
         # Mover Para a Direita
         if keys[pygame.K_RIGHT]:
@@ -348,6 +297,6 @@ while run:
         if keys[pygame.K_DOWN]:
             if not (runner.ducking):
                 runner.ducking = True
-                pygame.mixer.Sound.play(Duck)
+                pygame.mixer.Sound.play(file.Duck)
 
         clock.tick(speed)
