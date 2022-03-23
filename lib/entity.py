@@ -1,3 +1,8 @@
+import numpy as np
+from lib.colision import colision
+
+# id_list = []
+
 class entity:
     def __init__(self, name=[]):
         if name == []:
