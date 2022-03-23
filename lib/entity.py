@@ -21,7 +21,7 @@ class entity:
         self.colision_list = []
 
     def update(self, state=0):
-        if self.type == "Player":
+        if self.name == "Player":
             # print('Position: ({pos:.2f})\nSpeed: ({spe:.2f})'.format(pos=self.position,spe=self.velocity))
             print('X Speed: ({speX:.2f}), Y Speed: ({speY:.2f})'.format(speX=self.velocity[0],speY=self.velocity[1]))
             # if state == -13:

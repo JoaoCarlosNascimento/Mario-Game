@@ -40,7 +40,7 @@ class game:
         self.__logic = logic()
         self.__physics = physics()
         self.__entities = []
-        self.__scoreboard = scoreboard()
+        self.__scoreboard = scoreboard((1920,1080))
         self.__map_gen = map_gen()
 
         self.__state = -13
