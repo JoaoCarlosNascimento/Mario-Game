@@ -47,6 +47,8 @@ class game:
 
     def start(self):
         self.__entities.append(entity("Player"))
+        self.__entities.append(entity("Ble1"))
+        self.__entities.append(entity("Ble2"))
 
         self.__loop()
 
@@ -99,16 +101,16 @@ class game:
         command = 0b0000
         if pressed_keys[pygame.K_d]:
             command = command | 0b1000
-            print("Fake Input (D)")
+            # print("Fake Input (D)")
         if pressed_keys[pygame.K_a]:
             command = command | 0b0100
-            print("Fake Input (A)")
+            # print("Fake Input (A)")
         if pressed_keys[pygame.K_w]:
-            command = command | 0b0010
-            print("Fake Input (W)")
-        if pressed_keys[pygame.K_s]:
             command = command | 0b0001
-            print("Fake Input (S)")
+            # print("Fake Input (W)")
+        if pressed_keys[pygame.K_s]:
+            command = command | 0b0010
+            # print("Fake Input (S)")
 
         return command
 
