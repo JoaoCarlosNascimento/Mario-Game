@@ -64,8 +64,10 @@ class controller:
 
     def get_commands(self, state=0, img=[], Sampling=1):
         if self.__frame_count-1 <= 0:
-            if state== -9 or state == -8:
-                return self.__face_detector(img), self.__face_detector(img, key_point=4), self.__face_detector(img, key_point=5)
+            if state == "save score?":
+                return self.__hand_detector(img)[0]
+            if state== "prepare pic" or state == "pic":
+                return [self.__face_detector(img), self.__face_detector(img, key_point=4), self.__face_detector(img, key_point=5), self.__hand_detector(img)[0]]
             if state == -11:
                 return self.__hand_detector(img)
             elif state == -12:

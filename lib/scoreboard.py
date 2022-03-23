@@ -8,14 +8,33 @@ black = (0, 0, 0)
 
 class scoreboard:
     # TODO: Enquadrar rosto corretamente e tirar foto
-    def __init__(self):
-        self.load()
-        self.screensize = [1280, 720]
+    def __init__(self, window_size):
+        self.screensize = window_size
 
         self.connection = sqlite3.connect("./history/leaderboards.db")
         self.cursor = self.connection.cursor()
 
-    def snapshot(self, window, nose_position, ear_position_1, ear_position_2, picture = 0, score = 9999):
+    def snapshot(self, window, commands, score = 9999):
+        face = self.display(window, commands)
+        aux = []
+        for row in self.cursor.execute('SELECT * FROM leaderboard ORDER BY id + 0 DESC'):
+            aux.append([row[0], row[1]])
+        if aux:
+            index = int(aux[0][0]) + 1
+        else:
+            index = 1
+        
+        pygame.image.save(face, "./test/"+str(index)+".png")
+
+        self.cursor.execute("INSERT INTO leaderboard (id, score) VALUES ('"+ str(index) + "', '"+str(score)+"')")
+        
+        self.connection.commit()
+        return index
+
+    def display(self, window, commands):
+        nose_position =  commands[0][0]
+        ear_position_1 = commands[1][0]
+        ear_position_2 = commands[2][0]
         if nose_position[0] < 0 or nose_position[1] < 0:
             return
         nose = []
@@ -32,27 +51,7 @@ class scoreboard:
         face.blit(window, (0,0), area=rect)
         
         pygame.draw.rect(window, color=(120, 0, 255), rect=rect, width=1)
-        if picture==1:
-            aux = []
-            for row in self.cursor.execute('SELECT * FROM leaderboard ORDER BY id DESC'):
-                aux.append([row[0], row[1]])
-            if aux:
-                index = int(aux[0][0]) + 1
-            else:
-                index = 1
-            
-            pygame.image.save(face, "./test/"+str(index)+".png")
-
-            self.cursor.execute("INSERT INTO leaderboard (id, score) VALUES ('"+ str(index) + "', '"+str(score)+"')")
-            
-            self.connection.commit()
-            return index
-
-    def update(self):
-        pass
-
-    def load(self):
-        pass
+        return face
 
     def show(self, window):
         txt = "HIGHSCORES:\n"
@@ -78,7 +77,7 @@ class scoreboard:
         score_screen = pygame.Surface((leaderboard_screen.get_width(), leaderboard_screen.get_height() - fontsize - 30))
         i = 0
         # self.cursor.execute("ORDER BY score DESC")
-        for row in self.cursor.execute('SELECT * FROM leaderboard ORDER BY score DESC'):
+        for row in self.cursor.execute('SELECT * FROM leaderboard ORDER BY score + 0 DESC'):
             if entries:
                 entries.append(leaderboardEntry(row[0], row[1], score_screen, entries[-1]))
             else:
@@ -97,7 +96,7 @@ class scoreboard:
         leaderboard_screen.blit(vertical_line, (leaderboard_screen.get_width()/2, fontsize+20))
 
         window.blit(leaderboard_screen, (round(0.025*self.screensize[0]),round(0.025*self.screensize[1])))
-
+    
 
 class leaderboardEntry:
     def __init__(self, picture_id, score, window, parent = None):

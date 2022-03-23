@@ -15,8 +15,8 @@ from lib.camera import camera
 ## States
 #
 # Utilizar valores negativos para os cenarios de testes
-#
-# -9/-8 - Teste de foto
+# 
+# 
 # -1xx  - Testes de inputs
 # -11   - Teste de inputs de mãos
 # -12   - Teste de inputs de face
@@ -44,11 +44,11 @@ class game:
         self.__logic = logic()
         self.__physics = physics()
         self.__entities = []
-        self.__scoreboard = scoreboard()
+        self.__scoreboard = scoreboard(window_size=(image.shape[1], image.shape[0]))
         self.__map_gen = map_gen()
 
-        self.__state = -13
-
+        self.__state = "game over"
+        self.feedback = []
     def start(self):
         self.__entities.append(entity("Player"))
 
@@ -76,10 +76,10 @@ class game:
             self.__physics.update(state=self.__state, entities=self.__entities)
 
             # Aplica logica
-            self.__state = self.__logic.update(state=self.__state)
+            self.__state = self.__logic.update(state=self.__state, feedback = self.feedback)
 
             # Desenha cena
-            self.__render.draw(state=self.__state, img=image, entities=self.__entities, command=command)
+            self.feedback = self.__render.draw(state=self.__state, img=image, entities=self.__entities, command=command)
             
             # Controle de Ticks
             self.__clock.tick(self.__fps)
