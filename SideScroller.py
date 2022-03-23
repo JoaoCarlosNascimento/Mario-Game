@@ -149,7 +149,38 @@ class player(object):
             pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
 
 
-# Classe Obstaculo
+# Classe Bonus
+class Bonus(object):
+    def __init__(self, x, y, width, height, random_pick):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.hitbox = (x, y, width, height)
+        self.count = 0
+        self.random_pick = random_pick
+        self.score = 0
+
+    def draw(self, window):
+        img, self.y, self.hitbox, self.score = file.pick_bonus(self.random_pick, self.x, self.y, self.width, self.height)
+        window.blit(img, (self.x, self.y))
+        # Desenho da Hitbox
+        pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
+
+    def collide(self, rect):
+        # 0 - x
+        # 1 - y
+        # 2 - width
+        # 3 - height
+        # Verifica Colisão em Coordenada x
+        if rect[0] + rect[2] > self.hitbox[0] and rect[0] < self.hitbox[0] + self.hitbox[2]:
+            # Verifica Colisão em Coordenada y
+            if rect[1] + rect[3] > self.hitbox[1]:
+                return True
+        return False
+
+
+# Class Enemie
 class Enemie(object):
     def __init__(self, x, y, width, height, random_pick):
         self.x = x
@@ -161,8 +192,7 @@ class Enemie(object):
         self.random_pick = random_pick
 
     def draw(self, window):
-        img = file.pick_enemie(self.random_pick)
-        self.hitbox = (self.x + 5, self.y + 5, self.width - 10, self.height)
+        img, self.y, self.hitbox = file.pick_enemie(self.random_pick, self.x, self.y, self.width, self.height)
         window.blit(img, (self.x, self.y))
         # Desenho da Hitbox
         pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
@@ -182,8 +212,8 @@ class Enemie(object):
 
 class Obstacle(Enemie):
     def draw(self, window):
-        img = file.pick_obstacle(self.random_pick)
-        self.hitbox = (self.x + 10, self.y, self.width, self.height)
+        img, self.y, self.hitbox = file.pick_obstacle(self.random_pick, self.x, self.y, self.width, self.height)
+        #self.hitbox = (self.x + 10, self.y, self.width, self.height)
         window.blit(img, (self.x, self.y))
         pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
 
@@ -205,6 +235,9 @@ def redrawWindow(Movement_x, Loser_Text, LoserRect):
     for x in objects:
         x.draw(window)
 
+    for y in bonus:
+        y.draw(window)
+
     runner.draw(window, 95)  # NEW
 
     if Movement_x <= -70:
@@ -216,22 +249,28 @@ def redrawWindow(Movement_x, Loser_Text, LoserRect):
 # Acelerar Segundo Eventos do Jogo
 pygame.time.set_timer(USEREVENT + 1, 500)
 
-# Evento que Gera Objectos entre 3-5 segundos
+
+# Evento que Gera Enemies Terrestres entre 4 segundos
 pygame.time.set_timer(USEREVENT + 2, random.randrange(3000, 5000))
+
+# Evento que Gera Enemies Aéreos entre 3 segundos
+pygame.time.set_timer(USEREVENT + 3, random.randrange(7000, 10000))
 
 # Declaração dos Objectos
 runner = player(file.Screen_Width / 10, file.Screen_Height / 1.3, 100, 95, True)
 
 objects = []
+bonus = []
 
 speed = 30
 run = True
 lives = 3
 flag = False
+bonus_value = 0
 while run:
-    score = speed // 5 - 6
-    redrawWindow(runner.x, Loser_Text, LoserRect)
 
+    score = speed // 5 - 6 + bonus_value
+    redrawWindow(runner.x, Loser_Text, LoserRect)
     # Move Obstacle/Enemie
     for objectts in objects:
         if objectts.collide(runner.hitbox):
@@ -245,6 +284,17 @@ while run:
                 # Colocar Aqui Função GameOver
                 lives = 3
         objectts.x -= 1.4
+
+    # Move Bonus
+    for bonuss in bonus:
+        if bonuss.collide(runner.hitbox):
+            bonus_value += bonuss.score
+            bonus.pop(bonus.index(bonuss))
+            pygame.mixer.Sound.play(file.Coin_Sound)
+            # Quando Não Aparece no Ecrã
+        if bonuss.x < -bonuss.width * -1:
+            bonus.pop(bonus.index(bonuss))
+        bonuss.x -= 1.4
 
     if runner.falling:
         anim_end_timer = time.time()
@@ -287,14 +337,25 @@ while run:
             speed += 1
 
         if event.type == USEREVENT + 2:
-            # Escolhe Obstacle/Enemie que Aparece
-            pick_object = random.randrange(0, 2)
+            # Escolhe Obstacle/Enemie Terrestres que Aparecem
+            pick_object = 0 #random.randrange(0, 2)
             if pick_object == 0:
-                random_pick = random.randrange(0, 13)
-                objects.append(Enemie(file.Screen_Width, file.Screen_Height / 1.27, 100, 130, random_pick))
+                random_pick = random.randrange(0, 9)
+                bonus.append(Bonus(file.Screen_Width, file.Screen_Height / 1.27, 100, 130, random_pick))
+                #objects.append(Enemie(file.Screen_Width, file.Screen_Height / 1.27, 100, 130, random_pick))
             else:
                 random_pick = random.randrange(0, 2)
-                objects.append(Obstacle(file.Screen_Width, file.Screen_Height / 1.27, 70, 130, random_pick))
+                objects.append(Obstacle(file.Screen_Width, file.Screen_Height / 1.27, 70, 130, 2))
+
+        if event.type == USEREVENT + 3:
+            # Escolhe Bonus/Enemies Aéreos que Aparecem
+            pick_object = 0 #random.randrange(0, 2)
+            if pick_object == 0:
+                random_pick = random.randrange(10, 13)
+                objects.append(Enemie(file.Screen_Width, file.Screen_Height / 1.27, 100, 130, random_pick))
+            #else:
+                #random_pick = random.randrange(0, 2)
+                #objects.append(Obstacle(file.Screen_Width, file.Screen_Height / 1.27, 70, 130, 2))
 
         # Quando várias keys pressionadas, seleciona a 1º
         keys = pygame.key.get_pressed()
