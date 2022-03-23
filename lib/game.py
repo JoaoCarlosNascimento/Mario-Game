@@ -47,7 +47,7 @@ class game:
         self.__scoreboard = scoreboard(window_size=(image.shape[1], image.shape[0]))
         self.__map_gen = map_gen()
 
-        self.__state = "game over"
+        self.__state = "test"
         self.feedback = []
     def start(self):
         self.__entities.append(entity("Player"))
