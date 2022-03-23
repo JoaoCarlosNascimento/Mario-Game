@@ -1,5 +1,5 @@
-from lib.game import game
+import game
 
-myGame = game()
+myGame = game.game()
 
 myGame.start()
