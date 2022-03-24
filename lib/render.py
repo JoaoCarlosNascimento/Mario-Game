@@ -5,6 +5,7 @@ import cv2
 from lib.entity import entity
 from lib.text import TextBox, GameOver, saveScore
 from lib.scoreboard import scoreboard
+import load_files as file
 import time
 
 white = (255, 255, 255)
@@ -136,3 +137,31 @@ class render:
         HUD.blit(coin, (HUD.get_width() - coin.get_width(), 10))
         
         window.blit(HUD, (0,0))
+
+    def redrawWindow(self, window, Movement_x, Loser_Text, LoserRect, BackGroundX, BackGroundX2, objects, bonus, runner, score, lives):
+        # Comentar Código Melhor
+        Score = file.font.render("Score: " + str(score), 1, (0, 0, 0))
+        if lives == 3:
+            Heart_img = file.Hearts_3
+        elif lives == 2:
+            Heart_img = file.Hearts_2
+        elif lives == 1:
+            Heart_img = file.Hearts_1
+
+        window.blit(file.BackGround, (BackGroundX, 0))  # draws our first BackGround image
+        window.blit(file.BackGround, (BackGroundX2, 0))  # draws the second BackGround image
+
+        window.blit(Heart_img, (file.Screen_Width / 40, file.Screen_Height / 30))
+        window.blit(Score, (file.Screen_Width / 1.3, file.Screen_Height / 20))
+        for x in objects:
+            x.draw(window)
+
+        for y in bonus:
+            y.draw(window)
+
+        runner.draw(window, 95)  # NEW
+
+        if Movement_x <= -70:
+            window.blit(Loser_Text, LoserRect)
+
+        pygame.display.update()  # updates the screen

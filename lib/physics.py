@@ -94,5 +94,5 @@ class physics:
                     filt_entity_list.append(ent)
             
 
-            print(filt_entity_list)
+            #print(filt_entity_list)
         pass

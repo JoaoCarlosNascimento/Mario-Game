@@ -53,6 +53,7 @@ class game:
         self.__loop()
 
     def __loop(self):
+
         while(self.__loop_cond):
             # Detecta Inputs do teclado
             fake_command = self.__keyboard_event()
@@ -72,6 +73,7 @@ class game:
             # Desenha cena
             self.__render.draw(state=self.__state, img=image,
                                entities=self.__entities, landmarks=landmarks,debug=debug)
+
             
             # Controle de Ticks
             self.__clock.tick(self.__fps)

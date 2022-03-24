@@ -68,6 +68,8 @@ MoonBonus = pygame.image.load("Sprite/Bonus/MoonBonus.png").convert_alpha()
 
 # Bónus Terrestres
 RedMushroom = pygame.image.load("Sprite/Bonus/RedMushroom.png").convert_alpha()
+RedMushroom = pygame.transform.scale(RedMushroom, (Screen_Width / 25, Screen_Height / 15))
+
 ExtendedMushroom = pygame.image.load("Sprite/Bonus/ExtendedMushroom.png").convert_alpha()
 BlueMushroom = pygame.image.load("Sprite/Bonus/BlueMushroom.png").convert_alpha()
 PurpleMushroom = pygame.image.load("Sprite/Bonus/PurpleMushroom.png").convert_alpha()
@@ -75,7 +77,9 @@ PurpleMushroom = pygame.image.load("Sprite/Bonus/PurpleMushroom.png").convert_al
 YellowFlowerBonus = pygame.image.load("Sprite/Bonus/YellowFlowerBonus.png").convert_alpha()
 Red_YellowFlowerBonus = pygame.image.load("Sprite/Bonus/Red_YellowFlowerBonus.png").convert_alpha()
 BlueFlowerBonus = pygame.image.load("Sprite/Bonus/BlueFowerBonus.png").convert_alpha()
+
 HappyBonusPlant = pygame.image.load("Sprite/Bonus/HappyBonusPlant.png").convert_alpha()
+HappyBonusPlant = pygame.transform.scale(HappyBonusPlant, (Screen_Width / 25, Screen_Height / 15))
 
 # Load das Imagens Enemies
 FatTurtle = pygame.image.load("Sprite/Enemies/FatTurtle.png")
@@ -149,8 +153,7 @@ def pick_enemie(pick, x, y, width, height):
     if pick == 0:
         Enemie = FatTurtle
         y = Screen_Height / 1.2
-        hitbox = (
-        x - Screen_Width / 200, y + Screen_Height / 200, width - Screen_Width / 150, height - Screen_Height / 20)
+        hitbox = (x - Screen_Width / 200, y + Screen_Height / 200, width - Screen_Width / 150, height - Screen_Height / 20)
 
     if pick == 1:
         Enemie = Gumba
@@ -195,8 +198,7 @@ def pick_enemie(pick, x, y, width, height):
     if pick == 9:
         Enemie = TurtleWithSpike
         y = Screen_Height / 1.2
-        hitbox = (
-        x + Screen_Width / 200, y + Screen_Height / 200, width - Screen_Width / 250, height - Screen_Height / 20)
+        hitbox = (x + Screen_Width / 200, y + Screen_Height / 200, width - Screen_Width / 250, height - Screen_Height / 20)
 
     if pick == 10:
         Enemie = LeftBullet
@@ -346,6 +348,54 @@ def pick_bonus(pick, x, y, width, height):
         Bonus = MoonBonus
         score = 200
         y = Screen_Height / 1.23
+        hitbox = (x, y + Screen_Height / 200, width - Screen_Width / 80, height - Screen_Height / 18)
+
+    if pick == 18:
+        Bonus = RedMushroom
+        score = 250
+        y = Screen_Height / 1.18
+        hitbox = (x, y + Screen_Height / 200, width - Screen_Width / 80, height - Screen_Height / 18)
+
+    if pick == 19:
+        Bonus = ExtendedMushroom
+        score = 300
+        y = Screen_Height / 1.18
+        hitbox = (x, y + Screen_Height / 200, width + Screen_Width / 400, height - Screen_Height / 18)
+
+    if pick == 20:
+        Bonus = BlueMushroom
+        score = 350
+        y = Screen_Height / 1.18
+        hitbox = (x, y + Screen_Height / 200, width - Screen_Width / 80, height - Screen_Height / 18)
+
+    if pick == 21:
+        Bonus = PurpleMushroom
+        score = 400
+        y = Screen_Height / 1.18
+        hitbox = (x, y + Screen_Height / 200, width - Screen_Width / 80, height - Screen_Height / 18)
+
+    if pick == 22:
+        Bonus = YellowFlowerBonus
+        score = 450
+        y = Screen_Height / 1.18
+        hitbox = (x, y + Screen_Height / 200, width - Screen_Width / 80, height - Screen_Height / 18)
+
+    if pick == 23:
+        Bonus = Red_YellowFlowerBonus
+        score = 500
+        y = Screen_Height / 1.18
+        hitbox = (x, y + Screen_Height / 200, width - Screen_Width / 80, height - Screen_Height / 18)
+
+    if pick == 24:
+        Bonus = BlueFlowerBonus
+        score = 550
+        y = Screen_Height / 1.18
+        hitbox = (x, y + Screen_Height / 200, width - Screen_Width / 80, height - Screen_Height / 18)
+
+    if pick == 25:
+        Bonus = HappyBonusPlant
+        score = 600
+        y = Screen_Height / 1.18
         hitbox = (x, y + Screen_Height / 200, width - Screen_Width / 80, height - Screen_Height / 18)
 
 

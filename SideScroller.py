@@ -213,12 +213,12 @@ class Enemie(object):
 class Obstacle(Enemie):
     def draw(self, window):
         img, self.y, self.hitbox = file.pick_obstacle(self.random_pick, self.x, self.y, self.width, self.height)
-        #self.hitbox = (self.x + 10, self.y, self.width, self.height)
         window.blit(img, (self.x, self.y))
         pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
 
 
 def redrawWindow(Movement_x, Loser_Text, LoserRect):
+    #Comentar Código Melhor
     Score = file.font.render("Score: " + str(score), 1, (0, 0, 0))
     if lives == 3:
         Heart_img = file.Hearts_3
@@ -254,7 +254,7 @@ pygame.time.set_timer(USEREVENT + 1, 500)
 pygame.time.set_timer(USEREVENT + 2, random.randrange(3000, 5000))
 
 # Evento que Gera Enemies Aéreos entre 3 segundos
-pygame.time.set_timer(USEREVENT + 3, random.randrange(7000, 10000))
+pygame.time.set_timer(USEREVENT + 3, random.randrange(4000, 6000))
 
 # Declaração dos Objectos
 runner = player(file.Screen_Width / 10, file.Screen_Height / 1.3, 100, 95, True)
@@ -337,25 +337,29 @@ while run:
             speed += 1
 
         if event.type == USEREVENT + 2:
-            # Escolhe Obstacle/Enemie Terrestres que Aparecem
-            pick_object = 0 #random.randrange(0, 2)
+            # Escolhe Obstacle/Bónus Terrestres que Aparecem
+            pick_object = random.randrange(0, 2)
             if pick_object == 0:
-                random_pick = random.randrange(0, 9)
+                random_pick = random.randrange(18, 25)
                 bonus.append(Bonus(file.Screen_Width, file.Screen_Height / 1.27, 100, 130, random_pick))
-                #objects.append(Enemie(file.Screen_Width, file.Screen_Height / 1.27, 100, 130, random_pick))
-            else:
+
+            if pick_object == 1:
+                random_pick = random.randrange(0, 9)
+                objects.append(Enemie(file.Screen_Width, file.Screen_Height / 1.27, 100, 130, random_pick))
+
+            if pick_object == 2:
                 random_pick = random.randrange(0, 2)
                 objects.append(Obstacle(file.Screen_Width, file.Screen_Height / 1.27, 70, 130, 2))
 
         if event.type == USEREVENT + 3:
-            # Escolhe Bonus/Enemies Aéreos que Aparecem
-            pick_object = 0 #random.randrange(0, 2)
+            # Escolhe Enemies/Bonus Aéreos que Aparecem
+            pick_object = random.randrange(0, 1)
             if pick_object == 0:
                 random_pick = random.randrange(10, 13)
                 objects.append(Enemie(file.Screen_Width, file.Screen_Height / 1.27, 100, 130, random_pick))
-            #else:
-                #random_pick = random.randrange(0, 2)
-                #objects.append(Obstacle(file.Screen_Width, file.Screen_Height / 1.27, 70, 130, 2))
+            else:
+                random_pick = random.randrange(0, 17)
+                bonus.append(Bonus(file.Screen_Width, file.Screen_Height / 1.27, 100, 130, random_pick))
 
         # Quando várias keys pressionadas, seleciona a 1º
         keys = pygame.key.get_pressed()
