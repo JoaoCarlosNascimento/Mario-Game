@@ -2,6 +2,9 @@
 # from turtle import position
 from lib.colision import colision
 import numpy as np
+import pygame
+import load_files as file
+import time
 
 
 class physics:
@@ -96,3 +99,68 @@ class physics:
 
             #print(filt_entity_list)
         pass
+
+    def keyboards_input(self, character):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE] or keys[pygame.K_UP]:
+            if not character.jumping and not character.falling:
+                character.jumping = True
+                pygame.mixer.Sound.play(file.Jump)
+
+        # Mover Para a Direita
+        if keys[pygame.K_RIGHT]:
+            character.x += file.Screen_Width / 60
+            character.LookingRight = True
+
+        # Mover Para a Esquerda
+        if keys[pygame.K_LEFT]:
+            character.x -= file.Screen_Width / 60
+            character.LookingRight = False
+
+        if keys[pygame.K_DOWN]:
+            if not character.ducking and not character.falling:
+                character.ducking = True
+                pygame.mixer.Sound.play(file.Duck)
+
+    def verify_collision(self, bonus_val, enemies, character, health, plus, start_timer):
+        # Move Obstacle/Enemie
+        for x in enemies:
+            if x.collide(character.hitbox):
+                start_timer = time.time()
+                pygame.mixer.Sound.play(file.Bump)
+                health -= 1
+                # Game Over
+                if health <= 0:
+                    pygame.mixer.Sound.play(file.Mario_Dies)
+                    # Colocar Aqui Função GameOver
+                    health = 3
+                character.falling = True
+            x.x -= 1.4
+            # Quando Não Aparece no Ecrã
+            if x.x < -x.width * -1:
+                enemies.pop(enemies.index(x))
+        # Move Bonus
+        for y in plus:
+            if y.collide(character.hitbox):
+                bonus_val += y.score
+                plus.pop(plus.index(y))
+                pygame.mixer.Sound.play(file.Coin_Sound)
+                # Quando Não Aparece no Ecrã
+            if y.x < -y.width * -1:
+                plus.pop(plus.index(y))
+            y.x -= 1.4
+
+        return start_timer, bonus_val, health
+
+    def detectCollision(self,character, start_timer):
+        if character.falling:
+            end_timer = time.time()
+
+            # Duração da Animação Hitted (Quando Colide Com Inimigo/Obstáculo)
+            if end_timer - start_timer > 0.8:
+                character.falling = False
+            else:
+                character.hitbox = (0, 0, 0, 0)
+
+        # Movimentação Default Do Runner
+        character.x -= file.Screen_Width / 4000

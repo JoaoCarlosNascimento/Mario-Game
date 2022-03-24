@@ -10,8 +10,10 @@ import time
 
 white = (255, 255, 255)
 black = (0, 0, 0)
+
+
 class render:
-    def __init__(self,window_size=(200,100)):
+    def __init__(self, window_size=(200,100)):
         self.__window = pygame.display.set_mode(window_size)
         # self.currenttime = int(round(time.time() * 1000))
         self.scoreboard = scoreboard(window_size)
@@ -24,7 +26,6 @@ class render:
 
 
     def draw(self, state=0, img=[], entities=[], command=[], landmarks=[],debug=""):
-
         for entity in entities:
             pass
         if state == "game over":
@@ -138,8 +139,9 @@ class render:
         
         window.blit(HUD, (0,0))
 
-    def redrawWindow(self, window, Movement_x, Loser_Text, LoserRect, BackGroundX, BackGroundX2, objects, bonus, runner, score, lives):
-        # Comentar Código Melhor
+    # Função Utilizada Durante o Jogo Para Desenhar HUD(Score e Vidas), Inimigos, Bónus, Mario e Obstáculos
+    def redrawWindow(self,Movement_x, objects, bonus, runner, score, lives):
+        # Define Score e Imagens Hearts
         Score = file.font.render("Score: " + str(score), 1, (0, 0, 0))
         if lives == 3:
             Heart_img = file.Hearts_3
@@ -148,20 +150,36 @@ class render:
         elif lives == 1:
             Heart_img = file.Hearts_1
 
-        window.blit(file.BackGround, (BackGroundX, 0))  # draws our first BackGround image
-        window.blit(file.BackGround, (BackGroundX2, 0))  # draws the second BackGround image
+        file.window.blit(file.BackGround, (file.BackGroundX, 0))  # draws our first BackGround image
+        file.window.blit(file.BackGround, (file.BackGroundX2, 0))  # draws the second BackGround image
 
-        window.blit(Heart_img, (file.Screen_Width / 40, file.Screen_Height / 30))
-        window.blit(Score, (file.Screen_Width / 1.3, file.Screen_Height / 20))
+        file.window.blit(Heart_img, (file.Screen_Width / 40, file.Screen_Height / 30))
+        file.window.blit(Score, (file.Screen_Width / 1.3, file.Screen_Height / 20))
+
+        # Objectos = Lista que Contém Inimigos/Obstáculos
         for x in objects:
-            x.draw(window)
+            x.draw(file.window)
 
+        # Bonus = Lista que Contém Bónus
         for y in bonus:
-            y.draw(window)
+            y.draw(file.window)
 
-        runner.draw(window, 95)  # NEW
+        runner.draw(file.window, 95)  # NEW
 
+        # Condição que Verifica se Mario Saiu Do Ecrã
         if Movement_x <= -70:
-            window.blit(Loser_Text, LoserRect)
+            file.window.blit(file.Loser_Text, file.LoserRect)
 
         pygame.display.update()  # updates the screen
+
+    # Atualiza BackGround
+    def check_BackGround(self):
+        file.BackGroundX -= 1  # Move both background images back
+        file.BackGroundX2 -= 1
+
+        # 1º BackGround Image starts at (0,0)
+        if file.BackGroundX < file.BackGround.get_width() * -1:  # If our BackGround is at the -width then reset its position
+            file.BackGroundX = file.BackGround.get_width()
+
+        if file.BackGroundX2 < file.BackGround.get_width() * -1:
+            file.BackGroundX2 = file.BackGround.get_width()

@@ -1,10 +1,28 @@
 import pygame
 from pygame import *
 import pyautogui
+import random
+
+# Script que Guarda Variáveis estáticas(Imagens, Sons, Tipo de Texto) e Funções as Quais Lidam Com Transformação
+# Destes Dados
 
 Screen_Width, Screen_Height = pyautogui.size()
 pygame.init()
 window = pygame.display.set_mode((Screen_Width, Screen_Height))
+window_size = (Screen_Width, Screen_Height)
+
+pygame.display.set_caption("Interactive Mario Game")
+clock = pygame.time.Clock()
+
+############################# Eventos Do Pygame Que Geram Inimigos/Bónus/Obstáculos ##########################
+# Acelerar Segundo Eventos do Jogo
+pygame.time.set_timer(USEREVENT + 1, 500)
+
+# Evento que Gera Enemies Terrestres entre 4 segundos
+pygame.time.set_timer(USEREVENT + 2, random.randrange(3000, 5000))
+
+# Evento que Gera Enemies Aéreos entre 3 segundos
+pygame.time.set_timer(USEREVENT + 3, random.randrange(4000, 6000))
 
 # Sons
 mixer.init()
@@ -16,13 +34,23 @@ Duck = mixer.Sound("Sounds/Fire Works.wav")
 Mario_Dies = mixer.Sound("Sounds/Mario Dies.wav")
 
 # BackGround Music
-# mixer.music.load("Sounds/BackGroundMusic.wav")
-# mixer.music.play(-1)
-# mixer.music.set_volume(0.05)
+mixer.music.load("Sounds/BackGroundMusic.wav")
+mixer.music.play(-1)
+mixer.music.set_volume(0.05)
+
+font = pygame.font.Font("resources/SuperMario256.ttf", 64)
+Loser_Text = font.render('Loser', True, (255, 255, 255), (0, 0, 0))
+LoserRect = Loser_Text.get_rect()
+LoserRect.center = (Screen_Width // 2, Screen_Height // 2)
 
 # Load BackGround
 BackGround = pygame.image.load("Sprite/BackGround/BackGround.jpg").convert()
 BackGround = pygame.transform.scale(BackGround, (Screen_Width, Screen_Height))
+
+# Mover BackGround
+BackGroundX = 0
+BackGroundX2 = BackGround.get_width()
+
 
 # Load Imagens Lives
 Hearts_3 = pygame.image.load("Sprite/Lives/noback.png").convert_alpha()
@@ -145,7 +173,34 @@ jumpList = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3,
             -1, -1, -1, -1, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -2, -3, -3, -3, -3, -3, -3, -3, -3, -3, -3,
             -3, -3, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4, -4]
 
-font = pygame.font.Font("resources/SuperMario256.ttf", 64)
+# Código Associado Às Animações
+def create_anim(image, scale, number_images):
+    animation = []
+    for i in range(number_images):
+        animation.append(pygame.image.load(image[i]))
+        animation[i] = pygame.transform.scale(animation[i], (Screen_Width / scale[0], Screen_Width / scale[1]))
+        animation[i] = pygame.transform.flip(animation[i], True, False)
+
+    return animation
+
+
+def flip_anim(image, number_images):
+    animation = []
+    for i in range(number_images):
+        animation.append(image[i])
+        animation[i] = pygame.transform.flip(animation[i], True, False)
+    return animation
+
+
+run_anim = create_anim(run_string, scale, 2)
+jump = create_anim(jump_string, scale, 8)
+duck = create_anim(duck_string, scale, 11)
+fall = create_anim(fall_string, scale, 1)
+
+flip_run_anim = flip_anim(run_anim, 2)
+flip_jump = flip_anim(jump, 8)
+flip_duck = flip_anim(duck, 11)
+flip_fall = flip_anim(fall, 1)
 
 
 def pick_enemie(pick, x, y, width, height):
