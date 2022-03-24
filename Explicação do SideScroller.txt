@@ -1,0 +1,50 @@
+(TUDO O QUE ESTÁ AQUI PODE SER MUDADO)
+
+->render.py
+Adicionei uma função chamada redrawWindow no final do ficheiro a qual está encarregue do desenho das entidades, texto, score, objectos(inimigos/obstáculos) e bónus.
+Além desta função, adicionei uma função checkBackGround a qual está encarregue de atualizar o BackGround(para dar o efeito de movimento ao longo do jogo)
+
+->entity.py
+Dentro deste script adicionei as classes as quais caracterizam as entidades (classes derivadas a partir da class principal entity) do jogo:
+	-> Mario (Player) 
+	-> Inimigos (Enemies)
+	-> Obstáculos (Obstacle)
+	-> Bónus (Bonus)
+
+->physics.py
+Dentro deste coloquei a função detectCollision a qual está responsável por mostrar a animação de quando o mario colide com um inimigo/obstáculo e a qual lida com a hitbox do mario depois de colidir com algo. Além disto também lida com a velocidade default do mario (player) ao longo do jogo.
+
+A função verify_collision a qual verifica a colisão do mario com os obstáculos/inimigos os quais estão armazenados no parâmetro enemies e verifica a colisão do mario com o bónus os quais estão armazenados na variável de entrada plus. Para além disto lida com  algum eventualmente som que seja preciso tocar e com o desaparecimento dos objectos depois de chegarem a um certo limite que se encontra no lado esquerdo do ecrã. Health é o parâmetro o qual lida com as vidas do mario e bonus_val é o valor o qual um bónus apanhado incrementa ao valor do score.
+
+Outra Função que coloquei foi keyboards_input a qual lida com os inputs do keyboard para atuar no mario:
+	-> Jump
+	-> Duck (Crouch)
+	-> Andar Para Direita
+	-> Andar Para Esquerda
+Nota do Editor: Função que o Lucyanno já tinha implementado
+
+->SideScroller.py
+Implementação da função game utilizando os scripts provenientes do lib a qual é a função que me falta implementar na estrutura inicial
+
+->load_files.py
+Script o qual armazena todas as variáveis estáticas que utilizei para produzir o código SideScroller, ou seja:
+	-> Imagens
+	-> Sons
+	-> Animações
+	-> Variáveis relacionadas com o pygame estáticas
+	-> Font de Letras
+Além disto, também contém funções as quais trabalham com estas variáveis e apenas precisam de ser utilizadas na inicialização
+Para escolher os inimigos/obstáculos/bónus que aparecem, fiz as funções pick_enemie/pick_obstacle/pick_bonus as quais funcionam como um switch para escolher qual aparece segundo um parâmetro de entrada random.
+
+
+->Funcionamento do Jogo o qual pode está diferente do original
+Mario Evita Inimigos/Obstáculos há medida que avança em que se apanhar algum bónus, incrementa o valor do score consoante o bónus que apanhou.
+Por exemplo:
+Estrela: Incrementa 50
+Cogumelo: Incrementa 200
+
+Nota Final do Editor: Espero que tenha sido esclarecedor, qualquer coisa é só perguntar. Agora vou deitar-me no chão e chorar um bocadinho.
+								Cumprimentos
+								João Nascimento
+
+
