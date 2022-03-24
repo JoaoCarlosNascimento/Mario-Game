@@ -43,6 +43,9 @@ Por exemplo:
 Estrela: Incrementa 50
 Cogumelo: Incrementa 200
 
+-> Problemas Que Estou a Ter
+Embora a Hitbox esteja definida corretamente para as diferentes entidades, durante o jogo, a colisão está a acontecer demasiadas vezes sendo assim necessário secalhar uma ajuda a implementar isso.
+
 Nota Final do Editor: Espero que tenha sido esclarecedor, qualquer coisa é só perguntar. Agora vou deitar-me no chão e chorar um bocadinho.
 								Cumprimentos
 								João Nascimento
