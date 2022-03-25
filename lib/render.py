@@ -49,12 +49,12 @@ class render:
 
         elif state == "save score?":
             self.__render_camera(img)
-            sc = saveScore(self.__window, 9999, hand_pos=landmarks[1])
+            sc = saveScore(self.__window, 9999, hand_pos=landmarks[0])
             if (sc == 1):
                 return "yes score"
             elif (sc == 0):
                 return "no score"
-            self.__render_hand_command([landmarks[1]])
+            self.__render_hand_command([landmarks[0]])
 
         elif state == "leaderboard":
             self.__render_camera(img)
@@ -62,18 +62,21 @@ class render:
 
         elif state == "prepare pic":
             self.__render_camera(img)
-            if len(landmarks) != 4:
-                return
-            self.scoreboard.display(self.__window,landmarks)
 
             boo1 = self.__window.blit(self.images["boo1"], [self.__window.get_width() - self.images["boo1"].get_width(),
-                                                            self.__window.get_height() - self.images["boo1"].get_height()])
+                                                        self.__window.get_height() - self.images["boo1"].get_height()])
 
             font = pygame.font.Font("./resources/SuperMario256.ttf", 50, bold=False)
             text = font.render("Touch Boo when you're ready!", 1, (0,0,0))
             self.__window.blit(text, [self.__window.get_width()/2 - text.get_width()/2, 
                                       self.__window.get_height()/4 - text.get_height()/2])
-            if (boo1.collidepoint(landmarks[3])):
+
+            if len(landmarks[0]) == 0:
+                pygame.display.update()
+                return
+            self.scoreboard.display(self.__window, landmarks)
+            
+            if (boo1.collidepoint(landmarks[1][0])):
                 return "ok pic"
 
         elif state == "pic":

@@ -54,7 +54,7 @@ class game:
         self.__score = 0
         self.__lives = 3
         self.__mario = player(Screen_Width / 10, Screen_Height / 1.3, 100, 95, True)
-        self.__state = "game over"
+        self.__state = "save score?"
 
     def start(self):
         self.__entities.append(self.__mario)

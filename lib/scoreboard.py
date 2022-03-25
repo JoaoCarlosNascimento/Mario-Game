@@ -33,8 +33,8 @@ class scoreboard:
 
     def display(self, window, commands):
         nose_position =  commands[0][0]
-        ear_position_1 = commands[1][0]
-        ear_position_2 = commands[2][0]
+        ear_position_1 = commands[0][1]
+        ear_position_2 = commands[0][2]
         if nose_position[0] < 0 or nose_position[1] < 0:
             return
         nose = []

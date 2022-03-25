@@ -69,7 +69,7 @@ class controller:
                 return self.__hand_detector(img)
             if state in ["save score?", "game over"]:
                 return self.__hand_detector(img)
-            if state== "prepare pic" or state == "pic":
+            if state == "prepare pic" or state == "pic":
                 com, debug, f = self.__face_detector(img, key_point=[2, 4, 5])
                 com, debug, h = self.__hand_detector(img)
                 return com, debug, [f, h]
@@ -83,12 +83,11 @@ class controller:
         self.__frame_count -= 1
         return 0, "", [(-1,-1)]
 
-    def __face_detector(self,img,key_point=[2]):
+    def __face_detector(self, img, key_point=[2]):
 
         if self.__res == (0,0):
             self.__res = (img.shape[1],img.shape[0])
 
-        # self.__detectors['Face']['LastCommands'] = (-1,-1)
 
         frameCV_RGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         results = self.__detectors['Face']['Detector'].process(frameCV_RGB)
@@ -105,9 +104,11 @@ class controller:
                     kp = detection.location_data.relative_keypoints[i]
                     if kp is not None:
                         self.__detectors['Face']['LastCommands'].append((self.__res[0]-int(kp.x * self.__res[0]),kp.y * self.__res[1]))
+                    else:
+                        self.__detectors['Face']['LastCommands'].append((-1, -1))
             return 0, "", self.__detectors['Face']['LastCommands']
-        else:
-            return 0, "", [(-1,-1)]
+        else: 
+            return 0, "", []
 
     def __hand_detector(self,img):
 
