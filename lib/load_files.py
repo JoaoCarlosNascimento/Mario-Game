@@ -16,13 +16,13 @@ clock = pygame.time.Clock()
 
 ############################# Eventos Do Pygame Que Geram Inimigos/Bónus/Obstáculos ##########################
 # Acelerar Segundo Eventos do Jogo
-pygame.time.set_timer(USEREVENT + 1, 500)
+pygame.time.set_timer(USEREVENT + 1, 1000)
 
 # Evento que Gera Enemies Terrestres entre 4 segundos
-pygame.time.set_timer(USEREVENT + 2, random.randrange(3000, 5000))
+pygame.time.set_timer(USEREVENT + 2, random.randrange(4500, 9000))
 
 # Evento que Gera Enemies Aéreos entre 3 segundos
-pygame.time.set_timer(USEREVENT + 3, random.randrange(4000, 6000))
+pygame.time.set_timer(USEREVENT + 3, random.randrange(5000, 10000))
 
 # Sons
 mixer.init()

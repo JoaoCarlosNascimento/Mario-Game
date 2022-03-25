@@ -1,3 +1,4 @@
+from importlib.metadata import entry_points
 from cv2 import pyrMeanShiftFiltering
 import pygame
 import numpy as np
@@ -5,11 +6,15 @@ import cv2
 from lib.entity import entity
 from lib.text import TextBox, GameOver, saveScore
 from lib.scoreboard import scoreboard
-import load_files as file
+import lib.load_files as file
 import time
+
+from lib.entity import Enemy, Bonus, Obstacle, player
+
 
 white = (255, 255, 255)
 black = (0, 0, 0)
+
 
 
 class render:
@@ -25,21 +30,31 @@ class render:
         self.images["boo1"] = pygame.transform.scale(boo1, (int(self.__window.get_height()/3), int(self.__window.get_height()/3)))
 
 
-    def draw(self, state=0, img=[], entities=[], command=[], landmarks=[],debug=""):
+    def draw(self, state=0, img=[], entities=[], command=[], landmarks=[],debug="", bonus_val = 0, lives = 3, score = 0):
+        enemies = []
+        obstacles = []
+        bonus = []
         for entity in entities:
-            pass
+            if entity.name == "Player":
+                mario = entity
+            elif entity.name == "Enemy":
+                enemies.append(entity)
+            elif entity.name == "Obstacle":
+                obstacles.append(entity)
+            elif entity.name == "Bonus":
+                bonus.append(entity)
         if state == "game over":
             self.__render_camera(img)
             GameOver(self.__window)
 
         elif state == "save score?":
             self.__render_camera(img)
-            sc = saveScore(self.__window, 9999, hand_pos=command)
+            sc = saveScore(self.__window, 9999, hand_pos=landmarks[1])
             if (sc == 1):
                 return "yes score"
             elif (sc == 0):
                 return "no score"
-            self.__render_hand_command([command])
+            self.__render_hand_command([landmarks[1]])
 
         elif state == "leaderboard":
             self.__render_camera(img)
@@ -47,9 +62,9 @@ class render:
 
         elif state == "prepare pic":
             self.__render_camera(img)
-            if len(command) != 4:
+            if len(landmarks) != 4:
                 return
-            self.scoreboard.display(self.__window,command)
+            self.scoreboard.display(self.__window,landmarks)
 
             boo1 = self.__window.blit(self.images["boo1"], [self.__window.get_width() - self.images["boo1"].get_width(),
                                                             self.__window.get_height() - self.images["boo1"].get_height()])
@@ -58,23 +73,26 @@ class render:
             text = font.render("Touch Boo when you're ready!", 1, (0,0,0))
             self.__window.blit(text, [self.__window.get_width()/2 - text.get_width()/2, 
                                       self.__window.get_height()/4 - text.get_height()/2])
-            if (boo1.collidepoint(command[3])):
+            if (boo1.collidepoint(landmarks[3])):
                 return "ok pic"
 
         elif state == "pic":
             self.__render_camera(img)
-            self.scoreboard.snapshot(self.__window, command, 10000)
+            self.scoreboard.snapshot(self.__window, landmarks, 10000)
             
-        elif state == "test":
+        elif state == "game":
             self.__render_camera(img)
-            self.__render_HUD(self.__window, 3, 2000, 3)
+            self.redrawWindow(bonus_val, obstacles, enemies, mario, score, lives)
+            self.check_BackGround()
+            t = TextBox(self.__window, str(len(entities)))
+            t.display()
 
         elif(state == -11):
             self.__render_camera(img)
-            self.__render_hand_command(command)
+            self.__render_hand_command(landmarks)
         elif(state == -12):
             self.__render_camera(img)
-            self.__render_face_command(command)
+            self.__render_face_command(landmarks)
         elif(state == -13):
             self.__render_camera(img)
             # print(command['landmarks'])
@@ -95,7 +113,7 @@ class render:
         self.__window.blit(frame, (0,0))
 
     def __render_hand_command(self,command = []):
-        if command != []:
+        if len(command) >= 2:
             for com in command:
                 if com != (-1,-1):
                     pygame.draw.circle(self.__window, (191, 39, 28), com, 15)
@@ -114,9 +132,7 @@ class render:
                     pygame.draw.circle(self.__window, (191, 39, 28), (com.x,com.y), 15)
 
     def __render_HUD(self, window, lives, score, coins):
-        HUD = pygame.Surface((window.get_width(), window.get_height()/8))
-        HUD.fill(black)
-        HUD.set_alpha(150)
+        HUD = pygame.Surface((window.get_width(), window.get_height()/8),  pygame.SRCALPHA, 32)
 
         font = pygame.font.Font("./resources/SuperMario256.ttf", HUD.get_height(), bold=False)
         font_s = pygame.font.Font("./resources/SuperMario256.ttf", int(HUD.get_height()*0.8), bold=False)
@@ -141,20 +157,12 @@ class render:
 
     # Função Utilizada Durante o Jogo Para Desenhar HUD(Score e Vidas), Inimigos, Bónus, Mario e Obstáculos
     def redrawWindow(self,Movement_x, objects, bonus, runner, score, lives):
-        # Define Score e Imagens Hearts
-        Score = file.font.render("Score: " + str(score), 1, (0, 0, 0))
-        if lives == 3:
-            Heart_img = file.Hearts_3
-        elif lives == 2:
-            Heart_img = file.Hearts_2
-        elif lives == 1:
-            Heart_img = file.Hearts_1
+        
 
-        file.window.blit(file.BackGround, (file.BackGroundX, 0))  # draws our first BackGround image
+        self.__window.blit(file.BackGround, (file.BackGroundX, 0))  # draws our first BackGround image
         file.window.blit(file.BackGround, (file.BackGroundX2, 0))  # draws the second BackGround image
 
-        file.window.blit(Heart_img, (file.Screen_Width / 40, file.Screen_Height / 30))
-        file.window.blit(Score, (file.Screen_Width / 1.3, file.Screen_Height / 20))
+        self.__render_HUD(self.__window, lives, score, 0)
 
         # Objectos = Lista que Contém Inimigos/Obstáculos
         for x in objects:
@@ -183,3 +191,4 @@ class render:
 
         if file.BackGroundX2 < file.BackGround.get_width() * -1:
             file.BackGroundX2 = file.BackGround.get_width()
+

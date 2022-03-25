@@ -101,7 +101,8 @@ def saveScore(surface, score, hand_pos):
     no_rect = surface.blit(no, [3*surface.get_width()/4 - no.get_width()/2, 
                       3*surface.get_height()/4 - no.get_height()/2])
 
-    if(yes_rect.collidepoint(hand_pos)):
-        return 1
-    elif(no_rect.collidepoint(hand_pos)):
-        return 0
+    if len(hand_pos) == 2:
+        if(yes_rect.collidepoint(hand_pos)):
+            return 1
+        elif(no_rect.collidepoint(hand_pos)):
+            return 0

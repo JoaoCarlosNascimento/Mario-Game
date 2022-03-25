@@ -1,5 +1,5 @@
 import numpy as np
-import load_files as file
+import lib.load_files as file
 import pygame
 from pygame.locals import *
 import sys
@@ -8,12 +8,18 @@ import time
 
 
 class entity:
-    def __init__(self, name=[]):
+    def __init__(self, x, y, width, height, name=[]):
         if type == []:
             raise NameError("Invalid entity name. You must define a name for the entity!")
         self.name = name
-        # self.id = entity.__new_id()
-        # print(self.id)
+        self.x = x
+        self.y = y
+
+        self.width = width
+        self.height = height
+        self.hitbox = (x, y, width, height)
+        self.count = 0
+
         self.entity_state = 0
         self.animation_state = 0
 
@@ -22,19 +28,30 @@ class entity:
         # self.acceleration = (0,0) # (x_acc,y_acc)
 
         self.colision_list = []
-
+    
     def update(self, state=0):
         if self.name == "Player":
             # print('Position: ({pos:.2f})\nSpeed: ({spe:.2f})'.format(pos=self.position,spe=self.velocity))
             print('X Speed: ({speX:.2f}), Y Speed: ({speY:.2f})'.format(speX=self.velocity[0],speY=self.velocity[1]))
+    def collide(self, rect):
+        # 0 - x
+        # 1 - y
+        # 2 - width
+        # 3 - height
+        # Verifica Colisão em Coordenada x
+        if rect[0] + rect[2] > self.hitbox[0] and rect[0] < self.hitbox[0] + self.hitbox[2]:
+            # Verifica Colisão em Coordenada y
+            if rect[1] + rect[3] > self.hitbox[1]:
+                return True
+        return False
+
+
 
 
 class player(entity):
     def __init__(self, x, y, width, height, LookingRight):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
+        entity.__init__(self, x, y, width, height, name="Player")
+
         self.jumping = False
         self.ducking = False
         self.falling = False
@@ -44,7 +61,20 @@ class player(entity):
         self.duckUp = False
         self.LookingRight = LookingRight
 
-    def draw(self, window, y):
+        self.lives = 3
+    def update(self, state, timer):
+        if self.falling:
+            end_timer = int(round(time.time() * 1000))
+
+            # Duração da Animação Hitted (Quando Colide Com Inimigo/Obstáculo)
+            if end_timer - timer > 800:
+                self.falling = False
+            else:
+                self.hitbox = (0, 0, 0, 0)
+
+        # Movimentação Default Do Runner
+        self.x -= file.Screen_Width / 4000
+    def draw(self, window, y=0):
 
         if self.LookingRight:
             self.run = file.run_anim
@@ -131,11 +161,7 @@ class player(entity):
 # Classe Bonus
 class Bonus(entity):
     def __init__(self, x, y, width, height, random_pick):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-        self.hitbox = (x, y, width, height)
+        entity.__init__(self, x, y, width, height, name="Bonus")
         self.count = 0
         self.random_pick = random_pick
         self.score = 0
@@ -147,27 +173,11 @@ class Bonus(entity):
         # Desenho da Hitbox
         pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
 
-    def collide(self, rect):
-        # 0 - x
-        # 1 - y
-        # 2 - width
-        # 3 - height
-        # Verifica Colisão em Coordenada x
-        if rect[0] + rect[2] > self.hitbox[0] and rect[0] < self.hitbox[0] + self.hitbox[2]:
-            # Verifica Colisão em Coordenada y
-            if rect[1] + rect[3] > self.hitbox[1]:
-                return True
-        return False
-
 
 # Class Enemie
-class Enemie(entity):
+class Enemy(entity):
     def __init__(self, x, y, width, height, random_pick):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-        self.hitbox = (x, y, width, height)
+        entity.__init__(self, x, y, width, height, name="Enemy")
         self.count = 0
         self.random_pick = random_pick
 
@@ -177,26 +187,10 @@ class Enemie(entity):
         # Desenho da Hitbox
         pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
 
-    def collide(self, rect):
-        # 0 - x
-        # 1 - y
-        # 2 - width
-        # 3 - height
-        # Verifica Colisão em Coordenada x
-        if rect[0] + rect[2] > self.hitbox[0] and rect[0] < self.hitbox[0] + self.hitbox[2]:
-            # Verifica Colisão em Coordenada y
-            if rect[1] + rect[3] > self.hitbox[1]:
-                return True
-        return False
-
 
 class Obstacle(entity):
     def __init__(self, x, y, width, height, random_pick):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-        self.hitbox = (x, y, width, height)
+        entity.__init__(self, x, y, width, height, name="Obstacle")
         self.count = 0
         self.random_pick = random_pick
 
@@ -206,14 +200,3 @@ class Obstacle(entity):
         window.blit(img, (self.x, self.y))
         pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
 
-    def collide(self, rect):
-        # 0 - x
-        # 1 - y
-        # 2 - width
-        # 3 - height
-        # Verifica Colisão em Coordenada x
-        if rect[0] + rect[2] > self.hitbox[0] and rect[0] < self.hitbox[0] + self.hitbox[2]:
-            # Verifica Colisão em Coordenada y
-            if rect[1] + rect[3] > self.hitbox[1]:
-                return True
-        return False

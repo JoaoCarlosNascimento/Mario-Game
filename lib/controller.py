@@ -1,3 +1,4 @@
+from cv2 import KeyPoint
 import mediapipe as mp
 from google.protobuf.json_format import MessageToDict
 import numpy as np
@@ -64,10 +65,14 @@ class controller:
 
     def get_commands(self, state=0, img=[], Sampling=1):
         if self.__frame_count-1 <= 0:
-            if state == "save score?":
-                return self.__hand_detector(img)[0]
+            if state == "game":
+                return self.__hand_detector(img)
+            if state in ["save score?", "game over"]:
+                return self.__hand_detector(img)
             if state== "prepare pic" or state == "pic":
-                return [self.__face_detector(img), self.__face_detector(img, key_point=4), self.__face_detector(img, key_point=5), self.__hand_detector(img)[0]]
+                com, debug, f = self.__face_detector(img, key_point=[2, 4, 5])
+                com, debug, h = self.__hand_detector(img)
+                return com, debug, [f, h]
             if state == -11:
                 return self.__hand_detector(img)
             elif state == -12:
@@ -76,9 +81,9 @@ class controller:
                 return self.__body_detector(img,0)
             self.__frame_count = Sampling
         self.__frame_count -= 1
-        return (-1,-1)
+        return 0, "", [(-1,-1)]
 
-    def __face_detector(self,img,key_point=2):
+    def __face_detector(self,img,key_point=[2]):
 
         if self.__res == (0,0):
             self.__res = (img.shape[1],img.shape[0])
@@ -87,7 +92,7 @@ class controller:
 
         frameCV_RGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         results = self.__detectors['Face']['Detector'].process(frameCV_RGB)
-
+        self.__detectors['Face']['LastCommands'] = []
         if results.detections:
             for detection in results.detections:
                 # Indice 0: Olho Direito
@@ -96,18 +101,23 @@ class controller:
                 # Indice 3: Meio da Boca
                 # Indice 4: Ouvido Direito
                 # Indice 5: Orelha Esquerda
-                kp = detection.location_data.relative_keypoints[key_point]
-                if kp is not None:
-                    self.__detectors['Face']['LastCommands'] = (self.__res[0]-int(kp.x * self.__res[0]),kp.y * self.__res[1])
-            return [self.__detectors['Face']['LastCommands']]
+                for i in key_point:
+                    kp = detection.location_data.relative_keypoints[i]
+                    if kp is not None:
+                        self.__detectors['Face']['LastCommands'].append((self.__res[0]-int(kp.x * self.__res[0]),kp.y * self.__res[1]))
+            return 0, "", self.__detectors['Face']['LastCommands']
         else:
-            return [(-1,-1)]
+            return 0, "", [(-1,-1)]
 
     def __hand_detector(self,img):
 
         if self.__res == (0,0):
             self.__res = (img.shape[1],img.shape[0])
 
+        # command = 0
+        # landmarks = []
+        # debug = ""
+        
         self.__reset_hand_detector()
 
         frameCV_RGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -129,7 +139,7 @@ class controller:
                     for id, lm in enumerate(handLms.landmark):
                         if id == hand_detector.HandLandmark.INDEX_FINGER_TIP:
                             self.__detectors['Hands']['LastCommands']['Left'] = (self.__res[0]-int(lm.x*self.__res[0]),int(lm.y*self.__res[1]))
-        return [self.__detectors['Hands']['LastCommands']['Left'],self.__detectors['Hands']['LastCommands']['Right']]
+        return 0,"",[self.__detectors['Hands']['LastCommands']['Left'],self.__detectors['Hands']['LastCommands']['Right']]
 
     def __reset_hand_detector(self):
         self.__detectors['Hands']['LastCommands']['Left']=(-1,-1)
