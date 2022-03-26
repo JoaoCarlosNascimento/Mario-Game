@@ -55,11 +55,12 @@ class render:
             correctedLandmark = (scale_factor[0]*landmarks[0][0],scale_factor[1]*landmarks[0][1])
             # print(correctedLandmark)
 
-            sc = saveScore(self.__window, 9999, hand_pos=correctedLandmark)
+            sc = saveScore(self.__window, score, hand_pos=correctedLandmark)
             if (sc == 1):
                 feedback = "yes score"
             elif (sc == 0):
                 feedback = "no score"
+                self.scoreboard.snapshot(self.__window, [correctedLandmark], score=score, save=0)
             self.__render_hand_command([correctedLandmark])
 
         elif state == "leaderboard":
@@ -69,12 +70,6 @@ class render:
         elif state == "prepare pic":
             imgScale = self.__render_camera(img)
 
-            # correctedLandmarks = []
-
-            # for term in landmarks:
-        
-
-            # for term in landmarks[0]:
             for i in range(3):
                 if landmarks[0][i] != (-1, -1):
                     landmarks[0][i] = (
@@ -88,7 +83,6 @@ class render:
                         imgScale[0]*landmarks[1][i][0],
                         imgScale[1]*landmarks[1][i][1]
                     )
-                    # landmarks[1][i] = imgScale[1]*landmarks[1][i][1]
 
 
             boo1 = self.__window.blit(self.images["boo1"], [self.__window.get_width() - self.images["boo1"].get_width(),
@@ -119,7 +113,7 @@ class render:
                         imgScale[0]*landmarks[1][i][0],
                         imgScale[1]*landmarks[1][i][1]
                     )
-            self.scoreboard.snapshot(self.__window, landmarks, 10000)
+            self.scoreboard.snapshot(self.__window, landmarks, 10000, 1)
             
         elif state == "game":
             self.__render_camera(img)
