@@ -18,6 +18,8 @@ gif_middle_size = [500, 500]
 gif_left_size = [500, 500]
 controls_size = [750, 150]
 back_size = [180, 100]
+dir_right_size = [140, 200]
+dir_left_size = [140, 200]
 tip_size = [75, 85]
 
 state: 0
@@ -40,17 +42,25 @@ imgControl, rectControl = images.load_image( Screen_Width, Screen_Height, file_n
 imgBack, rectBack = images.load_image( Screen_Width, Screen_Height, file_name='Images/back_.png',
                                       img_size=back_size,
                                       translation=(9.5, 9))
+# right arm
+imgR_dir, rectR_dir = images.load_image(Screen_Width, Screen_Height, file_name='Images/right_direction.png',
+                                      img_size=dir_right_size,
+                                      translation=(-8, -2.5))
+# left arm
+imgL_dir, rectL_dir = images.load_image(Screen_Width, Screen_Height, file_name='Images/left_direction.png',
+                                      img_size=dir_left_size,
+                                      translation=(10, -2.5))
 # Finger Tip
 imgTip, rectTip = images.load_image( Screen_Width, Screen_Height, file_name='Images/Star.PNG',
                                       img_size=tip_size,
                                       translation=(1, 3))
 
 # to the right
-gif_Right = images.load_gif( Screen_Width, Screen_Height, "Image_right", "right", gif_right_size, (-1.5, 0.8))
+gif_Right = images.load_gif( Screen_Width, Screen_Height, "Image_right", "right", gif_right_size, (-1.5, 1))
 # jump and duck
-gif_Middle = images.load_gif( Screen_Width, Screen_Height, "Image_jumpduck", "jumpduck", gif_middle_size, (1, 0.8))
+gif_Middle = images.load_gif( Screen_Width, Screen_Height, "Image_jumpduck", "jumpduck", gif_middle_size, (1, 1))
 # to the left
-gif_Left = images.load_gif( Screen_Width, Screen_Height, "Image_left", "left", gif_left_size, (3.5, 0.8))
+gif_Left = images.load_gif( Screen_Width, Screen_Height, "Image_left", "left", gif_left_size, (3.5, 1))
 
 # background
 imgBg, rectBg = images.load_image( Screen_Width, Screen_Height, file_name='Images/background.png',
@@ -95,6 +105,8 @@ def controls_menu(screen,hands):
         window.blit(imgBg, rectBg)
         window.blit(imgControl, rectControl)
         window.blit(imgBack, rectBack)
+        window.blit(imgR_dir, rectR_dir)
+        window.blit(imgL_dir, rectL_dir)
 
         gif_Right.update()
         gif_Middle.update()
