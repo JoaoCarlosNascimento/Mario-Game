@@ -92,6 +92,8 @@ class controller:
         frameCV_RGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         results = self.__detectors['Face']['Detector'].process(frameCV_RGB)
         self.__detectors['Face']['LastCommands'] = []
+        for i in range(len(key_point)):
+            self.__detectors['Face']['LastCommands'].append((-1, -1))
         if results.detections:
             for detection in results.detections:
                 # Indice 0: Olho Direito
@@ -100,15 +102,13 @@ class controller:
                 # Indice 3: Meio da Boca
                 # Indice 4: Ouvido Direito
                 # Indice 5: Orelha Esquerda
-                for i in key_point:
-                    kp = detection.location_data.relative_keypoints[i]
+                for i in range(len(key_point)):
+                    kp = detection.location_data.relative_keypoints[key_point[i]]
                     if kp is not None:
-                        self.__detectors['Face']['LastCommands'].append((self.__res[0]-int(kp.x * self.__res[0]),kp.y * self.__res[1]))
+                        self.__detectors['Face']['LastCommands'][i] = (self.__res[0]-int(kp.x * self.__res[0]),kp.y * self.__res[1])
                     else:
-                        self.__detectors['Face']['LastCommands'].append((-1, -1))
-            return 0, "", self.__detectors['Face']['LastCommands']
-        else: 
-            return 0, "", []
+                        self.__detectors['Face']['LastCommands'][i] = (-1, -1)
+        return 0, "", self.__detectors['Face']['LastCommands']
 
     def __hand_detector(self,img):
 
