@@ -2,8 +2,6 @@ __pycache__
 lib/__pycache__/
 .idea
 
-test/
-history/leaderboards.db
 
 test.py
 .vscode/launch.json
@@ -13,4 +11,5 @@ test.py
 
 .vscode/
 
-history/
+history/faces
+history/leaderboards.db

@@ -34,6 +34,8 @@ class render:
         enemies = []
         obstacles = []
         bonus = []
+
+        feedback = ""
         for entity in entities:
             if entity.name == "Player":
                 mario = entity
@@ -55,9 +57,9 @@ class render:
 
             sc = saveScore(self.__window, 9999, hand_pos=correctedLandmark)
             if (sc == 1):
-                return "yes score"
+                feedback = "yes score"
             elif (sc == 0):
-                return "no score"
+                feedback = "no score"
             self.__render_hand_command([correctedLandmark])
 
         elif state == "leaderboard":
@@ -97,9 +99,6 @@ class render:
             self.__window.blit(text, [self.__window.get_width()/2 - text.get_width()/2, 
                                       self.__window.get_height()/4 - text.get_height()/2])
 
-            if len(landmarks[0]) == 0:
-                pygame.display.update()
-                return []
             self.scoreboard.display(self.__window, landmarks) # Draw Square
             self.__render_hand_command([landmarks[1][0]])
             if (boo1.collidepoint(landmarks[1][0])):
@@ -146,7 +145,7 @@ class render:
                 mytext.display()
         
         pygame.display.update()
-
+        return feedback
 
     def __render_camera(self, img=[], size=(1920,1080)):
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)

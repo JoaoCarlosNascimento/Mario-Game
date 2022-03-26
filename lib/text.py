@@ -97,7 +97,7 @@ def saveScore(surface, score, hand_pos):
     surface.blit(subText, [surface.get_width()/2 - subText.get_width()/2, 
                             surface.get_height()/2 - subText.get_height()/2])
     yes_rect = surface.blit(yes, [surface.get_width()/4 - yes.get_width()/2, 
-                       3*surface.get_height()/4 - yes.get_height()/2])
+                                  3*surface.get_height()/4 - yes.get_height()/2])
     no_rect = surface.blit(no, [3*surface.get_width()/4 - no.get_width()/2, 
                       3*surface.get_height()/4 - no.get_height()/2])
 

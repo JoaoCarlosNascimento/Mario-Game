@@ -10,26 +10,27 @@ class scoreboard:
     # TODO: Enquadrar rosto corretamente e tirar foto
     def __init__(self, window_size=(1920,1080)):
         self.screensize = window_size
-
+        self.folder  = "./history/faces/"
         self.connection = sqlite3.connect("./history/leaderboards.db")
         self.cursor = self.connection.cursor()
 
     def snapshot(self, window, commands, score = 9999):
-        face = self.display(window, commands)
-        aux = []
-        for row in self.cursor.execute('SELECT * FROM leaderboard ORDER BY id + 0 DESC'):
-            aux.append([row[0], row[1]])
-        if aux:
-            index = int(aux[0][0]) + 1
-        else:
-            index = 1
-        
-        pygame.image.save(face, "./test/"+str(index)+".png")
+        if((-1, -1) not in commands[0]):
+            face = self.display(window, commands)
+            aux = []
+            for row in self.cursor.execute('SELECT * FROM leaderboard ORDER BY id + 0 DESC'):
+                aux.append([row[0], row[1]])
+            if aux:
+                index = int(aux[0][0]) + 1
+            else:
+                index = 1
+            
+            pygame.image.save(face, self.folder+str(index)+".png")
 
-        self.cursor.execute("INSERT INTO leaderboard (id, score) VALUES ('"+ str(index) + "', '"+str(score)+"')")
-        
-        self.connection.commit()
-        return index
+            self.cursor.execute("INSERT INTO leaderboard (id, score) VALUES ('"+ str(index) + "', '"+str(score)+"')")
+            
+            self.connection.commit()
+            return index
 
     def display(self, window, commands):
         nose_position =  commands[0][0]
@@ -119,9 +120,9 @@ class leaderboardEntry:
         
         self.window = window
         picturename = str(picture_id) + ".png"
-        picturepath = "./test/"+picturename
+        picturepath =  "./history/faces/"+picturename
         
-        if picturename not in os.listdir("./test"):
+        if picturename not in os.listdir("./history/faces/"):
             self.picture = pygame.image.load("./resources/shyguy.png").convert_alpha()
         else:
             self.picture = pygame.image.load(picturepath).convert_alpha()
