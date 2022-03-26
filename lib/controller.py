@@ -118,13 +118,12 @@ class controller:
         # command = 0
         # landmarks = []
         # debug = ""
-        
-        self.__reset_hand_detector()
 
         frameCV_RGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
         results = self.__detectors['Hands']['Detector'].process(frameCV_RGB) # convert from BGR to RGB
         if results.multi_hand_landmarks is not None:
+            self.__reset_hand_detector()
             # EACH HAND #
             for handLms, handedness in zip(results.multi_hand_landmarks, results.multi_handedness):
                 handedness_dict1 = MessageToDict(handedness)
