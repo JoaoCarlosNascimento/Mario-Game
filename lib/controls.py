@@ -61,7 +61,7 @@ speed = 10
 startTime = t.time()
 totalTime = 18000
 
-def controls_menu(screen,in_Winputs):
+def controls_menu(screen,hands):
     # Main loop
     start = True
     ctime = []
@@ -85,9 +85,9 @@ def controls_menu(screen,in_Winputs):
 
         index = sum([len(files) for r, d, files in os.walk("Pictures")])
         # OpenCV
-        Winputs = myAux.webcamInputs(webcamInputs=in_Winputs, vid_stream=in_Winputs.vid_stream,
-                                     offset=in_Winputs.offset, subSampling=in_Winputs.subSampling, detector='FaceHand')
-        img, hands = Winputs.get_inputs()
+        # Winputs = myAux.webcamInputs(webcamInputs=in_Winputs, vid_stream=in_Winputs.vid_stream,
+        #                              offset=in_Winputs.offset, subSampling=in_Winputs.subSampling, detector='FaceHand')
+        # img, hands = Winputs.get_inputs()
         if (tcount >= 60):
             # print("Exec Time (main): "+str(round((sum(ctime)/60)/(1000*1000)))+" (ms)")
             ctime.pop(0)
@@ -111,14 +111,4 @@ def controls_menu(screen,in_Winputs):
                 window.blit(imgTip, hands[1])
             for i in range(2):
                 if rectBack.collidepoint(hands[i][0], hands[i][1]):
-                    return
-
-        # Update Display
-        pygame.display.update()
-
-        # Set FPS
-        clock.tick(fps)
-        ctime.append(t.time_ns() - ctime_i)
-        tcount += 1
-
-cv2.destroyAllWindows()
+                    return "back"

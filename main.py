@@ -9,7 +9,7 @@ import sys
 import os
 import pyautogui
 import images
-import controls
+import lib.controls as controls
 import well_done
 from lib.scoreboard import scoreboard
 
