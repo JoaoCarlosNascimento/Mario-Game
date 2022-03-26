@@ -44,7 +44,7 @@ class physics:
 
     # Constantes de aceleração
     __frict_const = np.array([2, 2])  # [acc_x,acc_y]
-    __com_acc = np.array([320, -50])+__frict_const  # [acc_x,acc_y]
+    __com_acc = np.array([350, -50])+__frict_const  # [acc_x,acc_y]
     __grav_acc = np.array([0, 100])  # [acc_x,acc_y]
     __norm_acc = -__grav_acc  # [acc_x,acc_y]
 
@@ -64,7 +64,7 @@ class physics:
         if ((commands & 0b0100) == 0b0100): # Move Left
             com_acc[0] -= self.__com_acc[0]
         if ((commands & 0b0010) == 0b0010):  # Move Crouch
-            self.ducking = True
+            entity.ducking = True
             # print("Move C")
             # com_acc[1] += self.__com_acc[1]
 
@@ -153,15 +153,21 @@ class physics:
         state = "alive"
         for x in enemies:
             if x.collide(mario.hitbox):
-                start_timer = int(round(time.time() * 1000))
-                pygame.mixer.Sound.play(file.Bump)
-                mario.lives -= 1
-                # Game Over
-                if mario.lives <= 0:
-                    pygame.mixer.Sound.play(file.Mario_Dies)
-                    state = "dead"
-                    # mario.lives = 3
-                mario.falling = True
+                if not mario.on_cooldown():
+                    mario.take_hit()
+                mario.hit = True
+            else:
+                mario.hit = False
+            #     start_timer = int(round(time.time() * 1000))
+            #     pygame.mixer.Sound.play(file.Bump)
+            #     # Game Over
+            #     if mario.lives <= 0:
+            #         pygame.mixer.Sound.play(file.Mario_Dies)
+            #         state = "dead"
+            #         # mario.lives = 3 #Reverter
+            #     # mario.falling = True #Reverter
+            # else:
+            #     mario.hit = False
             x.position[0] -= 1.4
             # Quando Não Aparece no Ecrã
             if x.position[0] < -x.size[0] * -1:

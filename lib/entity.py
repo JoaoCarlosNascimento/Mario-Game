@@ -49,7 +49,7 @@ class entity:
 
 
 
-
+import time
 class player(entity):
     def __init__(self, pos, size, LookingRight):
         entity.__init__(self, pos=pos, size=size, name="Player")
@@ -63,16 +63,21 @@ class player(entity):
         self.duckUp = False
         self.LookingRight = LookingRight
 
+        self.time = int(round(time.time() * 1000))
+
+        self.hit = False
+
         self.lives = 3
     def update(self, state, timer):
-        if self.falling:
-            end_timer = int(round(time.time() * 1000))
+        pass
+        # if self.falling:
+        #     end_timer = int(round(time.time() * 1000))
 
-            # Duração da Animação Hitted (Quando Colide Com Inimigo/Obstáculo)
-            if end_timer - timer > 800:
-                self.falling = False
-            else:
-                self.hitbox = (0, 0, 0, 0)
+        #     # Duração da Animação Hitted (Quando Colide Com Inimigo/Obstáculo)
+        #     if end_timer - timer > 800:
+        #         self.falling = False
+        #     else:
+        #         self.hitbox = (0, 0, 0, 0)
 
         # Movimentação Default Do Runner
         self.position[0] -= file.Screen_Width / 4000
@@ -157,9 +162,27 @@ class player(entity):
                 # Hitbox do Mario a Correr
                 self.hitbox = (self.position[0] + x_offset, self.position[1] + 30, self.size[0] - 24, self.size[1] + 20)
         # Desenhar Hitbox Do Mario
-        if not self.falling:
+        if self.hit:
             pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
+        else:
+            pygame.draw.rect(window, (0, 255, 0), self.hitbox, 2)
 
+    def take_hit(self):
+        # Set Timer
+        self.time = int(round(time.time() * 1000))
+        self.lives -= 1
+        print("Take Hit")
+        pygame.mixer.Sound.play(file.Bump)
+        if self.lives <= 0:
+            pygame.mixer.Sound.play(file.Mario_Dies)
+            # state = "dead"
+            self.lives = 3 #Reverter
+        # self.falling = True  # Reverter
+        
+
+
+    def on_cooldown(self):
+        return not int(round(time.time() * 1000)) - self.time > 2000
 
 # Classe Bonus
 class Bonus(entity):
