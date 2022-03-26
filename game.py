@@ -42,7 +42,7 @@ class game:
 
         self.__camera = camera()
         image = self.__camera.take_image()
-        self.__render = render(window_size=(image.shape[1], image.shape[0]))
+        self.__render = render(window_size=(1920,1080))
         self.__controller = controller()
         self.__logic = logic()
         self.__physics = physics()
@@ -54,7 +54,7 @@ class game:
         self.__score = 0
         self.__lives = 3
         self.__mario = player(Screen_Width / 10, Screen_Height / 1.3, 100, 95, True)
-        self.__state = "save score?"
+        self.__state = "game over"#save score?
 
     def start(self):
         self.__entities.append(self.__mario)
@@ -81,14 +81,15 @@ class game:
                                                                                 commands=fake_command, 
                                                                                 bonus_val = self.__bonus_value)
 
-            # Aplica logica
-            self.__state = self.__logic.update(state=self.__state, feedback=[feedback1, feedback2])
-
             # Desenha cena
             feedback2 = self.__render.draw(state=self.__state, img=image,
                                            entities=self.__entities, landmarks=landmarks,debug=debug,
                                            bonus_val = self.__bonus_value,
                                            lives=self.__lives, score= self.__score)
+
+            # Aplica logica
+            self.__state = self.__logic.update(
+                state=self.__state, feedback=[feedback1, feedback2])
 
             
             # Controle de Ticks

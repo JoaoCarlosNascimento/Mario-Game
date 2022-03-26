@@ -1,4 +1,4 @@
-import lib.game as game
+import game as game
 
 myGame = game.game()
 

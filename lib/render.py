@@ -18,7 +18,7 @@ black = (0, 0, 0)
 
 
 class render:
-    def __init__(self, window_size=(200,100)):
+    def __init__(self, window_size=(1920,1080)):
         self.__window = pygame.display.set_mode(window_size)
         # self.currenttime = int(round(time.time() * 1000))
         self.scoreboard = scoreboard(window_size)
@@ -48,20 +48,46 @@ class render:
             GameOver(self.__window)
 
         elif state == "save score?":
-            self.__render_camera(img)
-            sc = saveScore(self.__window, 9999, hand_pos=landmarks[0])
+            scale_factor = self.__render_camera(img)
+            # print(landmarks)
+            correctedLandmark = (scale_factor[0]*landmarks[0][0],scale_factor[1]*landmarks[0][1])
+            # print(correctedLandmark)
+
+            sc = saveScore(self.__window, 9999, hand_pos=correctedLandmark)
             if (sc == 1):
                 return "yes score"
             elif (sc == 0):
                 return "no score"
-            self.__render_hand_command([landmarks[0]])
+            self.__render_hand_command([correctedLandmark])
 
         elif state == "leaderboard":
             self.__render_camera(img)
             self.scoreboard.show(self.__window)
 
         elif state == "prepare pic":
-            self.__render_camera(img)
+            imgScale = self.__render_camera(img)
+
+            # correctedLandmarks = []
+
+            # for term in landmarks:
+        
+
+            # for term in landmarks[0]:
+            for i in range(3):
+                if landmarks[0][i] != (-1, -1):
+                    landmarks[0][i] = (
+                        imgScale[0]*landmarks[0][i][0],
+                        imgScale[1]*landmarks[0][i][1]
+                    )
+
+            for i in range(2):
+                if landmarks[1][i] != (-1, -1):
+                    landmarks[1][i] = (
+                        imgScale[0]*landmarks[1][i][0],
+                        imgScale[1]*landmarks[1][i][1]
+                    )
+                    # landmarks[1][i] = imgScale[1]*landmarks[1][i][1]
+
 
             boo1 = self.__window.blit(self.images["boo1"], [self.__window.get_width() - self.images["boo1"].get_width(),
                                                         self.__window.get_height() - self.images["boo1"].get_height()])
@@ -73,14 +99,27 @@ class render:
 
             if len(landmarks[0]) == 0:
                 pygame.display.update()
-                return
-            self.scoreboard.display(self.__window, landmarks)
-            
+                return []
+            self.scoreboard.display(self.__window, landmarks) # Draw Square
+            self.__render_hand_command([landmarks[1][0]])
             if (boo1.collidepoint(landmarks[1][0])):
                 return "ok pic"
 
         elif state == "pic":
-            self.__render_camera(img)
+            imgScale = self.__render_camera(img)
+            for i in range(3):
+                if landmarks[0][i] != (-1, -1):
+                    landmarks[0][i] = (
+                        imgScale[0]*landmarks[0][i][0],
+                        imgScale[1]*landmarks[0][i][1]
+                    )
+
+            for i in range(2):
+                if landmarks[1][i] != (-1, -1):
+                    landmarks[1][i] = (
+                        imgScale[0]*landmarks[1][i][0],
+                        imgScale[1]*landmarks[1][i][1]
+                    )
             self.scoreboard.snapshot(self.__window, landmarks, 10000)
             
         elif state == "game":
@@ -109,17 +148,21 @@ class render:
         pygame.display.update()
 
 
-    def __render_camera(self, img=[]):
+    def __render_camera(self, img=[], size=(1920,1080)):
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         imgRGB = np.rot90(imgRGB)
+        priorSize = imgRGB.shape
+        imgRGB = cv2.resize(imgRGB, (size[1],size[0]), interpolation = cv2.INTER_AREA)
         frame = pygame.surfarray.make_surface(imgRGB).convert()
         self.__window.blit(frame, (0,0))
+        outputFactor = (imgRGB.shape[0]/priorSize[0],imgRGB.shape[1]/priorSize[1])
+        return outputFactor
 
     def __render_hand_command(self,command = []):
-        if len(command) >= 2:
-            for com in command:
-                if com != (-1,-1):
-                    pygame.draw.circle(self.__window, (191, 39, 28), com, 15)
+        # if len(command) >= 2:
+        for com in command:
+            if com != (-1,-1):
+                pygame.draw.circle(self.__window, (191, 39, 28), com, 15)
 
     def __render_face_command(self,command = []):
         if command != []:
