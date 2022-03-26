@@ -18,25 +18,31 @@ class physics:
         bonus = []
         obstacles = []
         enemies = []
+        debug = []
+        if state == "game":
 
-        for e in entities:
-            if e.name == "Player":
-                mario = e
-            elif e.name == "Enemy":
-                enemies.append(e)
-            elif e.name == "Obstacle":
-                obstacles.append(e)
-            elif e.name == "Bonus":
-                bonus.append(e)
-        # Detecta Colisões
+            for e in entities:
+                if e.name == "Player":
+                    mario = e
+                elif e.name == "Enemy":
+                    enemies.append(e)
+                elif e.name == "Obstacle":
+                    obstacles.append(e)
+                elif e.name == "Bonus":
+                    bonus.append(e)
+            # Detecta Colisões
 
-        # Atualização das entidades
-        self.__timer, bonus, lives, state = self.verify_collision(bonus_val, enemies, mario, bonus, self.__timer)
-        mario.update(state, self.__timer)
-        debug = self.__move(mario,commands=commands)
-        # self.keyboards_input(mario)
+            # Atualização das entidades
+            self.__timer, bonus, state = self.verify_collision_and_move_mobs(
+                bonus_val, enemies, mario, bonus, self.__timer)
+            # Move mario left
+            mario.position[0] -= file.Screen_Width / 4000
+            # mario.update(state, self.__timer)
+            debug = self.__move(mario,commands=commands)
+            # self.keyboards_input(mario)
 
-        return bonus, lives, state, debug
+            return bonus, mario.lives, state, debug
+        return 0, 0, 0, ""
 
 
         # for entity in entities:
@@ -148,7 +154,7 @@ class physics:
     #             character.ducking = True
     #             pygame.mixer.Sound.play(file.Duck)
 
-    def verify_collision(self, bonus_val, enemies, mario, plus, start_timer):
+    def verify_collision_and_move_mobs(self, bonus_val, enemies, mario, plus, start_timer):
         # Move Obstacle/Enemy
         state = "alive"
         for x in enemies:
@@ -158,16 +164,6 @@ class physics:
                 mario.hit = True
             else:
                 mario.hit = False
-            #     start_timer = int(round(time.time() * 1000))
-            #     pygame.mixer.Sound.play(file.Bump)
-            #     # Game Over
-            #     if mario.lives <= 0:
-            #         pygame.mixer.Sound.play(file.Mario_Dies)
-            #         state = "dead"
-            #         # mario.lives = 3 #Reverter
-            #     # mario.falling = True #Reverter
-            # else:
-            #     mario.hit = False
             x.position[0] -= 1.4
             # Quando Não Aparece no Ecrã
             if x.position[0] < -x.size[0] * -1:
@@ -183,7 +179,7 @@ class physics:
                 plus.pop(plus.index(y))
             y.position[0] -= 1.4
 
-        return start_timer, bonus_val, mario.lives, state
+        return start_timer, bonus_val, state
 
     # def detectCollision(self,character, start_timer):
     #     if character.falling:

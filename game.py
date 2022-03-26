@@ -1,21 +1,20 @@
 import pygame
 import sys
-import time
-import random
+# import time
+# import random
 
 
-from pygame.locals import *
+# from pygame.locals import *
 
 from lib.render import render
 from lib.logic import logic
 from lib.controller import controller
 from lib.physics import physics
-from lib.entity import player, Bonus, Obstacle, Enemy
+from lib.entity import player
 from lib.scoreboard import scoreboard
 from lib.map_gen import map_gen
 from lib.camera import camera
 import lib.load_files as file
-from lib.load_files import Screen_Width, Screen_Height, USEREVENT
 
 ## States
 #
@@ -28,9 +27,6 @@ from lib.load_files import Screen_Width, Screen_Height, USEREVENT
 # -13   - Teste de inputs de corpo
 
 # -135  - Teste De Geração do Mapa
-event_ACCELERATE = USEREVENT + 1
-event_LAND_ENEMY = USEREVENT + 2
-event_AIR_ENEMY = USEREVENT + 3
 
 class game:
     __loop_cond = True
@@ -53,8 +49,8 @@ class game:
         self.__bonus_value = 0
         self.__score = 0
         self.__lives = 3
-        self.__mario = player((Screen_Width / 10, Screen_Height / 1.3), (100, 95), True)
-        self.__state = "save score?"
+        self.__mario = player((1920 / 10, 1080 / 1.3), (100, 95), True)
+        self.__state = "menu"
 
     def start(self):
         self.__entities.append(self.__mario)
@@ -98,7 +94,7 @@ class game:
 
             # Aplica logica
             self.__state = self.__logic.update(
-                state=self.__state, feedback=[feedback1, feedback2])
+                state=self.__state, feedback=[feedback1, feedback2], entities=self.__entities)
 
             
             # Controle de Ticks
@@ -122,32 +118,8 @@ class game:
                     pygame.quit()
                     sys.exit()
 
-            if event.type == event_ACCELERATE:
-                self.__fps += 1
-            
-            if event.type == event_LAND_ENEMY:
-                # Escolhe Obstacle/Bónus Terrestres que Aparecem
-                pick_object = random.randrange(0, 2)
-                if pick_object == 0:
-                    random_pick = random.randrange(18, 25)
-                    self.__entities.append(Bonus((Screen_Width, Screen_Height / 1.27), (100, 130), random_pick))
-
-                if pick_object == 1:
-                    random_pick = random.randrange(0, 9)
-                    self.__entities.append(Enemy((Screen_Width, Screen_Height / 1.27), (100, 130), random_pick))
-
-                if pick_object == 2:
-                    random_pick = random.randrange(0, 2)
-                    self.__entities.append(Obstacle((Screen_Width, Screen_Height / 1.27), (70, 130), random_pick))
-                
-            if event.type == event_AIR_ENEMY:
-                pick_object = random.randrange(0, 1)
-                if pick_object == 0:
-                    random_pick = random.randrange(10, 13)
-                    self.__entities.append(Enemy((Screen_Width, Screen_Height / 1.27), (100, 130), random_pick))
-                else:
-                    random_pick = random.randrange(0, 17)
-                    self.__entities.append(Bonus((Screen_Width, Screen_Height / 1.27), (100, 130), random_pick))
+            # if event.type == event_ACCELERATE:
+            #     self.__fps += 1
         return game.__fake_inputs()
         
     # def __event(self):

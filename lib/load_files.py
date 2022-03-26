@@ -1,12 +1,13 @@
 import pygame
 from pygame import *
-import pyautogui
 import random
 
 # Script que Guarda Variáveis estáticas(Imagens, Sons, Tipo de Texto) e Funções as Quais Lidam Com Transformação
 # Destes Dados
 
-Screen_Width, Screen_Height = pyautogui.size()
+Screen_Width = 1920
+Screen_Height =  1080
+#pyautogui.size()
 pygame.init()
 window = pygame.display.set_mode((Screen_Width, Screen_Height))
 window_size = (Screen_Width, Screen_Height)
