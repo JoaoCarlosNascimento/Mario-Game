@@ -30,7 +30,7 @@ clock = pygame.time.Clock()
 # well done
 imgWell_done, rectWell_done = images.load_image( Screen_Width, Screen_Height, file_name='Images/well_done.png',
                                                 img_size=well_done_size,
-                                                translation=(1, 6.5))
+                                                translation=(1, 1))
 # Finger Tip
 imgTip, rectTip = images.load_image( Screen_Width, Screen_Height, file_name='Images/Star.PNG',
                                     img_size=tip_size,
