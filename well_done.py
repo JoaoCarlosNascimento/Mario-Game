@@ -45,7 +45,7 @@ speed = 10
 startTime = t.time()
 totalTime = 18000
 
-def Game_over_menu(screen, in_Winputs):
+def Well_done_menu(screen, in_Winputs):
     # Main loop
     start = True
     ctime = []

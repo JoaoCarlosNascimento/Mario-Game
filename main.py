@@ -135,7 +135,6 @@ while start:
           if rectScore.collidepoint(hands[i][0], hands[i][1]):
               s = scoreboard()
               s.show(window)
-              #game_over.Game_over_menu(window, Winputs)
               break
           if rectQuit.collidepoint(hands[i][0], hands[i][1]):
               pygame.quit()
