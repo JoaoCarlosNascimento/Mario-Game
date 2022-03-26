@@ -79,7 +79,7 @@ def saveScore(surface, score, hand_pos):
     font = pygame.font.Font("./resources/SuperMario256.ttf", size, bold=False)
     Text = font.render("Your Score: " + str(score), 1, black)
     font = pygame.font.Font("./resources/SuperMario256.ttf", int(size/2), bold=False)
-    subText = font.render("Would you like to save your score?", 1, black)
+    subText = font.render("Would you like to save your picture?", 1, black)
     yes = font.render("Yes", 1, black)
     no = font.render("No", 1, black)
     
