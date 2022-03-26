@@ -9,7 +9,7 @@ import lib.load_files as file
 import time
 from lib.image import gif, image
 from lib.entity import Enemy, Bonus, Obstacle, player
-from lib.controls import controls_menu
+# from lib.controls import controls_menu
 
 white = (255, 255, 255)
 black = (0, 0, 0)

@@ -2,7 +2,7 @@ import numpy as np
 import lib.load_files as file
 import pygame
 from pygame.locals import *
-import sys
+# import sys
 import random
 import time
 
@@ -80,7 +80,7 @@ class player(entity):
         #         self.hitbox = (0, 0, 0, 0)
 
         # Movimentação Default Do Runner
-        self.position[0] -= file.Screen_Width / 4000
+        # self.position[0] -= file.Screen_Width / 4000
     def draw(self, window, y=0):
         # print(self.position)
 
@@ -179,10 +179,9 @@ class player(entity):
             self.lives = 3 #Reverter
         # self.falling = True  # Reverter
         
-
-
     def on_cooldown(self):
         return not int(round(time.time() * 1000)) - self.time > 2000
+
 
 # Classe Bonus
 class Bonus(entity):

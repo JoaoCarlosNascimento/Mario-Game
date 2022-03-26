@@ -3,13 +3,13 @@ import cv2
 import pygame
 from cvzone.HandTrackingModule import HandDetector
 from pygame import *
-import myTools as myAux
+import old.myTools as myAux
 import game
 import sys
 import os
 import pyautogui
 import images
-import lib.controls as controls
+import old.controls as controls
 import well_done
 from lib.scoreboard import scoreboard
 
