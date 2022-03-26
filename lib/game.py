@@ -53,7 +53,7 @@ class game:
         self.__bonus_value = 0
         self.__score = 0
         self.__lives = 3
-        self.__mario = player(Screen_Width / 10, Screen_Height / 1.3, 100, 95, True)
+        self.__mario = player((Screen_Width / 10, Screen_Height / 1.3), (100, 95), True)
         self.__state = "save score?"
 
     def start(self):
@@ -120,24 +120,24 @@ class game:
                 pick_object = random.randrange(0, 2)
                 if pick_object == 0:
                     random_pick = random.randrange(18, 25)
-                    self.__entities.append(Bonus(Screen_Width, Screen_Height / 1.27, 100, 130, random_pick))
+                    self.__entities.append(Bonus((Screen_Width, Screen_Height / 1.27)(100, 130), random_pick))
 
                 if pick_object == 1:
                     random_pick = random.randrange(0, 9)
-                    self.__entities.append(Enemy(Screen_Width, Screen_Height / 1.27, 100, 130, random_pick))
+                    self.__entities.append(Enemy((Screen_Width, Screen_Height / 1.27), (100, 130), random_pick))
 
                 if pick_object == 2:
                     random_pick = random.randrange(0, 2)
-                    self.__entities.append(Obstacle(Screen_Width, Screen_Height / 1.27, 70, 130, random_pick))
+                    self.__entities.append(Obstacle((Screen_Width, Screen_Height / 1.27), (70, 130), random_pick))
                 
             if event.type == event_AIR_ENEMY:
                 pick_object = random.randrange(0, 1)
                 if pick_object == 0:
                     random_pick = random.randrange(10, 13)
-                    self.__entities.append(Enemy(Screen_Width, Screen_Height / 1.27, 100, 130, random_pick))
+                    self.__entities.append(Enemy((Screen_Width, Screen_Height / 1.27), (100, 130), random_pick))
                 else:
                     random_pick = random.randrange(0, 17)
-                    self.__entities.append(Bonus(Screen_Width, Screen_Height / 1.27, 100, 130, random_pick))
+                    self.__entities.append(Bonus((Screen_Width, Screen_Height / 1.27) (100, 130), random_pick))
         return game.__fake_inputs()
         
     # def __event(self):

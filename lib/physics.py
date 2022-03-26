@@ -6,6 +6,8 @@ import pygame
 import lib.load_files as file
 import time
 
+# clock = pygame.time.Clock()
+
 
 class physics:
     def __init__(self):
@@ -31,27 +33,29 @@ class physics:
         # Atualização das entidades
         self.__timer, bonus, lives, state = self.verify_collision(bonus_val, enemies, mario, bonus, self.__timer)
         mario.update(state, self.__timer)
-        self.keyboards_input(mario)
+        debug = self.__move(mario,commands=commands)
+        # self.keyboards_input(mario)
 
-        return bonus, lives, state
+        return bonus, lives, state, debug
 
 
         # for entity in entities:
         #     return
 
     # Constantes de aceleração
-    __frict_const = np.array([2, 0])  # [acc_x,acc_y]
-    __com_acc = np.array([2, 1])+__frict_const  # [acc_x,acc_y]
-    __grav_acc = np.array([0, -3])  # [acc_x,acc_y]
+    __frict_const = np.array([2, 2])  # [acc_x,acc_y]
+    __com_acc = np.array([320, -50])+__frict_const  # [acc_x,acc_y]
+    __grav_acc = np.array([0, 100])  # [acc_x,acc_y]
     __norm_acc = -__grav_acc  # [acc_x,acc_y]
 
     # Constantes de velocidade
-    __vel_lim = np.array([3, 2])  # [vel_x,vel_y]
-    __vel_jump = np.array([0, 5])  # [vel_x,vel_y]
+    __vel_lim = np.array([200, 150])  # [vel_x,vel_y]
+    # __vel_jump = np.array([0, -100])  # [vel_x,vel_y]
 
 
     def __move(self,entity,commands = 0b0000):
         dt = 0.1
+        # print(dt)
         com_acc = np.array([0,0])
 
         # Converter comandos em ações
@@ -64,8 +68,8 @@ class physics:
             # com_acc[1] += self.__com_acc[1]
             pass
         if ((commands & 0b0001) == 0b0001):  # Move Jump
-            if entity.velocity[1] == 0:
-                entity.velocity[1] = self.__vel_jump[1]
+            if entity.velocity[1] == 0 and entity.position[1] > 829:
+                entity.velocity[1] = -self.__vel_lim[1]
             # print("Move J")
             # com_acc[1] -= self.__com_acc[1]
             pass
@@ -74,7 +78,11 @@ class physics:
         # Calcular fricção
         friction = -self.__frict_const * np.array([np.sign(entity.velocity[0])*np.abs(entity.velocity[0]), 0])
         # Composição das acelerações
-        acc = (com_acc+self.__grav_acc+friction)
+        if entity.position[1] > 829:
+            acc = (com_acc+friction)
+        else:
+            friction[0]*=0.15
+            acc = (com_acc+self.__grav_acc+friction)
 
         # Atualização das velocidades
         entity.velocity = entity.velocity + acc*dt
@@ -92,11 +100,13 @@ class physics:
             entity.velocity[1] = 0
 
         # Atualização das posições
-        entity.position = entity.position + entity.velocity*dt + acc*(dt**2)/2
+        entity.position = entity.position + entity.velocity*dt# + acc*(dt**2)/2
 
         # Temporario
-        if entity.position[1] < 0:
-            entity.position[1] = 0
+        if entity.position[1] > 830:
+            entity.position[1] = 830
+            entity.velocity[1] = 0
+        return "dt: {dt}\nVelocity: [{x:.2f},{y:.2f}]\nPosition: [{xp:.2f},{yp:.2f}]".format(dt=dt,x=entity.velocity[0],y=entity.velocity[1],xp=entity.position[0],yp=entity.position[1])
         
 
     def __detect_colisions(self,entity_list):
@@ -119,12 +129,12 @@ class physics:
 
         # Mover Para a Direita
         if keys[pygame.K_RIGHT]:
-            character.x += file.Screen_Width / 60
+            character.position[0] += file.Screen_Width / 60
             character.LookingRight = True
 
         # Mover Para a Esquerda
         if keys[pygame.K_LEFT]:
-            character.x -= file.Screen_Width / 60
+            character.position[0] -= file.Screen_Width / 60
             character.LookingRight = False
 
         if keys[pygame.K_DOWN]:
@@ -146,9 +156,9 @@ class physics:
                     state = "dead"
                     # mario.lives = 3
                 mario.falling = True
-            x.x -= 1.4
+            x.position[0] -= 1.4
             # Quando Não Aparece no Ecrã
-            if x.x < -x.width * -1:
+            if x.position[0] < -x.size[0] * -1:
                 enemies.pop(enemies.index(x))
         # Move Bonus
         for y in plus:
@@ -157,9 +167,9 @@ class physics:
                 plus.pop(plus.index(y))
                 pygame.mixer.Sound.play(file.Coin_Sound)
                 # Quando Não Aparece no Ecrã
-            if y.x < -y.width * -1:
+            if y.position[0] < -y.size[0] * -1:
                 plus.pop(plus.index(y))
-            y.x -= 1.4
+            y.position[0] -= 1.4
 
         return start_timer, bonus_val, mario.lives, state
 
@@ -174,4 +184,4 @@ class physics:
     #             character.hitbox = (0, 0, 0, 0)
 
     #     # Movimentação Default Do Runner
-    #     character.x -= file.Screen_Width / 4000
+    #     character.position[0] -= file.Screen_Width / 4000

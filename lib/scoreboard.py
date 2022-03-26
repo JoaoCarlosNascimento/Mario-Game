@@ -14,9 +14,8 @@ class scoreboard:
         self.connection = sqlite3.connect("./history/leaderboards.db")
         self.cursor = self.connection.cursor()
 
-    def snapshot(self, window, commands, score = 9999):
+    def snapshot(self, window, commands, score = 9999, save = 0):
         if((-1, -1) not in commands[0]):
-            face = self.display(window, commands)
             aux = []
             for row in self.cursor.execute('SELECT * FROM leaderboard ORDER BY id + 0 DESC'):
                 aux.append([row[0], row[1]])
@@ -25,7 +24,9 @@ class scoreboard:
             else:
                 index = 1
             
-            pygame.image.save(face, self.folder+str(index)+".png")
+            if save == 1:
+                face = self.display(window, commands)
+                pygame.image.save(face, self.folder+str(index)+".png")
 
             self.cursor.execute("INSERT INTO leaderboard (id, score) VALUES ('"+ str(index) + "', '"+str(score)+"')")
             

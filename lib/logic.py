@@ -13,7 +13,8 @@ class logic:
         if state == "game":
             if feedback != None:
                 if "dead" in feedback:
-                    state = "game over"
+                    pass
+                    # state = "game over"
         if state == "game over":
             if diff_time > 1000:
                 self.time = int(round(time.time() * 1000))
