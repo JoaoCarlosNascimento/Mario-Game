@@ -10,12 +10,21 @@ class logic:
 
     def __state_machine(self, state, feedback):
         diff_time = int(round(time.time() * 1000)) - self.time
-        if state == "game":
+        if state == "menu":
+            if feedback != None:
+                if "play" in feedback:
+                    state = "game"
+                elif "ctrl" in feedback:
+                    state = "control"
+        elif state == "control":
+            if feedback != None:
+                if "back" in feedback:
+                    state = "menu"
+        elif state == "game":
             if feedback != None:
                 if "dead" in feedback:
-                    pass
-                    # state = "game over"
-        if state == "game over":
+                    state = "game over"
+        elif state == "game over":
             if diff_time > 1000:
                 self.time = int(round(time.time() * 1000))
                 state = "save score?"
@@ -42,5 +51,5 @@ class logic:
             if diff_time > 2000:
                 self.time = int(round(time.time() * 1000))
                 state = "game over"
-
+        
         return state

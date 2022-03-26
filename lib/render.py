@@ -1,4 +1,3 @@
-from importlib.metadata import entry_points
 from cv2 import pyrMeanShiftFiltering
 import pygame
 import numpy as np
@@ -8,9 +7,9 @@ from lib.text import TextBox, GameOver, saveScore
 from lib.scoreboard import scoreboard
 import lib.load_files as file
 import time
-
+from lib.image import gif, image
 from lib.entity import Enemy, Bonus, Obstacle, player
-
+from lib.controls import controls_menu
 
 white = (255, 255, 255)
 black = (0, 0, 0)
@@ -23,12 +22,7 @@ class render:
         # self.currenttime = int(round(time.time() * 1000))
         self.scoreboard = scoreboard(window_size)
         self.counter = 3
-        self.images = {}
-        boo1 = pygame.image.load("./resources/boo1.png").convert_alpha()
-        self.images["coin"] = pygame.image.load("./sprite/bonus/Coin.png").convert_alpha()
-        self.images["mario2"] = pygame.image.load("./resources/mario2.png").convert_alpha()
-        self.images["boo1"] = pygame.transform.scale(boo1, (int(self.__window.get_height()/3), int(self.__window.get_height()/3)))
-
+        self.__load_images()
 
     def draw(self, state=0, img=[], entities=[], command=[], landmarks=[],debug="", bonus_val = 0, lives = 3, score = 0):
         enemies = []
@@ -45,7 +39,27 @@ class render:
                 obstacles.append(entity)
             elif entity.name == "Bonus":
                 bonus.append(entity)
-        if state == "game over":
+    
+        if state == "menu":
+            imgScale = self.__render_camera(img)
+
+            for i in range(2):
+                if landmarks[i] != (-1, -1):
+                    landmarks[i] = (
+                        imgScale[0]*landmarks[i][0],
+                        imgScale[1]*landmarks[i][1]
+                    )
+            feedback = self.__render_menu(landmarks)
+        elif state == "control":
+            imgScale = self.__render_camera(img)
+            for i in range(2):
+                if landmarks[i] != (-1, -1):
+                    landmarks[i] = (
+                        imgScale[0]*landmarks[i][0],
+                        imgScale[1]*landmarks[i][1]
+                    )
+            feedback = self.__render_control_menu(landmarks)
+        elif state == "game over":
             self.__render_camera(img)
             GameOver(self.__window)
 
@@ -61,7 +75,7 @@ class render:
             elif (sc == 0):
                 feedback = "no score"
                 self.scoreboard.snapshot(self.__window, [correctedLandmark], score=score, save=0)
-            self.__render_hand_command([correctedLandmark])
+            self.__render_cursor([correctedLandmark, (-1, -1)])
 
         elif state == "leaderboard":
             self.__render_camera(img)
@@ -85,8 +99,8 @@ class render:
                     )
 
 
-            boo1 = self.__window.blit(self.images["boo1"], [self.__window.get_width() - self.images["boo1"].get_width(),
-                                                        self.__window.get_height() - self.images["boo1"].get_height()])
+            boo1 = self.__window.blit(self.images["boo1"].image, [self.__window.get_width() - self.images["boo1"].get_width(),
+                                      self.__window.get_height() - self.images["boo1"].get_height()])
 
             font = pygame.font.Font("./resources/SuperMario256.ttf", 50, bold=False)
             text = font.render("Touch Boo when you're ready!", 1, (0,0,0))
@@ -94,7 +108,7 @@ class render:
                                       self.__window.get_height()/4 - text.get_height()/2])
 
             self.scoreboard.display(self.__window, landmarks) # Draw Square
-            self.__render_hand_command([landmarks[1][0]])
+            self.__render_cursor([landmarks])
             if (boo1.collidepoint(landmarks[1][0])):
                 return "ok pic"
 
@@ -181,14 +195,13 @@ class render:
         coin = font.render("{:03}".format(coins), 1, white)
         
         lives = font.render("{:02}".format(lives), 1, white)
-        self.images["mario2"] = pygame.transform.scale(self.images["mario2"], 
-                                                      (int(HUD.get_height()), int(HUD.get_height())))
-        self.images["coin"] = pygame.transform.scale(self.images["coin"], (int(HUD.get_height()), int(HUD.get_height())))
-        HUD.blit(self.images["mario2"], (0,0))
+        self.images["mario2"].resize((int(HUD.get_height()), int(HUD.get_height())))
+        self.images["coin"].resize((int(HUD.get_height()), int(HUD.get_height())))
+        HUD.blit(self.images["mario2"].image, (0,0))
         HUD.blit(x, ((HUD.get_height(), x.get_height()/3)))
         HUD.blit(lives, (HUD.get_height() + x.get_width(), 10))
         HUD.blit(score, (HUD.get_width()/2-score.get_width()/2, 10))
-        HUD.blit(self.images["coin"], (HUD.get_width() - HUD.get_height() - x.get_width() - coin.get_width(),0))
+        HUD.blit(self.images["coin"].image, (HUD.get_width() - HUD.get_height() - x.get_width() - coin.get_width(),0))
         HUD.blit(x, (HUD.get_width() - coin.get_width() - x.get_width(), x.get_height()/3))
         HUD.blit(coin, (HUD.get_width() - coin.get_width(), 10))
         
@@ -230,4 +243,91 @@ class render:
 
         if file.BackGroundX2 < file.BackGround.get_width() * -1:
             file.BackGroundX2 = file.BackGround.get_width()
+    def __load_images(self):
+        self.images = {}
+        self.gifs = {}
+        
+        gif_size = [self.__window.get_width(), self.__window.get_height()]
+        size = [int(self.__window.get_width()/6), self.__window.get_height()/8]
+        logo_size = [900, 400]
+        tip_size = [75, 85]
 
+        ctrl_gif_size = [500, 500]
+        controls_size = [750, 150]
+        back_size = [180, 100]
+        tip_size = [75, 85]
+
+        # HUD
+        self.images["coin"] = image("./sprite/bonus/Coin.png", self.__window)
+        self.images["mario2"] = image("./resources/mario2.png", self.__window)
+        self.images["boo1"] = image("./resources/boo1.png", self.__window, (int(self.__window.get_height()/3), 
+                                                                           int(self.__window.get_height()/3)))
+        # main menu 
+        self.images["play"] = image("Images/play_menu.png", self.__window, size, (2.6, 2))
+        self.images["ctrl_menu"] = image("Images/controls_menu.png", self.__window, size, (-0.6, 2))
+        self.images["score"] = image("Images/scores_menu.png", self.__window, size, (1, -1))
+        # self.images["quit"] = image("Images/quit_menu.png", self.__window, size, (-0.6, -1))
+        self.images["logo"] = image("Images/logo_menu.png", self.__window, logo_size, (1, 3))
+        self.images["star"] = image("Images/Star.PNG", self.__window, tip_size, (1, 1))
+        self.images["background"] = image("Images/background.PNG", self.__window, [self.__window.get_width(), self.__window.get_height()])
+        # ctrl menu
+        self.images["ctrl"] = image("Images/controls_.png", self.__window, controls_size, position=(1, 6.5))
+        self.images["back"] = image("Images/back_.png", self.__window, back_size, position=(9.5, 9))
+        # gifs
+        self.gifs["menu"] = gif(position=(1, 1), size=gif_size, foldername="Image_Menu", window=self.__window, limit=49)
+
+        self.gifs["ctrl_right"] = gif(position=(-1.5, 0.8), size=ctrl_gif_size, foldername="Image_right", window=self.__window, limit=23)
+        self.gifs["ctrl_left"] = gif(position=(3.5, 0.8), size=ctrl_gif_size, foldername="Image_left", window=self.__window, limit=23)
+        self.gifs["jump_duck"] = gif(position=(1, 0.8), size=ctrl_gif_size, foldername="Image_jumpduck", window=self.__window, limit=17)
+        
+    def __render_menu(self, landmarks):
+        
+        self.images["background"].display()
+        self.images["play"].display()
+        self.images["ctrl_menu"].display()
+        self.images["score"].display()
+        # self.images["quit"].display()
+        self.images["score"].display()
+        self.images["logo"].display()
+        
+        self.gifs["menu"].draw()
+
+        # self.__window.blit(self.images["star"].image, landmarks[0])
+        if landmarks[0] != (-1, -1) or landmarks[1] != (-1, -1):
+            self.__render_cursor(landmarks)
+            if self.images["play"].collide(landmarks[0]) or self.images["play"].collide(landmarks[1]):
+                return "play"
+            elif self.images["ctrl_menu"].collide(landmarks[0]) or self.images["ctrl_menu"].collide(landmarks[1]):
+                return "ctrl"
+            elif self.images["score"].collide(landmarks[0]) or self.images["score"].collide(landmarks[1]):
+                self.scoreboard.show(self.__window)
+                return
+            # elif self.images["quit"].collide(landmarks[0]) or self.images["quit"].collide(landmarks[1]):
+            #     return "quit"
+
+    def __render_control_menu(self, landmarks):
+        self.images["background"].display()
+
+        self.images["ctrl"].display()
+        self.images["back"].display()
+
+        self.gifs["ctrl_right"].draw()
+        self.gifs["ctrl_left"].draw()
+        self.gifs["jump_duck"].draw()
+
+        if landmarks[0] != (-1, -1) or landmarks[1] != (-1, -1):
+            self.__render_cursor(landmarks)
+
+            if self.images["back"].collide(landmarks[0]) or self.images["back"].collide(landmarks[1]):
+                return "back"
+    def __render_cursor(self, landmarks):
+        if len(landmarks) != 2:
+            return
+        if landmarks[0] != (-1, -1):
+                self.__window.blit(self.images["star"].image, 
+                                   (landmarks[0][0] - self.images["star"].get_width()/2, 
+                                   landmarks[0][1] - self.images["star"].get_height()/2))
+        elif landmarks[1] != (-1, -1):
+                self.__window.blit(self.images["star"].image, 
+                                   (landmarks[1][0] - self.images["star"].get_width()/2, 
+                                   landmarks[1][1] - self.images["star"].get_height()/2))

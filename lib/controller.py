@@ -65,9 +65,7 @@ class controller:
 
     def get_commands(self, state=0, img=[], Sampling=1):
         if self.__frame_count-1 <= 0:
-            if state == "game":
-                return self.__hand_detector(img)
-            if state in ["save score?", "game over"]:
+            if state in ["save score?", "game over",  "game", "menu", "control"]:
                 return self.__hand_detector(img)
             if state == "prepare pic" or state == "pic":
                 com, debug, f = self.__face_detector(img, key_point=[2, 4, 5])
