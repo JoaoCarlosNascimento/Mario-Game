@@ -37,7 +37,7 @@ class game:
 
     def __init__(self):
         pygame.init()
-        self.__fps = 60
+        self.__fps = 30
         self.__clock = pygame.time.Clock()
 
         self.__camera = camera()
@@ -64,16 +64,25 @@ class game:
     
     def __loop(self):
         feedback2 = ""
+        Sampling = 2
         while(self.__loop_cond):
             # Detecta Inputs do teclado
             fake_command = self.__keyboard_event()
             # self.__event()
             self.__score = self.__fps // 5 - 6 + self.__bonus_value
-            # Recebe imagem da camera
-            image = self.__camera.take_image()
 
-            # Recebe commandos
-            command, debug, landmarks = self.__controller.get_commands(state=self.__state, img=image)
+        
+            if self.__state == "game":
+                # Recebe imagem da camera
+                image = self.__camera.take_image(Sampling=Sampling)
+                # Recebe commandos
+                command, debug, landmarks = self.__controller.get_commands(state=self.__state, img=image,Sampling=Sampling)
+            else:
+                # Recebe imagem da camera
+                image = self.__camera.take_image(Sampling=1)
+                # Recebe commandos
+                command, debug, landmarks = self.__controller.get_commands(state=self.__state, img=image,Sampling=1)
+
 
             # Aplica fisica
             self.__bonus_value, self.__lives, feedback1, debug = self.__physics.update(state=self.__state,

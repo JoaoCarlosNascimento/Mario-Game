@@ -54,7 +54,7 @@ class controller:
                                                                     smooth_landmarks=True,
                                                                     model_complexity=1,
                                                                     enable_segmentation=False,
-                                                                    min_detection_confidence=0.5)
+                                                                    min_detection_confidence=0.4)
 
         self.__detectors['Body']['LastCommands'] = []
         self.__detectors['Body']['Landmarks'] = []
@@ -64,9 +64,12 @@ class controller:
         self.__res = (0,0)
 
     def get_commands(self, state=0, img=[], Sampling=1):
+        if state != "game":
+            Sampling = 1
         if self.__frame_count-1 <= 0:
             if state == "game":
-                return self.__hand_detector(img)
+                return self.__body_detector(img,0)
+                # return self.__hand_detector(img)
             if state in ["save score?", "game over"]:
                 return self.__hand_detector(img)
             if state == "prepare pic" or state == "pic":
@@ -150,8 +153,9 @@ class controller:
         if self.__res == (0,0):
             self.__res = (img.shape[1],img.shape[0])
 
-        frameCV_RGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        results = self.__detectors['Body']['Detector'].process(frameCV_RGB)
+        # frameCV_RGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        results = self.__detectors['Body']['Detector'].process(
+            cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 
         if results.pose_landmarks:
             self.__detectors['Body']['Landmarks'] = results.pose_landmarks
@@ -160,39 +164,26 @@ class controller:
                 landmark.x = self.__res[0] - landmark.x*self.__res[0]
                 landmark.y = landmark.y*self.__res[1]
             
-            if state == 0:
-                command = 0b0000 # |R|L|C|J|
-                ret = {}
-                debug = "Controller Debug:\n"
-                movR, retB = self.__detect_move_right(self.__detectors['Body']['Landmarks'].landmark)
-                command = command | (0b1000 & movR << 3)
-                debug += ('\t'+'Move R: ({stat})'.format(stat=movR)+'\n'+'\t\t'+retB+'\n')
-                movL, retB = self.__detect_move_left(self.__detectors['Body']['Landmarks'].landmark)
-                command = command | (0b0100 & movL << 2)
-                debug += ('\t' +'Move L: ({stat})'.format(stat=movL)+'\n'+'\t\t'+retB+'\n')
-                movC, retB = self.__detect_crouch(self.__detectors['Body']['Landmarks'].landmark)
-                command = command | (0b0010 & movC << 1)
-                debug += ('\t' +'Crouch: ({stat})'.format(stat=movC)+'\n'+'\t\t'+retB+'\n')
+            command = 0b0000 # |R|L|C|J|
+            # ret = {}
+            debug = ""
+            # debug = "Controller Debug:\n"
+            movR, retB = self.__detect_move_right(self.__detectors['Body']['Landmarks'].landmark)
+            command = command | (0b1000 & movR << 3)
+            # debug += ('\t'+'Move R: ({stat})'.format(stat=movR)+'\n'+'\t\t'+retB+'\n')
+            movL, retB = self.__detect_move_left(self.__detectors['Body']['Landmarks'].landmark)
+            command = command | (0b0100 & movL << 2)
+            # debug += ('\t' +'Move L: ({stat})'.format(stat=movL)+'\n'+'\t\t'+retB+'\n')
+            movC, retB = self.__detect_crouch(self.__detectors['Body']['Landmarks'].landmark)
+            command = command | (0b0010 & movC << 1)
+            # debug += ('\t' +'Crouch: ({stat})'.format(stat=movC)+'\n'+'\t\t'+retB+'\n')
 
-                movC, retB = self.__detect_jump(self.__detectors['Body']['Landmarks'].landmark)
-                command = command | (0b0001 & movC << 0)
-                debug += ('\t' +'Jump: ({stat})'.format(stat=movC)+'\n'+'\t\t'+retB+'\n')
+            movC, retB = self.__detect_jump(self.__detectors['Body']['Landmarks'].landmark)
+            command = command | (0b0001 & movC << 0)
+            # debug += ('\t' +'Jump: ({stat})'.format(stat=movC)+'\n'+'\t\t'+retB+'\n')
 
-                debug += ('\t'+"Command: {0:b}".format(command)+'\n')
-                # ret['landmarks'] = self.__detectors['Body']['Landmarks'].landmark
-                # ret['com'] = command
-                return command, debug, self.__detectors['Body']['Landmarks'].landmark
-            # elif state == 1:
-            #     ret = {}
-            #     mov, ret['debug'] = self.__detect_move_right(self.__detectors['Body']['Landmarks'].landmark)
-            #     ret['landmarks'] = self.__detectors['Body']['Landmarks'].landmark
-            #     return ret
-            # elif state == 2:
-            #     self.__detect_move_left(self.__detectors['Body']['Landmarks'].landmark)
-            # elif state == 3:
-            #     self.__detect_crouch(self.__detectors['Body']['Landmarks'].landmark)
-            # elif state == 4:
-            #     self.__detect_jump(self.__detectors['Body']['Landmarks'].landmark)
+            # debug += ('\t'+"Command: {0:b}".format(command)+'\n')
+            return command, debug, self.__detectors['Body']['Landmarks'].landmark
 
             return 0b0000, "", self.__detectors['Body']['Landmarks'].landmark
         else:

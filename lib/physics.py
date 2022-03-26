@@ -64,9 +64,10 @@ class physics:
         if ((commands & 0b0100) == 0b0100): # Move Left
             com_acc[0] -= self.__com_acc[0]
         if ((commands & 0b0010) == 0b0010):  # Move Crouch
+            self.ducking = True
             # print("Move C")
             # com_acc[1] += self.__com_acc[1]
-            pass
+
         if ((commands & 0b0001) == 0b0001):  # Move Jump
             if entity.velocity[1] == 0 and entity.position[1] > 829:
                 entity.velocity[1] = -self.__vel_lim[1]
@@ -80,9 +81,14 @@ class physics:
         # Composição das acelerações
         if entity.position[1] > 829:
             acc = (com_acc+friction)
+            self.jumping = True
+            self.falling = False
         else:
             friction[0]*=0.15
             acc = (com_acc+self.__grav_acc+friction)
+            self.jumping = False
+            self.falling = True
+            # self.falling = False
 
         # Atualização das velocidades
         entity.velocity = entity.velocity + acc*dt
@@ -109,38 +115,38 @@ class physics:
         return "dt: {dt}\nVelocity: [{x:.2f},{y:.2f}]\nPosition: [{xp:.2f},{yp:.2f}]".format(dt=dt,x=entity.velocity[0],y=entity.velocity[1],xp=entity.position[0],yp=entity.position[1])
         
 
-    def __detect_colisions(self,entity_list):
-        for entity in entity_list:
-            filt_entity_list = []
-            for ent in entity_list:
-                if ent != entity:
-                    filt_entity_list.append(ent)
+    # def __detect_colisions(self,entity_list):
+    #     for entity in entity_list:
+    #         filt_entity_list = []
+    #         for ent in entity_list:
+    #             if ent != entity:
+    #                 filt_entity_list.append(ent)
             
 
-            #print(filt_entity_list)
-        pass
+    #         #print(filt_entity_list)
+    #     pass
 
-    def keyboards_input(self, character):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE] or keys[pygame.K_UP]:
-            if not character.jumping and not character.falling:
-                character.jumping = True
-                pygame.mixer.Sound.play(file.Jump)
+    # def keyboards_input(self, character):
+    #     keys = pygame.key.get_pressed()
+    #     if keys[pygame.K_SPACE] or keys[pygame.K_UP]:
+    #         if not character.jumping and not character.falling:
+    #             character.jumping = True
+    #             pygame.mixer.Sound.play(file.Jump)
 
-        # Mover Para a Direita
-        if keys[pygame.K_RIGHT]:
-            character.position[0] += file.Screen_Width / 60
-            character.LookingRight = True
+    #     # Mover Para a Direita
+    #     if keys[pygame.K_RIGHT]:
+    #         character.position[0] += file.Screen_Width / 60
+    #         character.LookingRight = True
 
-        # Mover Para a Esquerda
-        if keys[pygame.K_LEFT]:
-            character.position[0] -= file.Screen_Width / 60
-            character.LookingRight = False
+    #     # Mover Para a Esquerda
+    #     if keys[pygame.K_LEFT]:
+    #         character.position[0] -= file.Screen_Width / 60
+    #         character.LookingRight = False
 
-        if keys[pygame.K_DOWN]:
-            if not character.ducking and not character.falling:
-                character.ducking = True
-                pygame.mixer.Sound.play(file.Duck)
+    #     if keys[pygame.K_DOWN]:
+    #         if not character.ducking and not character.falling:
+    #             character.ducking = True
+    #             pygame.mixer.Sound.play(file.Duck)
 
     def verify_collision(self, bonus_val, enemies, mario, plus, start_timer):
         # Move Obstacle/Enemy

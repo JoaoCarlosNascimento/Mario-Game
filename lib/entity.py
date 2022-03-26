@@ -79,7 +79,7 @@ class player(entity):
     def draw(self, window, y=0):
         # print(self.position)
 
-        if self.LookingRight:
+        if self.velocity[0] >= 0:
             self.run = file.run_anim
             self.jump = file.jump
             self.duck = file.duck
@@ -92,15 +92,15 @@ class player(entity):
             self.duck = file.flip_duck
             self.fall = file.flip_fall
 
-        if self.jumping:
+        if self.position[1] < 829:
             if self.falling:
                 self.hitbox = (0, 0, 0, 0)
-                self.position[1] -= file.jumpList[self.jumpCount] * 1.2
+                # self.position[1] -= file.jumpList[self.jumpCount] * 1.2
                 window.blit(self.fall[0], (self.position[0], self.position[1]))
             else:
                 # Hitbox do Mario a Saltar
                 self.hitbox = (self.position[0] + x_offset, self.position[1] + 30, self.size[0] - 24, self.size[1] + 20)
-                self.position[1] -= file.jumpList[self.jumpCount] * 1.2
+                # self.position[1] -= file.jumpList[self.jumpCount] * 1.2
                 window.blit(self.jump[self.jumpCount // 18], (self.position[0], self.position[1]))
 
             self.jumpCount += 1

@@ -217,7 +217,6 @@ class render:
         if Movement_x <= -70:
             file.window.blit(file.Loser_Text, file.LoserRect)
 
-        pygame.display.update()  # updates the screen
 
     # Atualiza BackGround
     def check_BackGround(self):
