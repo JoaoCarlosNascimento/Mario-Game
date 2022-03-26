@@ -60,7 +60,7 @@ class scoreboard:
         # background
         leaderboard_screen = pygame.Surface((0.95*window.get_width(), 0.95*window.get_height()))
         leaderboard_screen.fill(black)
-        leaderboard_screen.set_alpha(100)
+        leaderboard_screen.set_alpha(300)
         
         vertical_line = pygame.Surface((0.01*leaderboard_screen.get_width(), leaderboard_screen.get_height()))
         vertical_line.fill(white)
@@ -93,7 +93,7 @@ class scoreboard:
             e.render()
         
         leaderboard_screen.blit(score_screen, (0, fontsize + 30))
-        leaderboard_screen.blit(vertical_line, (leaderboard_screen.get_width()/2, fontsize+20))
+        leaderboard_screen.blit(vertical_line, (leaderboard_screen.get_width()/2, fontsize+27))
 
         window.blit(leaderboard_screen, (round(0.025*self.screensize[0]),round(0.025*self.screensize[1])))
     

@@ -21,22 +21,22 @@ state: 0
 detector = HandDetector(detectionCon=0.8, maxHands=2)
 Screen_Width, Screen_Height = pyautogui.size()
 
-window = pygame.display.set_mode((game.Screen_Width, game.Screen_Height))
+window = pygame.display.set_mode((Screen_Width, Screen_Height))
 pygame.display.set_caption("Mario")
 
 fps = 60
 clock = pygame.time.Clock()
 
 # well done
-imgWell_done, rectWell_done = images.load_image(file_name='Images/well_done.png',
+imgWell_done, rectWell_done = images.load_image( Screen_Width, Screen_Height, file_name='Images/well_done.png',
                                                 img_size=well_done_size,
                                                 translation=(1, 6.5))
 # Finger Tip
-imgTip, rectTip = images.load_image(file_name='Images/Star.PNG',
+imgTip, rectTip = images.load_image( Screen_Width, Screen_Height, file_name='Images/Star.PNG',
                                     img_size=tip_size,
                                     translation=(1, 3))
 # background of this menu
-imgBackground, rectBackground = images.load_image(file_name='Images/back_over.png',
+imgBackground, rectBackground = images.load_image( Screen_Width, Screen_Height, file_name='Images/back_over.png',
                                     img_size=back_over_size,
                                     translation=(1, 1))
 

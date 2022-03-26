@@ -10,7 +10,7 @@ import os
 import pyautogui
 import images
 import controls
-import game_over
+import well_done
 from lib.scoreboard import scoreboard
 
 if(len(sys.argv) > 1):
@@ -36,49 +36,49 @@ state: 0
 detector = HandDetector(detectionCon=0.8, maxHands=2)
 Screen_Width, Screen_Height = pyautogui.size()
 # Images
-screen_size = [(game.Screen_Width - game.Screen_Width) / 2,
-               (game.Screen_Height - game.Screen_Height) / 2]
+screen_size = [(Screen_Width - Screen_Width) / 2,
+               (Screen_Height - Screen_Height) / 2]
 
 # Webcam inputs
-Winputs = myAux.webcamInputs(src=camSrc, scale=0.7, subSampling=3, windowRes=(game.Screen_Width, game.Screen_Height),
+Winputs = myAux.webcamInputs(src=camSrc, scale=0.7, subSampling=3, windowRes=(Screen_Width, Screen_Height),
                              offset=(screen_size[0], screen_size[1]), detector='Menu')
 
-window = pygame.display.set_mode((game.Screen_Width, game.Screen_Height))
+window = pygame.display.set_mode((Screen_Width, Screen_Height))
 pygame.display.set_caption("Mario")
 
 fps = 60
 clock = pygame.time.Clock()
 
 # Play button -> done
-imgPlay, rectPlay = images.load_image(file_name='Images/play_menu.png',
+imgPlay, rectPlay = images.load_image( Screen_Width, Screen_Height, file_name='Images/play_menu.png',
                                       img_size=play_size,
                                       translation=(2.6, 2))
 # controls button
-imgControl, rectControl = images.load_image(file_name='Images/controls_menu.png',
+imgControl, rectControl = images.load_image( Screen_Width, Screen_Height, file_name='Images/controls_menu.png',
                                       img_size=controls_size,
                                       translation=(-0.6, 2))
 # Scores button
-imgScore, rectScore = images.load_image(file_name='Images/scores_menu.png',
+imgScore, rectScore = images.load_image( Screen_Width, Screen_Height, file_name='Images/scores_menu.png',
                                       img_size=scores_size,
                                       translation=(2.6, -1))
 # Quit button
-imgQuit, rectQuit = images.load_image(file_name='Images/quit_menu.png',
+imgQuit, rectQuit = images.load_image( Screen_Width, Screen_Height, file_name='Images/quit_menu.png',
                                       img_size=quit_size,
                                       translation=(-0.6, -1))
 # Logo Mario
-imgLogo, rectLogo = images.load_image(file_name='Images/logo_menu.png',
+imgLogo, rectLogo = images.load_image( Screen_Width, Screen_Height, file_name='Images/logo_menu.png',
                                       img_size=logo_size,
                                       translation=(1, 3))
 # Finger Tip
-imgTip, rectTip = images.load_image(file_name='Images/Star.PNG',
+imgTip, rectTip = images.load_image( Screen_Width, Screen_Height, file_name='Images/Star.PNG',
                                       img_size=tip_size,
                                       translation=(1, 3))
 # background
-imgBg, rectBg = images.load_image(file_name='Images/background.png',
+imgBg, rectBg = images.load_image( Screen_Width, Screen_Height, file_name='Images/background.png',
                                   img_size=(1920, 1080),
                                   translation=(1, 1))
 # menu gif
-gif_Menu = images.load_gif("Image_Menu", "Menu", gif_size, (1, 0.57))
+gif_Menu = images.load_gif( Screen_Width, Screen_Height, "Image_Menu", "Menu", gif_size, (1, 0.57))
 
 # Variables
 speed = 10

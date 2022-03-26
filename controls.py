@@ -26,34 +26,34 @@ state: 0
 detector = HandDetector(detectionCon=0.8, maxHands=2)
 Screen_Width, Screen_Height = pyautogui.size()
 
-window = pygame.display.set_mode((game.Screen_Width, game.Screen_Height))
+window = pygame.display.set_mode((Screen_Width, Screen_Height))
 pygame.display.set_caption("Mario")
 
 fps = 60
 clock = pygame.time.Clock()
 
 # controls
-imgControl, rectControl = images.load_image(file_name='Images/controls_.png',
+imgControl, rectControl = images.load_image( Screen_Width, Screen_Height, file_name='Images/controls_.png',
                                             img_size=controls_size,
                                             translation=(1, 6.5))
 # back
-imgBack, rectBack = images.load_image(file_name='Images/back_.png',
+imgBack, rectBack = images.load_image( Screen_Width, Screen_Height, file_name='Images/back_.png',
                                       img_size=back_size,
                                       translation=(9.5, 9))
 # Finger Tip
-imgTip, rectTip = images.load_image(file_name='Images/Star.PNG',
+imgTip, rectTip = images.load_image( Screen_Width, Screen_Height, file_name='Images/Star.PNG',
                                       img_size=tip_size,
                                       translation=(1, 3))
 
 # to the right
-gif_Right = images.load_gif("Image_right", "right", gif_right_size, (-1.5, 0.8))
+gif_Right = images.load_gif( Screen_Width, Screen_Height, "Image_right", "right", gif_right_size, (-1.5, 0.8))
 # jump and duck
-gif_Middle = images.load_gif("Image_jumpduck", "jumpduck", gif_middle_size, (1, 0.8))
+gif_Middle = images.load_gif( Screen_Width, Screen_Height, "Image_jumpduck", "jumpduck", gif_middle_size, (1, 0.8))
 # to the left
-gif_Left = images.load_gif("Image_left", "left", gif_left_size, (3.5, 0.8))
+gif_Left = images.load_gif( Screen_Width, Screen_Height, "Image_left", "left", gif_left_size, (3.5, 0.8))
 
 # background
-imgBg, rectBg = images.load_image(file_name='Images/background.png',
+imgBg, rectBg = images.load_image( Screen_Width, Screen_Height, file_name='Images/background.png',
                                   img_size=(1920, 1080),
                                   translation=(1, 1))
 # Variables
