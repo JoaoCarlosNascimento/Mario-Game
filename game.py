@@ -15,7 +15,7 @@ from lib.scoreboard import scoreboard
 from lib.map_gen import map_gen
 from lib.camera import camera
 import lib.load_files as file
-
+import os
 ## States
 #
 # Utilizar valores negativos para os cenarios de testes
@@ -35,10 +35,11 @@ class game:
         self.__fps = 60
         self.__camera = camera()
         image = self.__camera.take_image()
+        # os.environ['SDL_WINDOWID'] = str(self.winfo_id())
         
-        pygame.init()
+        self.__window_size = (1920, 1080)
 
-        self.__window_size = (1920,1080)
+        pygame.init()
         self.__clock = pygame.time.Clock()
         self.__render = render(window_size=self.__window_size)
         self.__controller = controller()
