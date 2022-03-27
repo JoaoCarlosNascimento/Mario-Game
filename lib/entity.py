@@ -80,7 +80,7 @@ class player(entity):
         self.sprites.append({"run": file.flip_run_anim, "jump": file.flip_jump,
                             "duck": file.flip_duck, "fall": file.flip_fall, "offset": 30})
         self.sprites.append({"run": file.run_anim,"jump": file.jump,"duck": file.duck,"fall": file.fall,"offset":50})
-
+        
 
         self.animationPose = self.position
         self.lastAnimationFrame = False
@@ -111,8 +111,13 @@ class player(entity):
         # if self.velocity[0] >= 0
         if np.abs(self.velocity[0]) > 0:
             self.direction = self.velocity[0] >= 0 # False - Left e True - Right
-
-        if self.position[1] < self.floor-1:
+        if self.hit and not self.on_cooldown():
+            window.blit(self.sprites[self.direction]["fall"][0],
+                        (self.position[0], self.position[1]))
+            self.hitbox = (self.position[0], self.position[1], 
+                            self.sprites[self.direction]["fall"][0].get_width(), 
+                            self.sprites[self.direction]["fall"][0].get_height())
+        elif self.position[1] < self.floor-1:
             if not self.ducking:
                 # Comando jump
                 window.blit(self.sprites[self.direction]["jump"][self.animation_frame()],
