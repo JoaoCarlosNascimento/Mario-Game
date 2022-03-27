@@ -3,7 +3,7 @@ import cv2
 import pygame
 from cvzone.HandTrackingModule import HandDetector
 from pygame import *
-import old.myTools as myAux
+import aux_.myTools as myAux
 import game
 import sys
 import os

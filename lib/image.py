@@ -1,12 +1,12 @@
 import pygame
 class image():
-    def __init__(self, string,  window, size=[], position = []):
+    def __init__(self, string,  window, size=[], position = (1, 1)):
         self.load(string)
         self.window = window
         if size != []:
             self.resize(size)
-        if position != []:
-            self.position(position)
+        # if position != []:
+        self.position(position)
         pass
     def load(self, string):
         self.image = pygame.image.load(string).convert_alpha()

@@ -27,30 +27,32 @@ import lib.load_files as file
 # -13   - Teste de inputs de corpo
 
 # -135  - Teste De Geração do Mapa
-
 class game:
     __loop_cond = True
 
     def __init__(self):
-        pygame.init()
+        
         self.__fps = 30
-        self.__clock = pygame.time.Clock()
-
         self.__camera = camera()
         image = self.__camera.take_image()
-        self.__render = render(window_size=(1920,1080))
+        
+        pygame.init()
+
+        self.__window_size = (image.shape[1],image.shape[0])
+        self.__clock = pygame.time.Clock()
+        self.__render = render(window_size=self.__window_size)
         self.__controller = controller()
         self.__logic = logic()
         self.__physics = physics()
         self.__entities = []
-        self.__scoreboard = scoreboard((1920,1080))
+        self.__scoreboard = scoreboard(self.__window_size)
         self.__map_gen = map_gen()
 
         self.__bonus_value = 0
         self.__score = 0
         self.__lives = 3
-        self.__mario = player((1920 / 10, 1080 / 1.3), (100, 95), True)
-        self.__state = "control"
+        self.__mario = player((self.__window_size[0] / 10, self.__window_size[1] / 1.3), (100, 95), True)
+        self.__state = "game over"
 
     def start(self):
         self.__entities.append(self.__mario)

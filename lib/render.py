@@ -3,7 +3,7 @@ import pygame
 import numpy as np
 import cv2
 from lib.entity import entity
-from lib.text import TextBox, GameOver, saveScore
+from lib.text import TextBox
 from lib.scoreboard import scoreboard
 import lib.load_files as file
 import time
@@ -18,12 +18,14 @@ black = (0, 0, 0)
 
 class render:
     def __init__(self, window_size=(1920,1080)):
-        self.__window = pygame.display.set_mode(window_size)
+        self.__window = pygame.display.set_mode(window_size, flags=pygame.FULLSCREEN)
         # self.currenttime = int(round(time.time() * 1000))
         self.scoreboard = scoreboard(window_size)
         self.counter = 3
+        self.__window_size = window_size
         self.__load_images()
-
+        self.__load_fonts()
+        
     def draw(self, state=0, img=[], entities=[], command=[], landmarks=[],debug="", bonus_val = 0, lives = 3, score = 0):
         enemies = []
         obstacles = []
@@ -61,7 +63,8 @@ class render:
             feedback = self.__render_control_menu(landmarks)
         elif state == "game over":
             self.__render_camera(img)
-            GameOver(self.__window)
+            # GameOver(self.__window)
+            self.__render_gameOver()
 
         elif state == "save score?":
             scale_factor = self.__render_camera(img)
@@ -69,7 +72,7 @@ class render:
             correctedLandmark = (scale_factor[0]*landmarks[0][0],scale_factor[1]*landmarks[0][1])
             # print(correctedLandmark)
 
-            sc = saveScore(self.__window, score, hand_pos=correctedLandmark)
+            sc = self.__render_saveScore(score, correctedLandmark)
             if (sc == 1):
                 feedback = "yes score"
             elif (sc == 0):
@@ -102,8 +105,8 @@ class render:
             boo1 = self.__window.blit(self.images["boo1"].image, [self.__window.get_width() - self.images["boo1"].get_width(),
                                       self.__window.get_height() - self.images["boo1"].get_height()])
 
-            font = pygame.font.Font("./resources/SuperMario256.ttf", 50, bold=False)
-            text = font.render("Touch Boo when you're ready!", 1, (0,0,0))
+            # font = pygame.font.Font("./resources/SuperMario256.ttf", 50, bold=False)
+            text = self.fonts["normal"].render("Touch Boo when you're ready!", 1, (0,0,0))
             self.__window.blit(text, [self.__window.get_width()/2 - text.get_width()/2, 
                                       self.__window.get_height()/4 - text.get_height()/2])
 
@@ -182,8 +185,8 @@ class render:
                 if com != (-1,-1):
                     pygame.draw.circle(self.__window, (191, 39, 28), (com.x,com.y), 15)
 
-    def __render_HUD(self, window, lives, score, coins):
-        HUD = pygame.Surface((window.get_width(), window.get_height()/8),  pygame.SRCALPHA, 32)
+    def __render_HUD(self, lives, score, coins):
+        HUD = pygame.Surface((self.__window_size[0], self.__window_size[1]/8),  pygame.SRCALPHA, 32)
 
         font = pygame.font.Font("./resources/SuperMario256.ttf", HUD.get_height(), bold=False)
         font_s = pygame.font.Font("./resources/SuperMario256.ttf", int(HUD.get_height()*0.8), bold=False)
@@ -203,7 +206,7 @@ class render:
         HUD.blit(x, (HUD.get_width() - coin.get_width() - x.get_width(), x.get_height()/3))
         HUD.blit(coin, (HUD.get_width() - coin.get_width(), 10))
         
-        window.blit(HUD, (0,0))
+        self.__window.blit(HUD, (0,0))
 
     # Função Utilizada Durante o Jogo Para Desenhar HUD(Score e Vidas), Inimigos, Bónus, Mario e Obstáculos
     def redrawWindow(self,Movement_x, objects, bonus, runner, score, lives):
@@ -212,7 +215,7 @@ class render:
         self.__window.blit(file.BackGround, (file.BackGroundX, 0))  # draws our first BackGround image
         file.window.blit(file.BackGround, (file.BackGroundX2, 0))  # draws the second BackGround image
 
-        self.__render_HUD(self.__window, lives, score, 0)
+        self.__render_HUD(lives, score, 0)
 
         # Objectos = Lista que Contém Inimigos/Obstáculos
         for x in objects:
@@ -227,7 +230,6 @@ class render:
         # Condição que Verifica se Mario Saiu Do Ecrã
         if Movement_x <= -70:
             file.window.blit(file.Loser_Text, file.LoserRect)
-
 
     # Atualiza BackGround
     def check_BackGround(self):
@@ -244,8 +246,8 @@ class render:
         self.images = {}
         self.gifs = {}
         
-        gif_size = [self.__window.get_width(), self.__window.get_height()]
         size = [int(self.__window.get_width()/6), self.__window.get_height()/8]
+        well_done_size = [950, 150]
         logo_size = [900, 400]
         tip_size = [75, 85]
 
@@ -265,33 +267,42 @@ class render:
         self.images["score"] = image("Images/scores_menu.png", self.__window, size, (1, -1))
         self.images["logo"] = image("Images/logo_menu.png", self.__window, logo_size, (1, 3))
         self.images["star"] = image("Images/Star.PNG", self.__window, tip_size, (1, 1))
-        self.images["background"] = image("Images/background.PNG", self.__window, [self.__window.get_width(), self.__window.get_height()])
+        self.images["background"] = image("Images/background.PNG", self.__window, self.__window_size)
         # ctrl menu
         self.images["ctrl"] = image("Images/controls_.png", self.__window, controls_size, position=(1, 6.5))
         self.images["back"] = image("Images/back_.png", self.__window, back_size, position=(9.5, 9))
         self.images["right"] = image("Images/right_direction.png", self.__window, dir_size, position=(-8, -2.5))
         self.images["left"] = image("Images/left_direction.png", self.__window, dir_size, position=(10, -2.5))
         
+        # game over
+        self.images["well_done"] = image('Images/well_done.png', self.__window, well_done_size)
+        self.images["game_over_background"] = image('Images/back_over.png', self.__window, self.__window_size)
+        # save score?
+        self.images["lakitu"] = image("./resources/lakitu.png", self.__window, (500, 600), (1, 0))
+
         # gifs
-        self.gifs["menu"] = gif(position=(1, 1), size=gif_size, foldername="Image_Menu", window=self.__window, limit=49)
+        self.gifs["menu"] = gif(position=(1, 1), size=self.__window_size, foldername="Image_Menu", window=self.__window, limit=49)
 
         self.gifs["ctrl_right"] = gif(position=(-1.5, 0.8), size=ctrl_gif_size, foldername="Image_right", window=self.__window, limit=23)
         self.gifs["ctrl_left"] = gif(position=(3.5, 0.8), size=ctrl_gif_size, foldername="Image_left", window=self.__window, limit=23)
         self.gifs["jump_duck"] = gif(position=(1, 0.8), size=ctrl_gif_size, foldername="Image_jumpduck", window=self.__window, limit=17)
-        
+    def __load_fonts(self):
+        self.fonts = {}
+        self.fonts["big"] = pygame.font.Font("./resources/SuperMario256.ttf", int(self.__window_size[1]/10), bold=False)
+        self.fonts["small"] = pygame.font.Font("./resources/SuperMario256.ttf", int(self.__window_size[1]/20), bold=False)
+        self.fonts["normal"] = pygame.font.Font("./resources/SuperMario256.ttf", int(self.__window_size[1]/15), bold=False)
+
     def __render_menu(self, landmarks):
         
         self.images["background"].display()
         self.images["play"].display()
         self.images["ctrl_menu"].display()
         self.images["score"].display()
-        # self.images["quit"].display()
         self.images["score"].display()
         self.images["logo"].display()
         
         self.gifs["menu"].draw()
 
-        # self.__window.blit(self.images["star"].image, landmarks[0])
         if landmarks[0] != (-1, -1) or landmarks[1] != (-1, -1):
             self.__render_cursor(landmarks)
             if self.images["play"].collide(landmarks[0]) or self.images["play"].collide(landmarks[1]):
@@ -301,8 +312,6 @@ class render:
             elif self.images["score"].collide(landmarks[0]) or self.images["score"].collide(landmarks[1]):
                 self.scoreboard.show(self.__window)
                 return
-            # elif self.images["quit"].collide(landmarks[0]) or self.images["quit"].collide(landmarks[1]):
-            #     return "quit"
 
     def __render_control_menu(self, landmarks):
         self.images["background"].display()
@@ -332,3 +341,33 @@ class render:
                 self.__window.blit(self.images["star"].image, 
                                    (landmarks[1][0] - self.images["star"].get_width()/2, 
                                    landmarks[1][1] - self.images["star"].get_height()/2))
+    def __render_gameOver(self):
+        self.images["game_over_background"].display()
+        self.images["well_done"].display()
+    def __render_saveScore(self, score, landmarks):
+        Text = self.fonts["big"].render("Your Score: " + str(score), 1, black)
+        subText = self.fonts["normal"].render("Would you like to save your picture?", 1, black)
+        yes = self.fonts["normal"].render("Yes", 1, black)
+        no = self.fonts["normal"].render("No", 1, black)
+        
+        background = pygame.Surface(self.__window_size)
+        background.fill(white)
+        background.set_alpha(100)
+
+        self.__window.blit(background, (0,0))
+        self.images["lakitu"].display()
+
+        self.__window.blit(Text, [self.__window_size[0]/2 - Text.get_width()/2, 
+                                  self.__window_size[1]/4 - Text.get_height()/2])
+        self.__window.blit(subText, [self.__window_size[0]/2 - subText.get_width()/2, 
+                                self.__window_size[1]/2 - subText.get_height()/2])
+        yes_rect = self.__window.blit(yes, [self.__window_size[0]/4 - yes.get_width()/2, 
+                                    3*self.__window_size[1]/4 - yes.get_height()/2])
+        no_rect = self.__window.blit(no, [3*self.__window_size[0]/4 - no.get_width()/2, 
+                                    3*self.__window_size[1]/4 - no.get_height()/2])
+
+        if len(landmarks) == 2:
+            if(yes_rect.collidepoint(landmarks)):
+                return 1
+            elif(no_rect.collidepoint(landmarks)):
+                return 0
