@@ -144,8 +144,6 @@ class render:
             self.__render_face_command(landmarks)
         elif(state == -13):
             self.__render_camera(img)
-            # print(command['landmarks'])
-            # if command != [(-1,-1)]:
             if landmarks:
                 self.__render_body_command(landmarks)
                 mytext = TextBox(self.__window, size=20)
@@ -255,7 +253,7 @@ class render:
         controls_size = [750, 150]
         back_size = [180, 100]
         tip_size = [75, 85]
-
+        dir_size = [140, 200]
         # HUD
         self.images["coin"] = image("./sprite/bonus/Coin.png", self.__window)
         self.images["mario2"] = image("./resources/mario2.png", self.__window)
@@ -265,13 +263,15 @@ class render:
         self.images["play"] = image("Images/play_menu.png", self.__window, size, (2.6, 2))
         self.images["ctrl_menu"] = image("Images/controls_menu.png", self.__window, size, (-0.6, 2))
         self.images["score"] = image("Images/scores_menu.png", self.__window, size, (1, -1))
-        # self.images["quit"] = image("Images/quit_menu.png", self.__window, size, (-0.6, -1))
         self.images["logo"] = image("Images/logo_menu.png", self.__window, logo_size, (1, 3))
         self.images["star"] = image("Images/Star.PNG", self.__window, tip_size, (1, 1))
         self.images["background"] = image("Images/background.PNG", self.__window, [self.__window.get_width(), self.__window.get_height()])
         # ctrl menu
         self.images["ctrl"] = image("Images/controls_.png", self.__window, controls_size, position=(1, 6.5))
         self.images["back"] = image("Images/back_.png", self.__window, back_size, position=(9.5, 9))
+        self.images["right"] = image("Images/right_direction.png", self.__window, dir_size, position=(-8, -2.5))
+        self.images["left"] = image("Images/left_direction.png", self.__window, dir_size, position=(10, -2.5))
+        
         # gifs
         self.gifs["menu"] = gif(position=(1, 1), size=gif_size, foldername="Image_Menu", window=self.__window, limit=49)
 
@@ -309,11 +309,13 @@ class render:
 
         self.images["ctrl"].display()
         self.images["back"].display()
+        self.images["right"].display()
+        self.images["left"].display()
 
         self.gifs["ctrl_right"].draw()
         self.gifs["ctrl_left"].draw()
         self.gifs["jump_duck"].draw()
-
+        
         if landmarks[0] != (-1, -1) or landmarks[1] != (-1, -1):
             self.__render_cursor(landmarks)
 
