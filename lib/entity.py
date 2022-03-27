@@ -115,28 +115,31 @@ class player(entity):
                 # Comando jump
                 window.blit(self.sprites[self.direction]["jump"][self.animation_frame()],
                             (self.position[0], self.position[1]))
-                self.hitbox = (self.position[0],self.position[1], self.size[0], self.size[1])
+                self.hitbox = (self.position[0], self.position[1], 
+                               self.sprites[self.direction]["jump"][self.animation_frame()].get_width(), 
+                               self.sprites[self.direction]["jump"][self.animation_frame()].get_height())
 
             else:
                 # Comando jump + duck
                 window.blit(self.sprites[self.direction]["duck"][self.animation_frame()],
                             (self.position[0], self.position[1]))
-                self.hitbox = (self.position[0] + self.sprites[self.direction]["offset"],
-                               self.position[1], self.size[0], self.size[1])
+                self.hitbox = (self.position[0], self.position[1], 
+                               self.sprites[self.direction]["duck"][self.animation_frame()].get_width(), 
+                               self.sprites[self.direction]["duck"][self.animation_frame()].get_height())
 
         else:
             if not self.ducking:
                 # Comando run
                 window.blit(self.sprites[self.direction]["run"][self.animation_frame()],
                             (self.position[0], self.position[1]))
-                self.hitbox = (self.position[0] + self.sprites[self.direction]["offset"],
-                            self.position[1], self.size[0], self.size[1])
+                self.hitbox = (self.position[0],
+                            self.position[1], self.sprites[self.direction]["run"][self.animation_frame()].get_width(), self.sprites[self.direction]["run"][self.animation_frame()].get_height())
             else:
                 # Comando run + duck
                 window.blit(self.sprites[self.direction]["duck"][self.animation_frame()],
                             (self.position[0], self.position[1]))
-                self.hitbox = (self.position[0],
-                               self.position[1], self.sprites[self.direction]["duck"][self.animation_frame()].get_width(), 
+                self.hitbox = (self.position[0], self.position[1], 
+                               self.sprites[self.direction]["duck"][self.animation_frame()].get_width(), 
                                self.sprites[self.direction]["duck"][self.animation_frame()].get_height())
 
 
