@@ -31,16 +31,25 @@ class entity:
         if self.name == "Player":
             # print('Position: ({pos:.2f})\nSpeed: ({spe:.2f})'.format(pos=self.position,spe=self.velocity))
             print('X Speed: ({speX:.2f}), Y Speed: ({speY:.2f})'.format(speX=self.velocity[0],speY=self.velocity[1]))
-    def collide(self, rect):
+    def collide(self, ent):
         # 0 - x
         # 1 - y
         # 2 - width
         # 3 - height
         # Verifica Colisão em Coordenada x
-        if rect[0] + rect[2] > self.hitbox[0] and rect[0] < self.hitbox[0] + self.hitbox[2]:
-            # Verifica Colisão em Coordenada y
-            if rect[1] + rect[3] > self.hitbox[1]:
+        if (
+            (ent.hitbox[0] < self.hitbox[0] + self.hitbox[2]) and
+            (ent.hitbox[0] + ent.hitbox[2] > self.hitbox[0])
+            ):
+            if (
+                (ent.hitbox[1] < self.hitbox[1] + self.hitbox[3]) and
+                (ent.hitbox[1] + ent.hitbox[3] > self.hitbox[1])
+            ):
                 return True
+        # self.hitbox[0] and ent.hitbox[0] < self.hitbox[0] + self.hitbox[2]:
+            # Verifica Colisão em Coordenada y
+            # if ent.hitbox[1] + ent.hitbox[3] > self.hitbox[1]:
+            #     return True
         return False
 
     def __set_hitbox(self):
@@ -65,6 +74,19 @@ class player(entity):
 
         self.time = int(round(time.time() * 1000))
 
+        self.sprites = [] # Indice 1 right, Indice 0 left
+        self.sprites.append({"run": file.flip_run_anim, "jump": file.flip_jump,
+                            "duck": file.flip_duck, "fall": file.flip_fall, "offset": 30})
+        self.sprites.append({"run": file.run_anim,"jump": file.jump,"duck": file.duck,"fall": file.fall,"offset":50})
+
+
+        self.animationPose = self.position
+        self.lastAnimationFrame = False
+        self.direction = True
+        # self.sprites["right"] = [file.run_anim,file.jump,file.duck,file.fall]
+        # self.sprites["left"] = [file.flip_run_anim,
+        #                         file.flip_jump, file.flip_duck, file.flip_fall]
+
         self.hit = False
 
         self.lives = 3
@@ -81,21 +103,87 @@ class player(entity):
 
         # Movimentação Default Do Runner
         # self.position[0] -= file.Screen_Width / 4000
+
+    # def animation_run(self, dir):
+    #     if dir:
+    #         self.run = file.run_anim
+    #     else:
+    #         self.run = file.flip_run_anim
+    # #     self.jump = file.jump
+    #     #     self.duck = file.duck
+    #     #     self.fall = file.fall
+
+    # def animation_jump(self,dir):
+    #     if dir:
+    #         self.jump = file.jump
+    #     else:
+    #         self.jump = file.flip_jump
+    
+    # def animation_duck(self,dir):
+    #     if dir:
+    #         self.duck = file.duck
+    #     else:
+    #         self.duck = file.flip_duck
+
+    # def animation_fall(self,dir):
+    #     if dir:
+    #         self.fall = file.fall
+    #     else:
+    #         self.fall = file.flip_fall
+
+    def animation_frame(self):
+        if np.abs(self.velocity[0]) > 0:
+            if np.abs(self.animationPose[0] - self.position[0]) > 10:
+                self.animationPose = self.position
+                self.lastAnimationFrame = not self.lastAnimationFrame
+        else: 
+            self.lastAnimationFrame = True
+        return self.lastAnimationFrame
+
     def draw(self, window, y=0):
         # print(self.position)
 
-        if self.velocity[0] >= 0:
-            self.run = file.run_anim
-            self.jump = file.jump
-            self.duck = file.duck
-            self.fall = file.fall
-            x_offset = 50
+        # if self.velocity[0] >= 0
+        if np.abs(self.velocity[0]) > 0:
+            self.direction = self.velocity[0] >= 0 # False - Left e True - Right
+
+        if self.position[1] < 829:
+            if not self.ducking:
+                # Comando jump
+                window.blit(self.sprites[self.direction]["jump"][self.animation_frame()],
+                            (self.position[0], self.position[1]))
+                self.hitbox = (self.position[0] + self.sprites[self.direction]["offset"],
+                            self.position[1] + 30, self.size[0] - 24, self.size[1] + 20)
+
+            else:
+                # Comando jump + duck
+                window.blit(self.sprites[self.direction]["duck"][self.animation_frame()],
+                            (self.position[0], self.position[1]))
+                self.hitbox = (self.position[0] + self.sprites[self.direction]["offset"],
+                               self.position[1] + 60, self.size[0], self.size[1] - 30)
+
         else:
-            x_offset = 30
-            self.run = file.flip_run_anim
-            self.jump = file.flip_jump
-            self.duck = file.flip_duck
-            self.fall = file.flip_fall
+            if not self.ducking:
+                # Comando run
+                window.blit(self.sprites[self.direction]["run"][self.animation_frame()],
+                            (self.position[0], self.position[1]))
+                self.hitbox = (self.position[0] + self.sprites[self.direction]["offset"],
+                            self.position[1] + 30, self.size[0], self.size[1] + 20)
+            else:
+                # Comando run + duck
+                window.blit(self.sprites[self.direction]["duck"][self.animation_frame()],
+                            (self.position[0], self.position[1]))
+                self.hitbox = (self.position[0] + self.sprites[self.direction]["offset"],
+                               self.position[1] + 60, self.size[0] - 24, self.size[1] - 30)
+
+
+
+
+
+        # Desenha hitbox
+        self.draw_hitbox(window)
+
+        return
 
         if self.position[1] < 829:
             if self.falling:
@@ -162,6 +250,8 @@ class player(entity):
                 # Hitbox do Mario a Correr
                 self.hitbox = (self.position[0] + x_offset, self.position[1] + 30, self.size[0] - 24, self.size[1] + 20)
         # Desenhar Hitbox Do Mario
+
+    def draw_hitbox(self,window):
         if self.hit:
             pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
         else:
