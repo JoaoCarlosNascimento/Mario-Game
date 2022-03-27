@@ -95,7 +95,7 @@ class player(entity):
         #                         file.flip_jump, file.flip_duck, file.flip_fall]
 
         self.hit = False
-
+        self.initCD = True
         self.lives = 3
     def update(self, state, timer):
         pass
@@ -125,7 +125,7 @@ class player(entity):
                             self.sprites[self.direction]["fall"][0].get_width(), 
                             self.sprites[self.direction]["fall"][0].get_height())
         elif self.position[1] < self.floor-1:
-            if not self.ducking:
+            if not self.duck():
                 # Comando jump
                 window.blit(self.sprites[self.direction]["jump"][self.animation_frame()],
                             (self.position[0], self.position[1]))
@@ -242,13 +242,18 @@ class player(entity):
         # Set Timer
         self.die_timer = int(round(time.time() * 1000))
         self.lives -= 1
+
+        if self.initCD:
+            self.initCD = False
+
         print("Take Hit")
         pygame.mixer.Sound.play(file.Bump)
         if self.lives <= 0:
             pygame.mixer.Sound.play(file.Mario_Dies)
-            # state = "dead"
-            self.lives = 3 #Reverter
+            return "dead"
+            # self.lives = 3 #Reverter
         # self.falling = True  # Reverter
+
         
     def duck(self,set = False):
         if set:
@@ -265,7 +270,10 @@ class player(entity):
             #     self.ducking = False
 
     def on_cooldown(self):
-        return int(round(time.time() * 1000)) - self.die_timer < 2000
+        if self.initCD:
+            return False
+        else:
+            return int(round(time.time() * 1000)) - self.die_timer < 2000
 
 
 # Classe Bonus

@@ -31,16 +31,7 @@ class render:
         obstacles = []
         bonus = []
 
-        feedback = ""
-        for entity in entities:
-            if entity.name == "Player":
-                mario = entity
-            elif entity.name == "Enemy":
-                enemies.append(entity)
-            elif entity.name == "Obstacle":
-                obstacles.append(entity)
-            elif entity.name == "Bonus":
-                bonus.append(entity)
+        feedback = "" 
     
         if state == "menu":
             imgScale = self.__render_camera(img)
@@ -61,7 +52,7 @@ class render:
                         imgScale[1]*landmarks[i][1]
                     )
             feedback = self.__render_control_menu(landmarks)
-        elif state == "game over":
+        elif state == "game over 2":
             self.__render_camera(img)
             # GameOver(self.__window)
             self.__render_gameOver()
@@ -80,11 +71,11 @@ class render:
                 self.scoreboard.snapshot(self.__window, [correctedLandmark], score=score, save=0)
             self.__render_cursor([correctedLandmark, (-1, -1)])
 
-        elif state == "leaderboard":
+        elif state == "leaderboard2":
             self.__render_camera(img)
             self.scoreboard.show(self.__window)
 
-        elif state == "prepare pic":
+        elif state == "prepare pic2":
             imgScale = self.__render_camera(img)
 
             for i in range(3):
@@ -134,12 +125,22 @@ class render:
                     )
             self.scoreboard.snapshot(self.__window, landmarks, 10000, 1)
             
-        elif state == "game":
+        elif state == "game loop":
             # self.__render_camera(img)
-            self.redrawWindow(bonus_val, obstacles, enemies, mario, score, lives)
-            self.check_BackGround()
-            t = TextBox(self.__window, debug)
-            t.display()
+            if entities:
+                for entity in entities:
+                    if entity.name == "Player":
+                        mario = entity
+                    elif entity.name == "Enemy":
+                        enemies.append(entity)
+                    elif entity.name == "Obstacle":
+                        obstacles.append(entity)
+                    elif entity.name == "Bonus":
+                        bonus.append(entity)
+                self.redrawWindow(bonus_val, obstacles, enemies, mario, score, lives)
+                self.check_BackGround()
+                t = TextBox(self.__window, debug)
+                t.display()
 
         elif(state == -11):
             self.__render_camera(img)

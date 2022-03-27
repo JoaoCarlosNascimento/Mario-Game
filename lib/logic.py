@@ -13,6 +13,7 @@ event_AIR_ENEMY = USEREVENT + 3
 class logic:
     def __init__(self):
         self.time = int(round(time.time() * 1000))
+
         self.counter = 3
     def update(self, state=0, feedback = [],entities=[]):
 
@@ -20,6 +21,8 @@ class logic:
 
     def __state_machine(self, state, feedback, entities):
         diff_time = int(round(time.time() * 1000)) - self.time
+        
+
         if state == "menu":
             if feedback != None:
                 if "play" in feedback:
@@ -31,15 +34,23 @@ class logic:
                 if "back" in feedback:
                     state = "menu"
         elif state == "game":
+            entities.clear()
+            entities.append(player((1920 / 10, 1080 / 1.3), (100, 95), True))
+            state = "game loop"
+        elif state == "game loop":
             if feedback != None:
                 if "dead" in feedback:
                     state = "game over"
             self.__spawn_entities(entities)
+            
         elif state == "game over":
-            if diff_time > 1000:
+            self.time = int(round(time.time() * 1000))
+            state = "game over 2"
+        elif state == "game over 2":
+            if diff_time > 3000:
                 self.time = int(round(time.time() * 1000))
                 state = "save score?"
-        
+
         elif state == "save score?":
             if diff_time > 100:
                 self.time = int(round(time.time() * 1000))
@@ -48,8 +59,10 @@ class logic:
                         state = "prepare pic"
                     elif "no score" in feedback:
                         state = "leaderboard" 
-
         elif state == "prepare pic":
+            self.time = int(round(time.time() * 1000))
+            state = "prepare pic2"
+        elif state == "prepare pic2":
             if feedback!= None:
                 if diff_time > 1000 and ("ok pic" in feedback):
                     self.time = int(round(time.time() * 1000))
@@ -59,9 +72,12 @@ class logic:
             state = "leaderboard"
 
         elif state == "leaderboard":
+            self.time = int(round(time.time() * 1000))
+            state = "leaderboard2"
+        elif state == "leaderboard2":
             if diff_time > 2000:
                 self.time = int(round(time.time() * 1000))
-                state = "game over"
+                state = "menu"
         
         return state
 

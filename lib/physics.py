@@ -19,29 +19,29 @@ class physics:
         obstacles = []
         enemies = []
         debug = []
-        if state == "game":
+        if state == "game loop":
+            if entities:
+                for e in entities:
+                    if e.name == "Player":
+                        mario = e
+                    elif e.name == "Enemy":
+                        enemies.append(e)
+                    elif e.name == "Obstacle":
+                        obstacles.append(e)
+                    elif e.name == "Bonus":
+                        bonus.append(e)
+                # Detecta Colisões
 
-            for e in entities:
-                if e.name == "Player":
-                    mario = e
-                elif e.name == "Enemy":
-                    enemies.append(e)
-                elif e.name == "Obstacle":
-                    obstacles.append(e)
-                elif e.name == "Bonus":
-                    bonus.append(e)
-            # Detecta Colisões
+                # Atualização das entidades
+                self.__timer, bonus, state = self.verify_collision_and_move_mobs(
+                    bonus_val, enemies, mario, bonus, self.__timer)
+                # Move mario left
+                mario.position[0] -= file.Screen_Width / 4000
+                # mario.update(state, self.__timer)
+                debug = self.__move(mario,commands=commands)
+                # self.keyboards_input(mario)
 
-            # Atualização das entidades
-            self.__timer, bonus, state = self.verify_collision_and_move_mobs(
-                bonus_val, enemies, mario, bonus, self.__timer)
-            # Move mario left
-            mario.position[0] -= file.Screen_Width / 4000
-            # mario.update(state, self.__timer)
-            debug = self.__move(mario,commands=commands)
-            # self.keyboards_input(mario)
-
-            return bonus, mario.lives, state, debug
+                return bonus, mario.lives, state, debug
         return 0, 0, 0, ""
 
 
@@ -161,7 +161,7 @@ class physics:
         for x in enemies:
             if x.collide(mario):
                 if not mario.on_cooldown():
-                    mario.take_hit()
+                    state = mario.take_hit()
                 mario.hit = mario.hit | True
             x.position[0] -= 1.4
             # Quando Não Aparece no Ecrã

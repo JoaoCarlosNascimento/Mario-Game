@@ -52,12 +52,9 @@ class game:
         self.__bonus_value = 0
         self.__score = 0
         self.__lives = 3
-        self.__mario = player((self.__window_size[0] / 10, self.__window_size[1] / 1.3), (100, 95), True)
-        self.__state = "game"
+        self.__state = "menu"
 
     def start(self):
-        self.__entities.append(self.__mario)
-
 
         self.__loop()
     
@@ -71,7 +68,7 @@ class game:
             self.__score = self.__fps // 5 - 6 + self.__bonus_value
 
         
-            if self.__state == "game":
+            if self.__state == "game loop":
                 # Recebe imagem da camera
                 image = self.__camera.take_image(Sampling=Sampling)
                 # Recebe commandos

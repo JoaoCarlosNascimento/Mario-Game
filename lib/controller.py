@@ -67,9 +67,9 @@ class controller:
         if state != "game":
             Sampling = 1
         if self.__frame_count-1 <= 0:
-            if state in ["save score?", "game over",  "game", "menu", "control"]:
+            if state in ["save score?", "game over 2",  "game", "menu", "control"]:
                 return self.__hand_detector(img)
-            if state == "prepare pic" or state == "pic":
+            if state == "prepare pic2" or state == "pic":
                 com, debug, f = self.__face_detector(img, key_point=[2, 4, 5])
                 com, debug, h = self.__hand_detector(img)
                 return com, debug, [f, h]
