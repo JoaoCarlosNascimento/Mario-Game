@@ -52,7 +52,7 @@ class game:
         self.__score = 0
         self.__lives = 3
         self.__mario = player((self.__window_size[0] / 10, self.__window_size[1] / 1.3), (100, 95), True)
-        self.__state = "game over"
+        self.__state = "menu"
 
     def start(self):
         self.__entities.append(self.__mario)

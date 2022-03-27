@@ -19,6 +19,7 @@ black = (0, 0, 0)
 class render:
     def __init__(self, window_size=(1920,1080)):
         self.__window = pygame.display.set_mode(window_size, flags=pygame.FULLSCREEN)
+        
         # self.currenttime = int(round(time.time() * 1000))
         self.scoreboard = scoreboard(window_size)
         self.counter = 3
