@@ -33,15 +33,15 @@ class physics:
                 # Detecta Colisões
 
                 # Atualização das entidades
-                self.__timer, bonus, state = self.verify_collision_and_move_mobs(
-                    bonus_val, enemies, mario, bonus, self.__timer)
+                self.__timer, bonus_val, state = self.verify_collision_and_move_mobs(
+                    bonus_val, entities, mario, self.__timer)
                 # Move mario left
                 mario.position[0] -= file.Screen_Width / 4000
                 # mario.update(state, self.__timer)
                 debug = self.__move(mario,commands=commands)
                 # self.keyboards_input(mario)
-
-                return bonus, mario.lives, state, debug
+                entities.append(bonus)
+                return bonus_val, mario.lives, state, debug
         return 0, 0, 0, ""
 
 
@@ -154,29 +154,33 @@ class physics:
     #             character.ducking = True
     #             pygame.mixer.Sound.play(file.Duck)
 
-    def verify_collision_and_move_mobs(self, bonus_val, enemies, mario, plus, start_timer):
+    def verify_collision_and_move_mobs(self, bonus_val, entities, mario, start_timer):
         # Move Obstacle/Enemy
         state = "alive"
         mario.hit = False
-        for x in enemies:
-            if x.collide(mario):
-                if not mario.on_cooldown():
-                    state = mario.take_hit()
-                mario.hit = mario.hit | True
-            x.position[0] -= 1.4
-            # Quando Não Aparece no Ecrã
-            if x.position[0] < -x.size[0] * -1:
-                enemies.pop(enemies.index(x))
-        # Move Bonus
-        for y in plus:
-            if y.collide(mario):
-                bonus_val += y.score
-                plus.pop(plus.index(y))
-                pygame.mixer.Sound.play(file.Coin_Sound)
-                # Quando Não Aparece no Ecrã
-            if y.position[0] < -y.size[0] * -1:
-                plus.pop(plus.index(y))
-            y.position[0] -= 1.4
+        obstacles = []
+        if entities:
+            for e in entities:
+                if e.name == "Player":
+                    mario = e
+                elif e.name == "Enemy":
+                    if e.collide(mario):
+                        if not mario.on_cooldown():
+                            state = mario.take_hit()
+                        mario.hit = mario.hit | True
+                    e.position[0] -= 1.4
+                elif e.name == "Obstacle":
+                    obstacles.append(e)
+                elif e.name == "Bonus":
+                    if e.collide(mario):
+                        bonus_val += e.score
+                        pygame.mixer.Sound.play(file.Coin_Sound)
+                        # y.position[0] = -1
+                        # print("Numb Before:" + str(len(plus)))
+                        entities.pop(entities.index(e))
+                        pygame.display.update()
+                    else:
+                        e.position[0] -= 1.4
 
         return start_timer, bonus_val, state
 

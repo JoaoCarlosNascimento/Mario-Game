@@ -9,7 +9,8 @@ Screen_Width = 1920
 Screen_Height =  1080
 #pyautogui.size()
 pygame.init()
-window = pygame.display.set_mode((Screen_Width, Screen_Height))
+window_size=(1920,1080)
+window = pygame.display.set_mode(window_size, flags=pygame.FULLSCREEN)
 window_size = (Screen_Width, Screen_Height)
 
 pygame.display.set_caption("Interactive Mario Game")
@@ -20,10 +21,10 @@ clock = pygame.time.Clock()
 pygame.time.set_timer(USEREVENT + 1, 1000)
 
 # Evento que Gera Enemies Terrestres entre 4 segundos
-pygame.time.set_timer(USEREVENT + 2, random.randrange(4500, 9000))
+pygame.time.set_timer(USEREVENT + 2, random.randrange(3000, 4000))
 
 # Evento que Gera Enemies Aéreos entre 3 segundos
-pygame.time.set_timer(USEREVENT + 3, random.randrange(5000, 10000))
+pygame.time.set_timer(USEREVENT + 3, random.randrange(500, 1000))
 
 # Sons
 mixer.init()

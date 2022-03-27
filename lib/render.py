@@ -18,8 +18,7 @@ black = (0, 0, 0)
 
 class render:
     def __init__(self, window_size=(1920,1080)):
-        self.__window = pygame.display.set_mode(window_size, flags=pygame.FULLSCREEN)
-        # self.currenttime = int(round(time.time() * 1000))
+        self.__window = file.window
         self.scoreboard = scoreboard(window_size)
         self.counter = 3
         self.__window_size = window_size
@@ -137,11 +136,11 @@ class render:
                         obstacles.append(entity)
                     elif entity.name == "Bonus":
                         bonus.append(entity)
-                self.redrawWindow(bonus_val, obstacles, enemies, mario, score, lives)
+                self.redrawWindow(mario.position[0], enemies, bonus, mario, score, lives)
                 self.check_BackGround()
+
                 t = TextBox(self.__window, debug)
                 t.display()
-
         elif(state == -11):
             self.__render_camera(img)
             self.__render_hand_command(landmarks)
@@ -190,7 +189,6 @@ class render:
 
     def __render_HUD(self, lives, score, coins):
         HUD = pygame.Surface((self.__window_size[0], self.__window_size[1]/8),  pygame.SRCALPHA, 32)
-
         # font = pygame.font.Font("./resources/SuperMario256.ttf", HUD.get_height(), bold=False)
         # font_s = pygame.font.Font("./resources/SuperMario256.ttf", int(HUD.get_height()*0.8), bold=False)
         
@@ -212,20 +210,25 @@ class render:
 
     # Função Utilizada Durante o Jogo Para Desenhar HUD(Score e Vidas), Inimigos, Bónus, Mario e Obstáculos
     def redrawWindow(self,Movement_x, objects, bonus, runner, score, lives):
-        
 
-        self.__window.blit(file.BackGround, (file.BackGroundX, 0))  # draws our first BackGround image
+        file.window.blit(file.BackGround, (file.BackGroundX, 0))  # draws our first BackGround image
         file.window.blit(file.BackGround, (file.BackGroundX2, 0))  # draws the second BackGround image
 
         self.__render_HUD(lives, score, 0)
 
         # Objectos = Lista que Contém Inimigos/Obstáculos
         for x in objects:
-            x.draw(file.window)
+            if x.position[0] >= x.size[0] * -1:
+                x.draw(file.window)
+            else:
+                objects.pop(objects.index(x))
 
         # Bonus = Lista que Contém Bónus
         for y in bonus:
-            y.draw(file.window)
+            if y.position[0] >= y.size[0] * -1:
+                y.draw(file.window)
+            else:
+                bonus.pop(bonus.index(y))
 
         runner.draw(file.window, 95)  # NEW
 
