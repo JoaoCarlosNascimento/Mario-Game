@@ -275,9 +275,9 @@ class render:
         # gifs
         self.gifs["menu"] = gif(position=(1, 1), size=gif_size, foldername="Image_Menu", window=self.__window, limit=49)
 
-        self.gifs["ctrl_right"] = gif(position=(-1.5, 0.8), size=ctrl_gif_size, foldername="Image_right", window=self.__window, limit=23)
-        self.gifs["ctrl_left"] = gif(position=(3.5, 0.8), size=ctrl_gif_size, foldername="Image_left", window=self.__window, limit=23)
-        self.gifs["jump_duck"] = gif(position=(1, 0.8), size=ctrl_gif_size, foldername="Image_jumpduck", window=self.__window, limit=17)
+        self.gifs["ctrl_right"] = gif(position=(-1.5, 1), size=ctrl_gif_size, foldername="Image_right", window=self.__window, limit=23)
+        self.gifs["ctrl_left"] = gif(position=(3.5, 1), size=ctrl_gif_size, foldername="Image_left", window=self.__window, limit=23)
+        self.gifs["jump_duck"] = gif(position=(1, 1), size=ctrl_gif_size, foldername="Image_jumpduck", window=self.__window, limit=17)
         
     def __render_menu(self, landmarks):
         
