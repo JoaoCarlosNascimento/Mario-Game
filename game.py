@@ -32,13 +32,13 @@ class game:
 
     def __init__(self):
         
-        self.__fps = 30
+        self.__fps = 60
         self.__camera = camera()
         image = self.__camera.take_image()
         
         pygame.init()
 
-        self.__window_size = (image.shape[1],image.shape[0])
+        self.__window_size = (1920,1080)
         self.__clock = pygame.time.Clock()
         self.__render = render(window_size=self.__window_size)
         self.__controller = controller()
@@ -52,7 +52,7 @@ class game:
         self.__score = 0
         self.__lives = 3
         self.__mario = player((self.__window_size[0] / 10, self.__window_size[1] / 1.3), (100, 95), True)
-        self.__state = "menu"
+        self.__state = "game"
 
     def start(self):
         self.__entities.append(self.__mario)

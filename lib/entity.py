@@ -92,44 +92,7 @@ class player(entity):
         self.lives = 3
     def update(self, state, timer):
         pass
-        # if self.falling:
-        #     end_timer = int(round(time.time() * 1000))
 
-        #     # Duração da Animação Hitted (Quando Colide Com Inimigo/Obstáculo)
-        #     if end_timer - timer > 800:
-        #         self.falling = False
-        #     else:
-        #         self.hitbox = (0, 0, 0, 0)
-
-        # Movimentação Default Do Runner
-        # self.position[0] -= file.Screen_Width / 4000
-
-    # def animation_run(self, dir):
-    #     if dir:
-    #         self.run = file.run_anim
-    #     else:
-    #         self.run = file.flip_run_anim
-    # #     self.jump = file.jump
-    #     #     self.duck = file.duck
-    #     #     self.fall = file.fall
-
-    # def animation_jump(self,dir):
-    #     if dir:
-    #         self.jump = file.jump
-    #     else:
-    #         self.jump = file.flip_jump
-    
-    # def animation_duck(self,dir):
-    #     if dir:
-    #         self.duck = file.duck
-    #     else:
-    #         self.duck = file.flip_duck
-
-    # def animation_fall(self,dir):
-    #     if dir:
-    #         self.fall = file.fall
-    #     else:
-    #         self.fall = file.flip_fall
 
     def animation_frame(self):
         if np.abs(self.velocity[0]) > 0:
@@ -152,15 +115,14 @@ class player(entity):
                 # Comando jump
                 window.blit(self.sprites[self.direction]["jump"][self.animation_frame()],
                             (self.position[0], self.position[1]))
-                self.hitbox = (self.position[0] + self.sprites[self.direction]["offset"],
-                            self.position[1] + 30, self.size[0] - 24, self.size[1] + 20)
+                self.hitbox = (self.position[0],self.position[1], self.size[0], self.size[1])
 
             else:
                 # Comando jump + duck
                 window.blit(self.sprites[self.direction]["duck"][self.animation_frame()],
                             (self.position[0], self.position[1]))
                 self.hitbox = (self.position[0] + self.sprites[self.direction]["offset"],
-                               self.position[1] + 60, self.size[0], self.size[1] - 30)
+                               self.position[1], self.size[0], self.size[1])
 
         else:
             if not self.ducking:
@@ -168,13 +130,13 @@ class player(entity):
                 window.blit(self.sprites[self.direction]["run"][self.animation_frame()],
                             (self.position[0], self.position[1]))
                 self.hitbox = (self.position[0] + self.sprites[self.direction]["offset"],
-                            self.position[1] + 30, self.size[0], self.size[1] + 20)
+                            self.position[1], self.size[0], self.size[1])
             else:
                 # Comando run + duck
                 window.blit(self.sprites[self.direction]["duck"][self.animation_frame()],
                             (self.position[0], self.position[1]))
                 self.hitbox = (self.position[0] + self.sprites[self.direction]["offset"],
-                               self.position[1] + 60, self.size[0] - 24, self.size[1] - 30)
+                               self.position[1], self.size[0], self.size[1])
 
 
 

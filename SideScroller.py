@@ -20,7 +20,7 @@ anim_start_timer = 0
 # Declaração dos Objectos
 entity_render = render(file.window_size)
 entity_physics = physics()
-runner = player(file.Screen_Width / 10, file.Screen_Height / 1.3, 100, 95, True)
+runner = player((1920 / 10, 1080 / 1.3), (100, 95), True)
 
 while run:
     score = speed // 5 - 6 + bonus_value
