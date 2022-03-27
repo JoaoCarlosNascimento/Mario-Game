@@ -32,7 +32,7 @@ class game:
 
     def __init__(self):
         
-        self.__fps = 60
+        self.__fps = 45
         self.__camera = camera()
         image = self.__camera.take_image()
         # os.environ['SDL_WINDOWID'] = str(self.winfo_id())

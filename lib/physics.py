@@ -49,7 +49,7 @@ class physics:
         #     return
 
     # Constantes de aceleração
-    __frict_const = np.array([2, 2])  # [acc_x,acc_y]
+    __frict_const = np.array([3, 2])  # [acc_x,acc_y]
     __com_acc = np.array([350, -50])+__frict_const  # [acc_x,acc_y]
     __grav_acc = np.array([0, 100])  # [acc_x,acc_y]
     # __norm_acc = -__grav_acc  # [acc_x,acc_y]

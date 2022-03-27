@@ -5,6 +5,16 @@ import random
 from lib.entity import player, Bonus, Obstacle, Enemy
 from lib.load_files import Screen_Width, Screen_Height, USEREVENT
 
+############################# Eventos Do Pygame Que Geram Inimigos/Bónus/Obstáculos ##########################
+# Acelerar Segundo Eventos do Jogo
+pygame.time.set_timer(USEREVENT + 1, 1000)
+
+# Evento que Gera Enemies Terrestres entre 4 segundos
+pygame.time.set_timer(USEREVENT + 2, 3000)
+
+# Evento que Gera Enemies Aéreos entre 3 segundos
+pygame.time.set_timer(USEREVENT + 3, 4500)
+
 event_ACCELERATE = USEREVENT + 1
 event_LAND_ENEMY = USEREVENT + 2
 event_AIR_ENEMY = USEREVENT + 3
@@ -94,23 +104,24 @@ class logic:
                     entities.append(
                         Bonus((Screen_Width, Screen_Height / 1.27), (100, 130), random_pick))
 
+                else:
+                    pick = random.randrange(0, 1)
+                    if pick == 0:
+                        random_pick = random.randrange(0,9)
+                        entities.append(
+                            Enemy((Screen_Width, Screen_Height / 1.27), (100, 130), random_pick))
+                    else:
+                        random_pick = random.randrange(0, 2)
+                        entities.append(
+                            Obstacle((Screen_Width, Screen_Height / 1.27), (70, 130), random_pick))
+
+            elif event.type == event_AIR_ENEMY:
+                pick_object = random.randrange(0, 2)
                 if pick_object == 1:
-                    random_pick = random.randrange(0, 9)
-                    entities.append(
-                        Enemy((Screen_Width, Screen_Height / 1.27), (100, 130), random_pick))
-
-                if pick_object == 2:
-                    random_pick = random.randrange(0, 2)
-                    entities.append(
-                        Obstacle((Screen_Width, Screen_Height / 1.27), (70, 130), random_pick))
-
-            if event.type == event_AIR_ENEMY:
-                pick_object = random.randrange(0, 1)
-                if pick_object == 0:
                     random_pick = random.randrange(10, 13)
                     entities.append(
                         Enemy((Screen_Width, Screen_Height / 1.27), (100, 130), random_pick))
                 else:
                     random_pick = random.randrange(0, 17)
-                    entities.append(Bonus((Screen_Width, Screen_Height / 1.27), (100, 130), random_pick))
+                    entities.append(Bonus((Screen_Width, Screen_Height / 1.2), (100, 130), random_pick))
         return speed

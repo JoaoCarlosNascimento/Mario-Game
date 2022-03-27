@@ -16,16 +16,6 @@ window_size = (Screen_Width, Screen_Height)
 pygame.display.set_caption("Interactive Mario Game")
 clock = pygame.time.Clock()
 
-############################# Eventos Do Pygame Que Geram Inimigos/Bónus/Obstáculos ##########################
-# Acelerar Segundo Eventos do Jogo
-pygame.time.set_timer(USEREVENT + 1, 1000)
-
-# Evento que Gera Enemies Terrestres entre 4 segundos
-pygame.time.set_timer(USEREVENT + 2, random.randrange(1000, 4000))
-
-# Evento que Gera Enemies Aéreos entre 3 segundos
-pygame.time.set_timer(USEREVENT + 3, random.randrange(3000, 8000))
-
 # Sons
 mixer.init()
 Jump = mixer.Sound("Sounds/Jump (Small Mario).wav")
