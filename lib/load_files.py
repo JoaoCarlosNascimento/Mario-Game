@@ -21,10 +21,10 @@ clock = pygame.time.Clock()
 pygame.time.set_timer(USEREVENT + 1, 1000)
 
 # Evento que Gera Enemies Terrestres entre 4 segundos
-pygame.time.set_timer(USEREVENT + 2, random.randrange(3000, 4000))
+pygame.time.set_timer(USEREVENT + 2, random.randrange(1000, 4000))
 
 # Evento que Gera Enemies Aéreos entre 3 segundos
-pygame.time.set_timer(USEREVENT + 3, random.randrange(500, 1000))
+pygame.time.set_timer(USEREVENT + 3, random.randrange(3000, 8000))
 
 # Sons
 mixer.init()

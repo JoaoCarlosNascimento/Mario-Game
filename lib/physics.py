@@ -33,15 +33,15 @@ class physics:
                 # Detecta Colisões
 
                 # Atualização das entidades
-                self.__timer, bonus_val, state = self.verify_collision_and_move_mobs(
+                self.__timer, bonus, state = self.verify_collision_and_move_mobs(
                     bonus_val, entities, mario, self.__timer)
                 # Move mario left
                 mario.position[0] -= file.Screen_Width / 4000
                 # mario.update(state, self.__timer)
                 debug = self.__move(mario,commands=commands)
                 # self.keyboards_input(mario)
-                entities.append(bonus)
-                return bonus_val, mario.lives, state, debug
+
+                return bonus, mario.lives, state, debug
         return 0, 0, 0, ""
 
 
@@ -121,78 +121,29 @@ class physics:
         return "dt: {dt}\nVelocity: [{x:.2f},{y:.2f}]\nPosition: [{xp:.2f},{yp:.2f}]".format(dt=dt,x=entity.velocity[0],y=entity.velocity[1],xp=entity.position[0],yp=entity.position[1])
         
 
-    # def __detect_colisions(self,entity_list):
-    #     for entity in entity_list:
-    #         filt_entity_list = []
-    #         for ent in entity_list:
-    #             if ent != entity:
-    #                 filt_entity_list.append(ent)
-            
-
-    #         #print(filt_entity_list)
-    #     pass
-
-    # def keyboards_input(self, character):
-    #     keys = pygame.key.get_pressed()
-    #     if keys[pygame.K_SPACE] or keys[pygame.K_UP]:
-    #         if not character.jumping and not character.falling:
-    #             character.jumping = True
-    #             pygame.mixer.Sound.play(file.Jump)
-
-    #     # Mover Para a Direita
-    #     if keys[pygame.K_RIGHT]:
-    #         character.position[0] += file.Screen_Width / 60
-    #         character.LookingRight = True
-
-    #     # Mover Para a Esquerda
-    #     if keys[pygame.K_LEFT]:
-    #         character.position[0] -= file.Screen_Width / 60
-    #         character.LookingRight = False
-
-    #     if keys[pygame.K_DOWN]:
-    #         if not character.ducking and not character.falling:
-    #             character.ducking = True
-    #             pygame.mixer.Sound.play(file.Duck)
-
     def verify_collision_and_move_mobs(self, bonus_val, entities, mario, start_timer):
         # Move Obstacle/Enemy
         state = "alive"
         mario.hit = False
-        obstacles = []
         if entities:
-            for e in entities:
-                if e.name == "Player":
-                    mario = e
-                elif e.name == "Enemy":
-                    if e.collide(mario):
+            for entity in entities:
+                if entity.name == "Enemy" or entity.name == "Obstacle":
+                    if entity.collide(mario):
                         if not mario.on_cooldown():
                             state = mario.take_hit()
                         mario.hit = mario.hit | True
-                    e.position[0] -= 1.4
-                elif e.name == "Obstacle":
-                    obstacles.append(e)
-                elif e.name == "Bonus":
-                    if e.collide(mario):
-                        bonus_val += e.score
+                    entity.position[0] -= 1.4
+                    # Quando Não Aparece no Ecrã
+                    if entity.position[0] < -entity.size[0] * -1:
+                        entities.pop(entities.index(entity))
+                elif entity.name == "Bonus":
+                    entity.position[0] -= 1.4
+                    if entity.collide(mario):
+                        bonus_val += entity.score
+                        entities.pop(entities.index(entity))
                         pygame.mixer.Sound.play(file.Coin_Sound)
-                        # y.position[0] = -1
-                        # print("Numb Before:" + str(len(plus)))
-                        entities.pop(entities.index(e))
-                        pygame.display.update()
-                    else:
-                        e.position[0] -= 1.4
+                        # Quando Não Aparece no Ecrã
+                    if entity.position[0] < -entity.size[0] * -1:
+                        entities.pop(entities.index(entities))
 
         return start_timer, bonus_val, state
-
-    # def detectCollision(self,character, start_timer):
-    #     if character.falling:
-    #         end_timer = time.time()
-
-    #         # Duração da Animação Hitted (Quando Colide Com Inimigo/Obstáculo)
-    #         if end_timer - start_timer > 0.8:
-    #             character.falling = False
-    #         else:
-    #             character.hitbox = (0, 0, 0, 0)
-
-    #     # Movimentação Default Do Runner
-    #     character.position[0] -= file.Screen_Width / 4000
