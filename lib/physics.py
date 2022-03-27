@@ -159,7 +159,7 @@ class physics:
         state = "alive"
         mario.hit = False
         for x in enemies:
-            if x.collide(mario.hitbox):
+            if x.collide(mario):
                 if not mario.on_cooldown():
                     mario.take_hit()
                 mario.hit = mario.hit | True
@@ -169,7 +169,7 @@ class physics:
                 enemies.pop(enemies.index(x))
         # Move Bonus
         for y in plus:
-            if y.collide(mario.hitbox):
+            if y.collide(mario):
                 bonus_val += y.score
                 plus.pop(plus.index(y))
                 pygame.mixer.Sound.play(file.Coin_Sound)

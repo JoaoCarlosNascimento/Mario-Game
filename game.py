@@ -50,7 +50,7 @@ class game:
         self.__score = 0
         self.__lives = 3
         self.__mario = player((1920 / 10, 1080 / 1.3), (100, 95), True)
-        self.__state = "control"
+        self.__state = "game"
 
     def start(self):
         self.__entities.append(self.__mario)
@@ -109,24 +109,31 @@ class game:
     def __keyboard_event(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.__close()
-                pygame.quit()
-                sys.exit()
+                self.__quit_game()
+                # self.__close()
+                # pygame.quit()
+                # sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.__close()
-                    pygame.quit()
-                    sys.exit()
+                    self.__quit_game()
+                    # print("ESC")
+                    # self.__close()
+                    # pygame.quit()
+                    # sys.exit()
 
             # if event.type == event_ACCELERATE:
             #     self.__fps += 1
-        return game.__fake_inputs()
+        return self.__fake_inputs()
         
     # def __event(self):
     #     for event in pygame.event.get():
             
+    def __quit_game(self):
+        self.__close()
+        pygame.quit()
+        sys.exit()
 
-    def __fake_inputs():
+    def __fake_inputs(self):
         pressed_keys = pygame.key.get_pressed()
         command = 0b0000
         if pressed_keys[pygame.K_d]:
@@ -141,6 +148,9 @@ class game:
         if pressed_keys[pygame.K_s]:
             command = command | 0b0010
             # print("Fake Input (S)")
+        if pressed_keys[pygame.K_ESCAPE]:
+            self.__quit_game()
+
 
         return command
 
