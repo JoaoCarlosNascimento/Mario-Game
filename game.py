@@ -50,6 +50,7 @@ class game:
         self.__map_gen = map_gen()
 
         self.__bonus_value = 0
+        self.__coins = 0
         self.__score = 0
         self.__lives = 3
         self.__state = "game"
@@ -81,16 +82,17 @@ class game:
 
 
             # Aplica fisica
-            self.__bonus_value, self.__lives, feedback1, debug = self.__physics.update(state=self.__state,
+            self.__bonus_value, self.__lives, feedback1, debug, self.__coins = self.__physics.update(state=self.__state,
                                                                                 entities=self.__entities, 
                                                                                 commands=fake_command, 
-                                                                                bonus_val = self.__bonus_value)
+                                                                                bonus_val = self.__bonus_value,
+                                                                                coins = self.__coins)
 
             # Desenha cena
             feedback2 = self.__render.draw(state=self.__state, img=image,
                                            entities=self.__entities, landmarks=landmarks,debug=debug,
                                            bonus_val = self.__bonus_value,
-                                           lives=self.__lives, score= self.__score)
+                                           lives=self.__lives, score= self.__score, coins = self.__coins)
 
             # Aplica logica
             self.__state = self.__logic.update(

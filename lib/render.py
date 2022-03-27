@@ -26,7 +26,7 @@ class render:
         self.__load_images()
         self.__load_fonts()
         self.__load_text()
-    def draw(self, state=0, img=[], entities=[], command=[], landmarks=[],debug="", bonus_val = 0, lives = 3, score = 0):
+    def draw(self, state=0, img=[], entities=[], command=[], landmarks=[],debug="", bonus_val = 0, lives = 3, score = 0, coins = 0):
         enemies = []
         obstacles = []
         bonus = []
@@ -137,7 +137,7 @@ class render:
                         obstacles.append(entity)
                     elif entity.name == "Bonus":
                         bonus.append(entity)
-                self.redrawWindow(mario.position[0], entities, mario, score, lives)
+                self.redrawWindow(mario.position[0], entities, mario, score, lives, coins)
                 self.check_BackGround()
                 t = TextBox(self.__window, debug)
                 t.display()
@@ -211,11 +211,11 @@ class render:
         self.__window.blit(HUD, (0,0))
 
     # Função Utilizada Durante o Jogo Para Desenhar HUD(Score e Vidas), Inimigos, Bónus, Mario e Obstáculos
-    def redrawWindow(self,Movement_x, entities, runner, score, lives):
+    def redrawWindow(self,Movement_x, entities, runner, score, lives, coins):
         file.window.blit(file.BackGround, (file.BackGroundX, 0))  # draws our first BackGround image
         file.window.blit(file.BackGround, (file.BackGroundX2, 0))  # draws the second BackGround image
 
-        self.__render_HUD(lives, score, 0)
+        self.__render_HUD(lives, score, coins)
         if entities:
             for entity in entities:
                 if entity.name == "Enemy" or entity.name == "Obstacle":

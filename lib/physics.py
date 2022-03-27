@@ -14,7 +14,7 @@ class physics:
         self.__timer = 0
         pass
 
-    def update(self, state=0,entities=[], commands=0b0000, score = 0, bonus_val = 0):
+    def update(self, state=0,entities=[], commands=0b0000, score = 0, bonus_val = 0, coins = 0):
         bonus = []
         obstacles = []
         enemies = []
@@ -33,16 +33,16 @@ class physics:
                 # Detecta Colisões
 
                 # Atualização das entidades
-                self.__timer, bonus, state = self.verify_collision_and_move_mobs(
-                    bonus_val, entities, mario, self.__timer)
+                self.__timer, bonus, state, coins = self.verify_collision_and_move_mobs(
+                    bonus_val, coins, entities, mario, self.__timer)
                 # Move mario left
                 mario.position[0] -= file.Screen_Width / 4000
                 # mario.update(state, self.__timer)
                 debug = self.__move(mario,commands=commands)
                 # self.keyboards_input(mario)
 
-                return bonus, mario.lives, state, debug
-        return 0, 0, 0, ""
+                return bonus, mario.lives, state, debug, coins
+        return 0, 0, 0, "", 0
 
 
         # for entity in entities:
@@ -119,9 +119,8 @@ class physics:
             entity.position[1] = entity.floor
             entity.velocity[1] = 0
         return "dt: {dt}\nVelocity: [{x:.2f},{y:.2f}]\nPosition: [{xp:.2f},{yp:.2f}]".format(dt=dt,x=entity.velocity[0],y=entity.velocity[1],xp=entity.position[0],yp=entity.position[1])
-        
 
-    def verify_collision_and_move_mobs(self, bonus_val, entities, mario, start_timer):
+    def verify_collision_and_move_mobs(self, bonus_val, coins,entities, mario, start_timer):
         # Move Obstacle/Enemy
         state = "alive"
         mario.hit = False
@@ -140,10 +139,11 @@ class physics:
                     entity.position[0] -= 1.4
                     if entity.collide(mario):
                         bonus_val += entity.score
+                        coins += 1
                         entities.pop(entities.index(entity))
                         pygame.mixer.Sound.play(file.Coin_Sound)
                         # Quando Não Aparece no Ecrã
                     if entity.position[0] < -entity.size[0] * -1:
                         entities.pop(entities.index(entities))
 
-        return start_timer, bonus_val, state
+        return start_timer, bonus_val, state, coins
