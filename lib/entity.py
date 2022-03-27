@@ -6,7 +6,6 @@ from pygame.locals import *
 import random
 import time
 
-
 class entity:
     def __init__(self, pos = (-1,-1), size = (10,10), name=[]):
         if type == []:
@@ -28,9 +27,13 @@ class entity:
         self.colision_list = []
     
     def update(self, state=0):
-        if self.name == "Player":
-            # print('Position: ({pos:.2f})\nSpeed: ({spe:.2f})'.format(pos=self.position,spe=self.velocity))
-            print('X Speed: ({speX:.2f}), Y Speed: ({speY:.2f})'.format(speX=self.velocity[0],speY=self.velocity[1]))
+        pass
+
+
+
+        # if self.name == "Player":
+        #     # print('Position: ({pos:.2f})\nSpeed: ({spe:.2f})'.format(pos=self.position,spe=self.velocity))
+        #     print('X Speed: ({speX:.2f}), Y Speed: ({speY:.2f})'.format(speX=self.velocity[0],speY=self.velocity[1]))
     def collide(self, ent):
         # 0 - x
         # 1 - y
@@ -63,6 +66,7 @@ class player(entity):
     def __init__(self, pos, size, LookingRight):
         entity.__init__(self, pos=pos, size=size, name="Player")
 
+        self.initDUCK = True
         self.jumping = False
         self.ducking = False
         self.falling = False
@@ -74,7 +78,8 @@ class player(entity):
 
         self.floor = 860
 
-        self.time = int(round(time.time() * 1000))
+        self.die_timer = int(round(time.time() * 1000))
+        self.duck_timer = int(round(time.time() * 1000))
 
         self.sprites = [] # Indice 1 right, Indice 0 left
         self.sprites.append({"run": file.flip_run_anim, "jump": file.flip_jump,
@@ -108,12 +113,14 @@ class player(entity):
     def draw(self, window, y=0):
         # print(self.position)
 
+
+
         # if self.velocity[0] >= 0
         if np.abs(self.velocity[0]) > 0:
             self.direction = self.velocity[0] >= 0 # False - Left e True - Right
 
         if self.position[1] < self.floor-1:
-            if not self.ducking:
+            if not self.duck():
                 # Comando jump
                 window.blit(self.sprites[self.direction]["jump"][self.animation_frame()],
                             (self.position[0], self.position[1]))
@@ -130,7 +137,7 @@ class player(entity):
                                self.sprites[self.direction]["duck"][self.animation_frame()].get_height())
 
         else:
-            if not self.ducking:
+            if not self.duck():
                 # Comando run
                 window.blit(self.sprites[self.direction]["run"][self.animation_frame()],
                             (self.position[0], self.position[1]))
@@ -228,7 +235,7 @@ class player(entity):
 
     def take_hit(self):
         # Set Timer
-        self.time = int(round(time.time() * 1000))
+        self.die_timer = int(round(time.time() * 1000))
         self.lives -= 1
         print("Take Hit")
         pygame.mixer.Sound.play(file.Bump)
@@ -238,8 +245,22 @@ class player(entity):
             self.lives = 3 #Reverter
         # self.falling = True  # Reverter
         
+    def duck(self,set = False):
+        if set:
+            # self.ducking = True
+            self.duck_timer = int(round(time.time() * 1000))
+            if self.initDUCK:
+                self.initDUCK = False
+        else:
+            if self.initDUCK:
+                return False
+            else:
+                return int(round(time.time() * 1000)) - self.duck_timer < 250
+            # if int(round(time.time() * 1000)) - self.duck_timer > 1000:
+            #     self.ducking = False
+
     def on_cooldown(self):
-        return not int(round(time.time() * 1000)) - self.time > 2000
+        return int(round(time.time() * 1000)) - self.die_timer < 2000
 
 
 # Classe Bonus

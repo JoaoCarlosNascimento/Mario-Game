@@ -52,7 +52,7 @@ class physics:
     __frict_const = np.array([2, 2])  # [acc_x,acc_y]
     __com_acc = np.array([350, -50])+__frict_const  # [acc_x,acc_y]
     __grav_acc = np.array([0, 100])  # [acc_x,acc_y]
-    __norm_acc = -__grav_acc  # [acc_x,acc_y]
+    # __norm_acc = -__grav_acc  # [acc_x,acc_y]
 
     # Constantes de velocidade
     __vel_lim = np.array([200, 150])  # [vel_x,vel_y]
@@ -70,9 +70,7 @@ class physics:
         if ((commands & 0b0100) == 0b0100): # Move Left
             com_acc[0] -= self.__com_acc[0]
         if ((commands & 0b0010) == 0b0010):  # Move Crouch
-            entity.ducking = True
-        else:
-            entity.ducking = False
+            entity.duck(set=True)
             # print("Move C")
             # com_acc[1] += self.__com_acc[1]
 
