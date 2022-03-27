@@ -26,7 +26,7 @@ class render:
         self.__window_size = window_size
         self.__load_images()
         self.__load_fonts()
-        
+        self.__load_text()
     def draw(self, state=0, img=[], entities=[], command=[], landmarks=[],debug="", bonus_val = 0, lives = 3, score = 0):
         enemies = []
         obstacles = []
@@ -104,7 +104,7 @@ class render:
 
 
             boo1 = self.__window.blit(self.images["boo1"].image, [self.__window.get_width() - self.images["boo1"].get_width(),
-                                      self.__window.get_height() - self.images["boo1"].get_height()])
+                                                                  self.__window.get_height() - self.images["boo1"].get_height()])
 
             # font = pygame.font.Font("./resources/SuperMario256.ttf", 50, bold=False)
             text = self.fonts["normal"].render("Touch Boo when you're ready!", 1, (0,0,0))
@@ -115,6 +115,8 @@ class render:
             self.__render_cursor([landmarks])
             if (boo1.collidepoint(landmarks[1][0])):
                 return "ok pic"
+            if landmarks[1][0] != (-1, -1) or landmarks[1][1] != (-1, -1):
+                self.__render_cursor(landmarks[1])
 
         elif state == "pic":
             imgScale = self.__render_camera(img)
@@ -189,22 +191,21 @@ class render:
     def __render_HUD(self, lives, score, coins):
         HUD = pygame.Surface((self.__window_size[0], self.__window_size[1]/8),  pygame.SRCALPHA, 32)
 
-        font = pygame.font.Font("./resources/SuperMario256.ttf", HUD.get_height(), bold=False)
-        font_s = pygame.font.Font("./resources/SuperMario256.ttf", int(HUD.get_height()*0.8), bold=False)
+        # font = pygame.font.Font("./resources/SuperMario256.ttf", HUD.get_height(), bold=False)
+        # font_s = pygame.font.Font("./resources/SuperMario256.ttf", int(HUD.get_height()*0.8), bold=False)
         
-        score = font.render(str(score), 1, white)
-        x = font_s.render("x", 1, white)
-        coin = font.render("{:03}".format(coins), 1, white)
+        score = self.fonts["HUD"].render(str(score), 1, white)
+        coin = self.fonts["HUD"].render("{:03}".format(coins), 1, white)
         
-        lives = font.render("{:02}".format(lives), 1, white)
+        lives = self.fonts["HUD"].render("{:02}".format(lives), 1, white)
         self.images["mario2"].resize((int(HUD.get_height()), int(HUD.get_height())))
         self.images["coin"].resize((int(HUD.get_height()), int(HUD.get_height())))
         HUD.blit(self.images["mario2"].image, (0,0))
-        HUD.blit(x, ((HUD.get_height(), x.get_height()/3)))
-        HUD.blit(lives, (HUD.get_height() + x.get_width(), 10))
+        HUD.blit(self.text["x"], ((HUD.get_height(), self.text["x"].get_height()/3)))
+        HUD.blit(lives, (HUD.get_height() + self.text["x"].get_width(), 10))
         HUD.blit(score, (HUD.get_width()/2-score.get_width()/2, 10))
-        HUD.blit(self.images["coin"].image, (HUD.get_width() - HUD.get_height() - x.get_width() - coin.get_width(),0))
-        HUD.blit(x, (HUD.get_width() - coin.get_width() - x.get_width(), x.get_height()/3))
+        HUD.blit(self.images["coin"].image, (HUD.get_width() - HUD.get_height() - self.text["x"].get_width() - coin.get_width(),0))
+        HUD.blit(self.text["x"], (HUD.get_width() - coin.get_width() - self.text["x"].get_width(), self.text["x"].get_height()/3))
         HUD.blit(coin, (HUD.get_width() - coin.get_width(), 10))
         
         self.__window.blit(HUD, (0,0))
@@ -293,6 +294,18 @@ class render:
         self.fonts["small"] = pygame.font.Font("./resources/SuperMario256.ttf", int(self.__window_size[1]/20), bold=False)
         self.fonts["normal"] = pygame.font.Font("./resources/SuperMario256.ttf", int(self.__window_size[1]/15), bold=False)
 
+        self.fonts["HUD"] = pygame.font.Font("./resources/SuperMario256.ttf", int(self.__window_size[1]/8), bold=False)
+        self.fonts["HUD_small"] = pygame.font.Font("./resources/SuperMario256.ttf", int(0.8*self.__window_size[1]/8), bold=False)
+    
+
+    def __load_text(self):
+        self.text = {}
+        self.text["save?"] = self.fonts["normal"].render("Would you like to save your picture?", 1, black)
+        self.text["yes"] = self.fonts["normal"].render("Yes", 1, black)
+        self.text["no"] = self.fonts["normal"].render("No", 1, black)
+        
+        # scroller
+        self.text["x"] = self.fonts["HUD_small"].render("x", 1, white)
 
     def __render_menu(self, landmarks):
         
@@ -329,7 +342,6 @@ class render:
         
         if landmarks[0] != (-1, -1) or landmarks[1] != (-1, -1):
             self.__render_cursor(landmarks)
-
             if self.images["back"].collide(landmarks[0]) or self.images["back"].collide(landmarks[1]):
                 return "back"
     def __render_cursor(self, landmarks):
@@ -348,9 +360,6 @@ class render:
         self.images["well_done"].display()
     def __render_saveScore(self, score, landmarks):
         Text = self.fonts["big"].render("Your Score: " + str(score), 1, black)
-        subText = self.fonts["normal"].render("Would you like to save your picture?", 1, black)
-        yes = self.fonts["normal"].render("Yes", 1, black)
-        no = self.fonts["normal"].render("No", 1, black)
         
         background = pygame.Surface(self.__window_size)
         background.fill(white)
@@ -361,12 +370,12 @@ class render:
 
         self.__window.blit(Text, [self.__window_size[0]/2 - Text.get_width()/2, 
                                   self.__window_size[1]/4 - Text.get_height()/2])
-        self.__window.blit(subText, [self.__window_size[0]/2 - subText.get_width()/2, 
-                                self.__window_size[1]/2 - subText.get_height()/2])
-        yes_rect = self.__window.blit(yes, [self.__window_size[0]/4 - yes.get_width()/2, 
-                                    3*self.__window_size[1]/4 - yes.get_height()/2])
-        no_rect = self.__window.blit(no, [3*self.__window_size[0]/4 - no.get_width()/2, 
-                                    3*self.__window_size[1]/4 - no.get_height()/2])
+        self.__window.blit(self.text["save?"], [self.__window_size[0]/2 - self.text["save?"].get_width()/2, 
+                                                self.__window_size[1]/2 - self.text["save?"].get_height()/2])
+        yes_rect = self.__window.blit(self.text["yes"], [self.__window_size[0]/4 - self.text["yes"].get_width()/2, 
+                                                         3*self.__window_size[1]/4 - self.text["yes"].get_height()/2])
+        no_rect = self.__window.blit(self.text["no"], [3*self.__window_size[0]/4 - self.text["no"].get_width()/2, 
+                                                        3*self.__window_size[1]/4 - self.text["no"].get_height()/2])
 
         if len(landmarks) == 2:
             if(yes_rect.collidepoint(landmarks)):
