@@ -118,7 +118,7 @@ class player(entity):
         # if self.velocity[0] >= 0
         if np.abs(self.velocity[0]) > 0:
             self.direction = self.velocity[0] >= 0 # False - Left e True - Right
-        if self.hit and not self.on_cooldown():
+        if self.on_cooldown():
             window.blit(self.sprites[self.direction]["fall"][0],
                         (self.position[0], self.position[1]))
             self.hitbox = (self.position[0], self.position[1], 
