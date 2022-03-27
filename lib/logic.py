@@ -15,11 +15,11 @@ class logic:
         self.time = int(round(time.time() * 1000))
 
         self.counter = 3
-    def update(self, state=0, feedback = [],entities=[]):
+    def update(self, state=0, feedback = [], entities=[], speed = 0):
+        state, speed = self.__state_machine(state, feedback, entities, speed)
+        return state, speed
 
-        return self.__state_machine(state, feedback, entities)
-
-    def __state_machine(self, state, feedback, entities):
+    def __state_machine(self, state, feedback, entities, speed):
         diff_time = int(round(time.time() * 1000)) - self.time
         
 
@@ -41,7 +41,7 @@ class logic:
             if feedback != None:
                 if "dead" in feedback:
                     state = "game over"
-            self.__spawn_entities(entities)
+            speed = self.__spawn_entities(entities, speed)
             
         elif state == "game over":
             self.time = int(round(time.time() * 1000))
@@ -79,10 +79,13 @@ class logic:
                 self.time = int(round(time.time() * 1000))
                 state = "menu"
         
-        return state
+        return state,speed
 
-    def __spawn_entities(self, entities = []):
+    def __spawn_entities(self, entities = [], speed = 0):
         for event in pygame.event.get():
+            if event.type == event_ACCELERATE:
+                speed += 3
+
             if event.type == event_LAND_ENEMY:
                 # Escolhe Obstacle/Bónus Terrestres que Aparecem
                 pick_object = random.randrange(0, 2)
@@ -110,3 +113,4 @@ class logic:
                 else:
                     random_pick = random.randrange(0, 17)
                     entities.append(Bonus((Screen_Width, Screen_Height / 1.27), (100, 130), random_pick))
+        return speed

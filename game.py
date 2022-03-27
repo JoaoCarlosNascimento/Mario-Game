@@ -95,8 +95,8 @@ class game:
                                            lives=self.__lives, score= self.__score, coins = self.__coins)
 
             # Aplica logica
-            self.__state = self.__logic.update(
-                state=self.__state, feedback=[feedback1, feedback2], entities=self.__entities)
+            self.__state, self.__fps = self.__logic.update(
+                state=self.__state, feedback=[feedback1, feedback2], entities=self.__entities, speed = self.__fps)
 
             
             # Controle de Ticks
