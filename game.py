@@ -50,7 +50,7 @@ class game:
         self.__score = 0
         self.__lives = 3
         self.__mario = player((1920 / 10, 1080 / 1.3), (100, 95), True)
-        self.__state = "game"
+        self.__state = "control"
 
     def start(self):
         self.__entities.append(self.__mario)
