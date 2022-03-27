@@ -71,6 +71,8 @@ class physics:
             com_acc[0] -= self.__com_acc[0]
         if ((commands & 0b0010) == 0b0010):  # Move Crouch
             entity.ducking = True
+        else:
+            entity.ducking = False
             # print("Move C")
             # com_acc[1] += self.__com_acc[1]
 

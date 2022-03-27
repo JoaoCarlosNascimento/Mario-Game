@@ -148,17 +148,34 @@ class player(entity):
             self.direction = self.velocity[0] >= 0 # False - Left e True - Right
 
         if self.position[1] < 829:
-            # Comando jump
-            window.blit(self.sprites[self.direction]["jump"][self.animation_frame()],
-                        (self.position[0], self.position[1]))
-            self.hitbox = (self.position[0] + self.sprites[self.direction]["offset"],
-                           self.position[1] + 30, self.size[0] - 24, self.size[1] + 20)
+            if not self.ducking:
+                # Comando jump
+                window.blit(self.sprites[self.direction]["jump"][self.animation_frame()],
+                            (self.position[0], self.position[1]))
+                self.hitbox = (self.position[0] + self.sprites[self.direction]["offset"],
+                            self.position[1] + 30, self.size[0] - 24, self.size[1] + 20)
+
+            else:
+                # Comando jump + duck
+                window.blit(self.sprites[self.direction]["duck"][self.animation_frame()],
+                            (self.position[0], self.position[1]))
+                self.hitbox = (self.position[0] + self.sprites[self.direction]["offset"],
+                               self.position[1] + 60, self.size[0], self.size[1] - 30)
+
         else:
-    	    # Comando run
-            window.blit(self.sprites[self.direction]["run"][self.animation_frame()],
-                        (self.position[0], self.position[1]))
-            self.hitbox = (self.position[0] + self.sprites[self.direction]["offset"],
-                        self.position[1] + 30, self.size[0] - 24, self.size[1] + 20)
+            if not self.ducking:
+                # Comando run
+                window.blit(self.sprites[self.direction]["run"][self.animation_frame()],
+                            (self.position[0], self.position[1]))
+                self.hitbox = (self.position[0] + self.sprites[self.direction]["offset"],
+                            self.position[1] + 30, self.size[0], self.size[1] + 20)
+            else:
+                # Comando run + duck
+                window.blit(self.sprites[self.direction]["duck"][self.animation_frame()],
+                            (self.position[0], self.position[1]))
+                self.hitbox = (self.position[0] + self.sprites[self.direction]["offset"],
+                               self.position[1] + 60, self.size[0] - 24, self.size[1] - 30)
+
 
 
 
