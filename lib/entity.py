@@ -135,8 +135,9 @@ class player(entity):
                 # Comando run + duck
                 window.blit(self.sprites[self.direction]["duck"][self.animation_frame()],
                             (self.position[0], self.position[1]))
-                self.hitbox = (self.position[0] + self.sprites[self.direction]["offset"],
-                               self.position[1], self.size[0], self.size[1])
+                self.hitbox = (self.position[0],
+                               self.position[1], self.sprites[self.direction]["duck"][self.animation_frame()].get_width(), 
+                               self.sprites[self.direction]["duck"][self.animation_frame()].get_height())
 
 
 
