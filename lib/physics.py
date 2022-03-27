@@ -77,7 +77,7 @@ class physics:
             # com_acc[1] += self.__com_acc[1]
 
         if ((commands & 0b0001) == 0b0001):  # Move Jump
-            if entity.velocity[1] == 0 and entity.position[1] > 829:
+            if entity.velocity[1] == 0 and entity.position[1] > entity.floor-1:
                 entity.velocity[1] = -self.__vel_lim[1]
             # print("Move J")
             # com_acc[1] -= self.__com_acc[1]
@@ -87,7 +87,7 @@ class physics:
         # Calcular fricção
         friction = -self.__frict_const * np.array([np.sign(entity.velocity[0])*np.abs(entity.velocity[0]), 0])
         # Composição das acelerações
-        if entity.position[1] > 829:
+        if entity.position[1] > entity.floor-1:
             acc = (com_acc+friction)
             self.jumping = True
             self.falling = False
@@ -117,8 +117,8 @@ class physics:
         entity.position = entity.position + entity.velocity*dt# + acc*(dt**2)/2
 
         # Temporario
-        if entity.position[1] > 830:
-            entity.position[1] = 830
+        if entity.position[1] > entity.floor:
+            entity.position[1] = entity.floor
             entity.velocity[1] = 0
         return "dt: {dt}\nVelocity: [{x:.2f},{y:.2f}]\nPosition: [{xp:.2f},{yp:.2f}]".format(dt=dt,x=entity.velocity[0],y=entity.velocity[1],xp=entity.position[0],yp=entity.position[1])
         

@@ -167,7 +167,7 @@ duck_string = ["Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png", "Sprite/Mario/D
                "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png",
                "Sprite/Mario/Duck.png", "Sprite/Mario/Duck.png"]
 fall_string = ["Sprite/Mario/Scared.png"]
-scale = [20, 20]
+scale = [17, 17]
 
 jumpList = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4,
             4, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1,
@@ -195,7 +195,7 @@ def flip_anim(image, number_images):
 
 run_anim = create_anim(run_string, scale, 2)
 jump = create_anim(jump_string, scale, 8)
-duck = create_anim(duck_string, [27,27], 11)
+duck = create_anim(duck_string, [24,24], 11)
 fall = create_anim(fall_string, scale, 1)
 
 flip_run_anim = flip_anim(run_anim, 2)
