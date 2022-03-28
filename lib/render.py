@@ -26,7 +26,7 @@ class render:
         self.__load_images()
         self.__load_fonts()
         self.__load_text()
-    def draw(self, state=0, img=[], entities=[], command=[], landmarks=[],debug="", bonus_val = 0, lives = 3, score = 0, coins = 0):
+    def draw(self, state=0, img=[], entities=[], command=[], landmarks=[],debug="", bonus_val = 0, lives = 3, score = 0, coins = 0, final_score = 0):
         enemies = []
         obstacles = []
         bonus = []
@@ -63,12 +63,12 @@ class render:
             correctedLandmark = (scale_factor[0]*landmarks[0][0],scale_factor[1]*landmarks[0][1])
             # print(correctedLandmark)
 
-            sc = self.__render_saveScore(score, correctedLandmark)
+            sc = self.__render_saveScore(final_score, correctedLandmark)
             if (sc == 1):
                 feedback = "yes score"
             elif (sc == 0):
                 feedback = "no score"
-                self.scoreboard.snapshot(self.__window, [correctedLandmark], score=score, save=0)
+                self.scoreboard.snapshot(self.__window, [correctedLandmark], score=final_score, save=0)
             self.__render_cursor([correctedLandmark, (-1, -1)])
 
         elif state == "leaderboard2":
