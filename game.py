@@ -55,6 +55,7 @@ class game:
         self.__lives = 5
         self.__state = "game"
 
+        self.__final_score = -999
     def start(self):
 
         self.__loop()
@@ -67,8 +68,12 @@ class game:
             fake_command = self.__keyboard_event()
             # self.__event()
             self.__score = self.__fps // 5 - 6 + self.__bonus_value
-
-        
+            if self.__state == "game":
+                self.__bonus_value = 0
+                self.__coins = 0
+                self.__score = 0
+                self.__lives = 5
+            
             if self.__state == "game loop":
                 # Recebe imagem da camera
                 image = self.__camera.take_image(Sampling=Sampling)
@@ -91,12 +96,14 @@ class game:
             feedback2 = self.__render.draw(state=self.__state, img=image,
                                            entities=self.__entities, landmarks=landmarks,debug=debug,
                                            bonus_val = self.__bonus_value,
-                                           lives=self.__lives, score= self.__score, coins = self.__coins)
-
+                                           lives=self.__lives, score= self.__score, coins = self.__coins, final_score = self.__final_score)
+            
             # Aplica logica
             self.__state, self.__fps = self.__logic.update(
                 state=self.__state, feedback=[feedback1, feedback2], entities=self.__entities, speed = self.__fps)
 
+            if self.__state == "game over":
+                self.__final_score = self.__score
             
             # Controle de Ticks
             self.__clock.tick(self.__fps)
