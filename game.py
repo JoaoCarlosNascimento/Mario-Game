@@ -32,7 +32,7 @@ class game:
 
     def __init__(self):
         
-        self.__fps = 45
+        self.__fps = 60
         self.__camera = camera()
         image = self.__camera.take_image()
         # os.environ['SDL_WINDOWID'] = str(self.winfo_id())
@@ -52,7 +52,7 @@ class game:
         self.__bonus_value = 0
         self.__coins = 0
         self.__score = 0
-        self.__lives = 3
+        self.__lives = 5
         self.__state = "game"
 
     def start(self):
@@ -80,11 +80,11 @@ class game:
                 # Recebe commandos
                 command, debug, landmarks = self.__controller.get_commands(state=self.__state, img=image,Sampling=1)
 
-
+            print(debug)
             # Aplica fisica
-            self.__bonus_value, self.__lives, feedback1, debug, self.__coins = self.__physics.update(state=self.__state,
+            self.__bonus_value, self.__lives, feedback1, debug2, self.__coins = self.__physics.update(state=self.__state,
                                                                                 entities=self.__entities, 
-                                                                                commands=fake_command, 
+                                                                                commands=command, 
                                                                                 bonus_val = self.__bonus_value,
                                                                                 coins = self.__coins)
 

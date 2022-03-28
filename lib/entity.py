@@ -96,7 +96,7 @@ class player(entity):
 
         self.hit = False
         self.initCD = True
-        self.lives = 3
+        self.lives = 5
     def update(self, state, timer):
         pass
 

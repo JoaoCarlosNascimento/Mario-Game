@@ -24,9 +24,9 @@ class controller:
 
     ## JUMP ##
     # jump parameters
-    __jump_ang_lim = 173
-    __jump_pos_lim = 10
-    __jump_delta_lim = 20
+    __jump_ang_lim = 175
+    __jump_pos_lim = 9
+    __jump_delta_lim = 18
     __buffer_samples = 5
     # jump variables
     __jump_hips_pose_k = []
@@ -69,14 +69,17 @@ class controller:
         if self.__frame_count-1 <= 0:
             if state in ["save score?", "game over 2",  "game", "menu", "control"]:
                 return self.__hand_detector(img)
-            if state == "prepare pic2" or state == "pic":
+            elif state == "prepare pic2" or state == "pic":
                 com, debug, f = self.__face_detector(img, key_point=[2, 4, 5])
                 com, debug, h = self.__hand_detector(img)
                 return com, debug, [f, h]
-            if state == -11:
+            elif state == -11:
                 return self.__hand_detector(img)
             elif state == -12:
                 return self.__face_detector(img)
+            elif state == "game loop":
+                deb = self.__body_detector(img,0)
+                return deb
             elif state == -13:
                 return self.__body_detector(img,0)
             self.__frame_count = Sampling

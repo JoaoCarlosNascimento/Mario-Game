@@ -50,12 +50,12 @@ class physics:
 
     # Constantes de aceleração
     __frict_const = np.array([3, 2])  # [acc_x,acc_y]
-    __com_acc = np.array([350, -50])+__frict_const  # [acc_x,acc_y]
+    __com_acc = np.array([400, -60])+__frict_const  # [acc_x,acc_y]
     __grav_acc = np.array([0, 100])  # [acc_x,acc_y]
     # __norm_acc = -__grav_acc  # [acc_x,acc_y]
 
     # Constantes de velocidade
-    __vel_lim = np.array([200, 150])  # [vel_x,vel_y]
+    __vel_lim = np.array([250, 200])  # [vel_x,vel_y]
     # __vel_jump = np.array([0, -100])  # [vel_x,vel_y]
 
 
@@ -131,7 +131,7 @@ class physics:
                         if not mario.on_cooldown():
                             state = mario.take_hit()
                         mario.hit = mario.hit | True
-                    entity.position[0] -= 1.4
+                    entity.position[0] -= 3.4
                     # Quando Não Aparece no Ecrã
                     if entity.position[0] < -entity.size[0] * -1:
                         entities.pop(entities.index(entity))

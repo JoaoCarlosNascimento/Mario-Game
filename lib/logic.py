@@ -10,10 +10,10 @@ from lib.load_files import Screen_Width, Screen_Height, USEREVENT
 pygame.time.set_timer(USEREVENT + 1, 1000)
 
 # Evento que Gera Enemies Terrestres entre 4 segundos
-pygame.time.set_timer(USEREVENT + 2, 3000)
+pygame.time.set_timer(USEREVENT + 2, 30000)
 
 # Evento que Gera Enemies Aéreos entre 3 segundos
-pygame.time.set_timer(USEREVENT + 3, 4500)
+pygame.time.set_timer(USEREVENT + 3, 45000)
 
 event_ACCELERATE = USEREVENT + 1
 event_LAND_ENEMY = USEREVENT + 2

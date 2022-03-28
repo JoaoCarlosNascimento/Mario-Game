@@ -126,7 +126,6 @@ class render:
             self.scoreboard.snapshot(self.__window, landmarks, 10000, 1)
             
         elif state == "game loop":
-            # self.__render_camera(img)
             if entities:
                 for entity in entities:
                     if entity.name == "Player":
@@ -139,8 +138,8 @@ class render:
                         bonus.append(entity)
                 self.redrawWindow(mario.position[0], entities, mario, score, lives, coins)
                 self.check_BackGround()
-                t = TextBox(self.__window, debug)
-                t.display()
+            t = TextBox(self.__window, debug)
+            t.display()
 
         elif(state == -11):
             self.__render_camera(img)
@@ -152,9 +151,9 @@ class render:
             self.__render_camera(img)
             if landmarks:
                 self.__render_body_command(landmarks)
-                mytext = TextBox(self.__window, size=20)
-                mytext.updateText(debug)
-                mytext.display()
+            mytext = TextBox(self.__window, size=20)
+            mytext.updateText(debug)
+            mytext.display()
         
         pygame.display.update()
         return feedback
@@ -189,6 +188,7 @@ class render:
                     pygame.draw.circle(self.__window, (191, 39, 28), (com.x,com.y), 15)
 
     def __render_HUD(self, lives, score, coins):
+        print(score) # Ajustar scores
         HUD = pygame.Surface((self.__window_size[0], self.__window_size[1]/8),  pygame.SRCALPHA, 32)
 
         # font = pygame.font.Font("./resources/SuperMario256.ttf", HUD.get_height(), bold=False)
@@ -230,11 +230,14 @@ class render:
 
         # Bonus = Lista que Contém Bónus
 
-        runner.draw(file.window, 95)  # NEW
-
         # Condição que Verifica se Mario Saiu Do Ecrã
         if Movement_x <= -70:
-            file.window.blit(file.Loser_Text, file.LoserRect)
+            runner.take_hit()
+            runner.position = np.array([1920 / 10, 1080 / 1.3])
+
+        runner.draw(file.window, 95)  # NEW
+
+        #     file.window.blit(file.Loser_Text, file.LoserRect)
 
     # Atualiza BackGround
     def check_BackGround(self):
