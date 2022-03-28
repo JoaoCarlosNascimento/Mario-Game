@@ -188,7 +188,7 @@ class render:
                     pygame.draw.circle(self.__window, (191, 39, 28), (com.x,com.y), 15)
 
     def __render_HUD(self, lives, score, coins):
-        print(score) # Ajustar scores
+        # print(score) # Ajustar scores
         HUD = pygame.Surface((self.__window_size[0], self.__window_size[1]/8),  pygame.SRCALPHA, 32)
 
         # font = pygame.font.Font("./resources/SuperMario256.ttf", HUD.get_height(), bold=False)

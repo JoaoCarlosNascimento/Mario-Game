@@ -80,11 +80,11 @@ class game:
                 # Recebe commandos
                 command, debug, landmarks = self.__controller.get_commands(state=self.__state, img=image,Sampling=1)
 
-            print(debug)
+            # print(debug)
             # Aplica fisica
             self.__bonus_value, self.__lives, feedback1, debug2, self.__coins = self.__physics.update(state=self.__state,
                                                                                 entities=self.__entities, 
-                                                                                commands=command, 
+                                                                                commands=fake_command, 
                                                                                 bonus_val = self.__bonus_value,
                                                                                 coins = self.__coins)
 

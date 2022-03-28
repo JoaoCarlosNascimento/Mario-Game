@@ -12,7 +12,8 @@ import time
 class physics:
     def __init__(self):
         self.__timer = 0
-        pass
+        self.sig = 1
+
 
     def update(self, state=0,entities=[], commands=0b0000, score = 0, bonus_val = 0, coins = 0):
         bonus = []
@@ -51,11 +52,11 @@ class physics:
     # Constantes de aceleração
     __frict_const = np.array([3, 2])  # [acc_x,acc_y]
     __com_acc = np.array([400, -60])+__frict_const  # [acc_x,acc_y]
-    __grav_acc = np.array([0, 100])  # [acc_x,acc_y]
+    __grav_acc = np.array([0, 110])  # [acc_x,acc_y]
     # __norm_acc = -__grav_acc  # [acc_x,acc_y]
 
     # Constantes de velocidade
-    __vel_lim = np.array([250, 200])  # [vel_x,vel_y]
+    __vel_lim = np.array([250, 210])  # [vel_x,vel_y]
     # __vel_jump = np.array([0, -100])  # [vel_x,vel_y]
 
 
@@ -118,6 +119,12 @@ class physics:
         if entity.position[1] > entity.floor:
             entity.position[1] = entity.floor
             entity.velocity[1] = 0
+
+        if entity.position[0] <= 0:
+            entity.position[0] = 0
+        if entity.position[0] >= 1920-entity.hitbox[2]:
+            entity.position[0] = 1920-entity.hitbox[2]
+        # runner.position = np.array([1920 / 10, 1080 / 1.3])
         return "dt: {dt}\nVelocity: [{x:.2f},{y:.2f}]\nPosition: [{xp:.2f},{yp:.2f}]".format(dt=dt,x=entity.velocity[0],y=entity.velocity[1],xp=entity.position[0],yp=entity.position[1])
 
     def verify_collision_and_move_mobs(self, bonus_val, coins,entities, mario, start_timer):
@@ -131,11 +138,20 @@ class physics:
                         if not mario.on_cooldown():
                             state = mario.take_hit()
                         mario.hit = mario.hit | True
-                    entity.position[0] -= 3.4
+                    if entity.position[1] < 800:
+                        entity.position[0] -= 6.2
+                    else:
+                        entity.position[0] -= 2.9
                     # Quando Não Aparece no Ecrã
                     if entity.position[0] < -entity.size[0] * -1:
                         entities.pop(entities.index(entity))
                 elif entity.name == "Bonus":
+                    if self.sig == 1 and entity.position[1] > 700:
+                        entity.position[1] -= 1.4
+                    elif self.sig == -1 and entity.position[1] < 800:
+                        entity.position[1] += 1.4
+                    else:
+                        self.sig = self.sig*(-1)
                     entity.position[0] -= 1.4
                     if entity.collide(mario):
                         bonus_val += entity.score
@@ -145,5 +161,6 @@ class physics:
                         # Quando Não Aparece no Ecrã
                     if entity.position[0] < -entity.size[0] * -1:
                         entities.pop(entities.index(entities))
+
 
         return start_timer, bonus_val, state, coins
