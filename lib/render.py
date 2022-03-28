@@ -123,7 +123,7 @@ class render:
                         imgScale[0]*landmarks[1][i][0],
                         imgScale[1]*landmarks[1][i][1]
                     )
-            self.scoreboard.snapshot(self.__window, landmarks, 10000, 1)
+            self.scoreboard.snapshot(self.__window, landmarks, final_score, 1)
             
         elif state == "game loop":
             if entities:

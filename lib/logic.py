@@ -115,7 +115,7 @@ class logic:
             return False
 
     def bonus_cd(self):
-        if int(round(time.time() * 1000)) - self.bonus_timer < 5000:
+        if int(round(time.time() * 1000)) - self.bonus_timer < 2500:
             return True
         else:
             self.bonus_timer = int(round(time.time() * 1000))
@@ -140,7 +140,7 @@ class logic:
                     random_pick = random.randrange(0, 9)
                     entities.append(
                         Enemy((Screen_Width, Screen_Height / 1.27), (100, 130), random_pick))
-            elif rd == 1:
+            elif rd in [1,8]:
                 if not self.bonus_cd():
                     random_pick = random.randrange(18, 25)
                     entities.append(
@@ -150,7 +150,7 @@ class logic:
                     random_pick = random.randrange(10, 13)
                     entities.append(
                         Enemy((Screen_Width, Screen_Height / 1.27), (100, 130), random_pick))
-            elif rd == 4:
+            elif rd in [4,7]:
                 if not self.bonus_cd():
                     random_pick = random.randrange(0, 17)
                     entities.append(Bonus((Screen_Width, Screen_Height / 1.2), (100, 130), random_pick))

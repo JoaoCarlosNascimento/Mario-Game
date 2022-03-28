@@ -53,7 +53,7 @@ class game:
         self.__coins = 0
         self.__score = 0
         self.__lives = 5
-        self.__state = "game"
+        self.__state = "menu"
 
         self.__final_score = -999
     def start(self):
