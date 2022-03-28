@@ -87,7 +87,6 @@ class game:
                                                                                 commands=command, 
                                                                                 bonus_val = self.__bonus_value,
                                                                                 coins = self.__coins)
-
             # Desenha cena
             feedback2 = self.__render.draw(state=self.__state, img=image,
                                            entities=self.__entities, landmarks=landmarks,debug=debug,

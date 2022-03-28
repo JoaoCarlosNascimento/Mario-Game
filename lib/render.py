@@ -63,12 +63,12 @@ class render:
             correctedLandmark = (scale_factor[0]*landmarks[0][0],scale_factor[1]*landmarks[0][1])
             # print(correctedLandmark)
 
-            sc = self.__render_saveScore(score, correctedLandmark)
+            sc = self.__render_saveScore(score + bonus_val, correctedLandmark)
             if (sc == 1):
                 feedback = "yes score"
             elif (sc == 0):
                 feedback = "no score"
-                self.scoreboard.snapshot(self.__window, [correctedLandmark], score=score, save=0)
+                self.scoreboard.snapshot(self.__window, [correctedLandmark], score= score + bonus_val, save=0)
             self.__render_cursor([correctedLandmark, (-1, -1)])
 
         elif state == "leaderboard2":
