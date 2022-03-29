@@ -55,19 +55,19 @@ Hearts_1 = pygame.transform.scale(Hearts_1, (Screen_Width / 6, Screen_Height / 1
 # Load das Imagens Bonus
 # Bónus Aéreos e Terrestres
 Coin = pygame.image.load("Sprite/Bonus/Coin.png").convert_alpha()
-RedCoin = pygame.image.load("Sprite/Bonus/RedCoin.png").convert_alpha()
-BlueCoin = pygame.image.load("Sprite/Bonus/BlueCoin.png").convert_alpha()
-PurpleCoin = pygame.image.load("Sprite/Bonus/PurpleCoin.png").convert_alpha()
-GreenCoin = pygame.image.load("Sprite/Bonus/GreenCoin.png").convert_alpha()
+#RedCoin = pygame.image.load("Sprite/Bonus/RedCoin.png").convert_alpha()
+#BlueCoin = pygame.image.load("Sprite/Bonus/BlueCoin.png").convert_alpha()
+#PurpleCoin = pygame.image.load("Sprite/Bonus/PurpleCoin.png").convert_alpha()
+#GreenCoin = pygame.image.load("Sprite/Bonus/GreenCoin.png").convert_alpha()
 
-BigPrincessCoin = pygame.image.load("Sprite/Bonus/BigPrincessCoin.png").convert_alpha()
+#BigPrincessCoin = pygame.image.load("Sprite/Bonus/BigPrincessCoin.png").convert_alpha()
 BigYoshiCoin = pygame.image.load("Sprite/Bonus/BigYoshiCoin.png").convert_alpha()
 BigACoin = pygame.image.load("Sprite/Bonus/BigACoin.png").convert_alpha()
 
-PinkApple = pygame.image.load("Sprite/Bonus/PinkApple.png").convert_alpha()
-PurpleApple = pygame.image.load("Sprite/Bonus/PurpleApple.png").convert_alpha()
+#PinkApple = pygame.image.load("Sprite/Bonus/PinkApple.png").convert_alpha()
+#PurpleApple = pygame.image.load("Sprite/Bonus/PurpleApple.png").convert_alpha()
 RedApple = pygame.image.load("Sprite/Bonus/RedApple.png").convert_alpha()
-YellowApple = pygame.image.load("Sprite/Bonus/YellowApple.png").convert_alpha()
+#YellowApple = pygame.image.load("Sprite/Bonus/YellowApple.png").convert_alpha()
 
 Star = pygame.image.load("Sprite/Bonus/Star.png").convert_alpha()
 Star = pygame.transform.scale(Star, (Screen_Width / 30, Screen_Height / 20))
@@ -75,31 +75,31 @@ Star = pygame.transform.scale(Star, (Screen_Width / 30, Screen_Height / 20))
 RedStar = pygame.image.load("Sprite/Bonus/RedStar.png").convert_alpha()
 RedStar = pygame.transform.scale(RedStar, (Screen_Width / 30, Screen_Height / 20))
 
-BlackStar = pygame.image.load("Sprite/Bonus/BlackStar.png").convert_alpha()
-BlackStar = pygame.transform.scale(BlackStar, (Screen_Width / 30, Screen_Height / 20))
+#BlackStar = pygame.image.load("Sprite/Bonus/BlackStar.png").convert_alpha()
+#BlackStar = pygame.transform.scale(BlackStar, (Screen_Width / 30, Screen_Height / 20))
 
-GreenStar = pygame.image.load("Sprite/Bonus/GreenStar.png").convert_alpha()
-GreenStar = pygame.transform.scale(GreenStar, (Screen_Width / 30, Screen_Height / 20))
+#GreenStar = pygame.image.load("Sprite/Bonus/GreenStar.png").convert_alpha()
+#GreenStar = pygame.transform.scale(GreenStar, (Screen_Width / 30, Screen_Height / 20))
 
-PurpleStar = pygame.image.load("Sprite/Bonus/PurpleStar.png").convert_alpha()
-PurpleStar = pygame.transform.scale(PurpleStar, (Screen_Width / 30, Screen_Height / 20))
+#PurpleStar = pygame.image.load("Sprite/Bonus/PurpleStar.png").convert_alpha()
+#PurpleStar = pygame.transform.scale(PurpleStar, (Screen_Width / 30, Screen_Height / 20))
 
-MoonBonus = pygame.image.load("Sprite/Bonus/MoonBonus.png").convert_alpha()
+#MoonBonus = pygame.image.load("Sprite/Bonus/MoonBonus.png").convert_alpha()
 
 # Bónus Terrestres
 RedMushroom = pygame.image.load("Sprite/Bonus/RedMushroom.png").convert_alpha()
 RedMushroom = pygame.transform.scale(RedMushroom, (Screen_Width / 25, Screen_Height / 15))
 
 ExtendedMushroom = pygame.image.load("Sprite/Bonus/ExtendedMushroom.png").convert_alpha()
-BlueMushroom = pygame.image.load("Sprite/Bonus/BlueMushroom.png").convert_alpha()
-PurpleMushroom = pygame.image.load("Sprite/Bonus/PurpleMushroom.png").convert_alpha()
+#BlueMushroom = pygame.image.load("Sprite/Bonus/BlueMushroom.png").convert_alpha()
+#PurpleMushroom = pygame.image.load("Sprite/Bonus/PurpleMushroom.png").convert_alpha()
 
 YellowFlowerBonus = pygame.image.load("Sprite/Bonus/YellowFlowerBonus.png").convert_alpha()
 Red_YellowFlowerBonus = pygame.image.load("Sprite/Bonus/Red_YellowFlowerBonus.png").convert_alpha()
-BlueFlowerBonus = pygame.image.load("Sprite/Bonus/BlueFowerBonus.png").convert_alpha()
+#BlueFlowerBonus = pygame.image.load("Sprite/Bonus/BlueFowerBonus.png").convert_alpha()
 
-HappyBonusPlant = pygame.image.load("Sprite/Bonus/HappyBonusPlant.png").convert_alpha()
-HappyBonusPlant = pygame.transform.scale(HappyBonusPlant, (Screen_Width / 25, Screen_Height / 15))
+#HappyBonusPlant = pygame.image.load("Sprite/Bonus/HappyBonusPlant.png").convert_alpha()
+#HappyBonusPlant = pygame.transform.scale(HappyBonusPlant, (Screen_Width / 25, Screen_Height / 15))
 
 # Load das Imagens Enemies
 FatTurtle = pygame.image.load("Sprite/Enemies/FatTurtle.png")
@@ -111,14 +111,14 @@ Gumba = pygame.transform.scale(Gumba, (Screen_Width / 25, Screen_Height / 20))
 LeftBullet = pygame.image.load("Sprite/Enemies/LeftBullet.png")
 RedGhost = pygame.image.load("Sprite/Enemies/RedGhost.png")
 
-RedTurtleSpikes = pygame.image.load("Sprite/Enemies/RedTurtleSpikes.png")
-RedTurtleSpikes = pygame.transform.scale(RedTurtleSpikes, (Screen_Width / 25, Screen_Height / 15))
+#RedTurtleSpikes = pygame.image.load("Sprite/Enemies/RedTurtleSpikes.png")
+#RedTurtleSpikes = pygame.transform.scale(RedTurtleSpikes, (Screen_Width / 25, Screen_Height / 15))
 
-Animal = pygame.image.load("Sprite/Enemies/Animal.png")
-Animal = pygame.transform.scale(Animal, (Screen_Width / 25, Screen_Height / 13))
+#Animal = pygame.image.load("Sprite/Enemies/Animal.png")
+#Animal = pygame.transform.scale(Animal, (Screen_Width / 25, Screen_Height / 13))
 
 BlackFlower = pygame.image.load("Sprite/Enemies/BlackFlower.png")
-BlueSpikeTurtle = pygame.image.load("Sprite/Enemies/BlueSpikeTurtle.png")
+#BlueSpikeTurtle = pygame.image.load("Sprite/Enemies/BlueSpikeTurtle.png")
 
 FlowerLeftObstacle = pygame.image.load("Sprite/Enemies/FlowerLeftObstacle.png")
 FlowerLeftObstacle = pygame.transform.scale(FlowerLeftObstacle, (Screen_Width / 25, Screen_Height / 10))
@@ -129,14 +129,17 @@ ScaredRedFish = pygame.transform.scale(ScaredRedFish, (Screen_Width / 25, Screen
 SmallBowser = pygame.image.load("Sprite/Enemies/SmallBowser.png")
 SmallBowser = pygame.transform.scale(SmallBowser, (Screen_Width / 25, Screen_Height / 10))
 
-SurprisedFish = pygame.image.load("Sprite/Enemies/SurprisedFish.png")
-SurprisedFish = pygame.transform.scale(SurprisedFish, (Screen_Width / 25, Screen_Height / 15))
+#SurprisedFish = pygame.image.load("Sprite/Enemies/SurprisedFish.png")
+#SurprisedFish = pygame.transform.scale(SurprisedFish, (Screen_Width / 25, Screen_Height / 15))
 
-TurtleGhost = pygame.image.load("Sprite/Enemies/TurtleGhost.png")
+AngryGhost = pygame.image.load("Sprite/Enemies/AngryGhost.png")
+AngryGhost = pygame.transform.scale(AngryGhost, (Screen_Width / 25, Screen_Height / 15))
+
+#TurtleGhost = pygame.image.load("Sprite/Enemies/TurtleGhost.png")
 TurtleShell = pygame.image.load("Sprite/Enemies/TurtleShell.png")
 TurtleShell = pygame.transform.scale(TurtleShell, (Screen_Width / 25, Screen_Height / 15))
 
-TurtleWithSpike = pygame.image.load("Sprite/Enemies/TurtleWithSpike.png")
+#TurtleWithSpike = pygame.image.load("Sprite/Enemies/TurtleWithSpike.png")
 
 # Load Obstacles
 FirePipe = pygame.image.load("Sprite/Obstacle/FirePipe.png")
@@ -208,62 +211,42 @@ def pick_enemie(pick, x, y, width, height):
         hitbox = (x, y + Screen_Height / 150, width - Screen_Width / 60, height - Screen_Height / 15)
 
     if pick == 2:
-        Enemie = RedTurtleSpikes
-        y = Screen_Height / 1.18
-        hitbox = (x, y, width - Screen_Width / 100, height - Screen_Height / 20)
-
-    if pick == 3:
-        Enemie = Animal
-        y = Screen_Height / 1.2
-        hitbox = (x, y, width - Screen_Width / 100, height - Screen_Height / 20)
-
-    if pick == 4:
         Enemie = BlackFlower
         y = Screen_Height / 1.2
         hitbox = (x, y, width, height - Screen_Height / 20)
 
-    if pick == 5:
-        Enemie = BlueSpikeTurtle
-        y = Screen_Height / 1.2
-        hitbox = (x, y, width - Screen_Width / 200, height - Screen_Height / 20)
-
-    if pick == 6:
+    if pick == 3:
         Enemie = FlowerLeftObstacle
         y = Screen_Height / 1.22
         hitbox = (x, y, width - Screen_Width / 100, height - Screen_Height / 40)
 
-    if pick == 7:
+    if pick == 4:
         Enemie = SmallBowser
         y = Screen_Height / 1.22
         hitbox = (x, y + Screen_Height / 100, width - Screen_Width / 100, height - Screen_Height / 20)
 
-    if pick == 8:
+    if pick == 5:
         Enemie = TurtleShell
         y = Screen_Height / 1.17
         hitbox = (x, y, width - Screen_Width / 100, height - Screen_Height / 20)
 
-    if pick == 9:
-        Enemie = TurtleWithSpike
-        y = Screen_Height / 1.2
-        hitbox = (x + Screen_Width / 200, y + Screen_Height / 200, width - Screen_Width / 250, height - Screen_Height / 20)
-
-    if pick == 10:
+    if pick == 6:
         Enemie = LeftBullet
         y = Screen_Height / 1.4
         hitbox = (x, y, width - Screen_Width / 150, height - Screen_Height / 30)
 
-    if pick == 11:
+    if pick == 7:
         Enemie = RedGhost
         y = Screen_Height / 1.4
         hitbox = (x, y, width - Screen_Width / 250, height - Screen_Height / 30)
 
-    if pick == 12:
+    if pick == 8:
         Enemie = ScaredRedFish
         y = Screen_Height / 1.4
         hitbox = (x, y, width - Screen_Width / 100, height - Screen_Height / 20)
 
-    if pick == 13:
-        Enemie = SurprisedFish
+    if pick == 9:
+        Enemie = AngryGhost
         y = Screen_Height / 1.4
         hitbox = (x, y, width - Screen_Width / 100, height - Screen_Height / 20)
 
@@ -296,152 +279,50 @@ def pick_bonus(pick, x, y, width, height):
         hitbox = (x + Screen_Width / 350, y, width - Screen_Width / 40, height - Screen_Height / 20)
 
     if pick == 1:
-        Bonus = RedCoin
-        y = Screen_Height / 1.23
-        score = 20
-        hitbox = (x + Screen_Width / 350, y, width - Screen_Width / 40, height - Screen_Height / 20)
-
-    if pick == 2:
-        Bonus = BlueCoin
-        y = Screen_Height / 1.23
-        score = 30
-        hitbox = (x + Screen_Width / 350, y, width - Screen_Width / 40, height - Screen_Height / 20)
-
-    if pick == 3:
-        Bonus = PurpleCoin
-        y = Screen_Height / 1.23
-        score = 40
-        hitbox = (x + Screen_Width / 350, y, width - Screen_Width / 40, height - Screen_Height / 20)
-
-    if pick == 4:
-        Bonus = GreenCoin
+        Bonus = BigYoshiCoin
         score = 50
         y = Screen_Height / 1.23
-        hitbox = (x + Screen_Width / 350, y, width - Screen_Width / 40, height - Screen_Height / 20)
-
-    if pick == 5:
-        Bonus = BigPrincessCoin
-        score = 60
-        y = Screen_Height / 1.23
         hitbox = (x + Screen_Width / 350, y, width - Screen_Width / 50, height - Screen_Height / 50)
 
-    if pick == 6:
-        Bonus = BigYoshiCoin
-        score = 70
-        y = Screen_Height / 1.23
-        hitbox = (x + Screen_Width / 350, y, width - Screen_Width / 50, height - Screen_Height / 50)
-
-    if pick == 7:
+    if pick == 2:
         Bonus = BigACoin
-        score = 80
+        score = 100
         y = Screen_Height / 1.23
         hitbox = (x + Screen_Width / 350, y, width - Screen_Width / 50, height - Screen_Height / 50)
 
-    if pick == 8:
-        Bonus = PinkApple
-        score = 20
-        y = Screen_Height / 1.23
-        hitbox = (x + Screen_Width / 350, y, width - Screen_Width / 40, height - Screen_Height / 18)
-
-    if pick == 9:
-        Bonus = PurpleApple
-        score = 30
-        y = Screen_Height / 1.23
-        hitbox = (x + Screen_Width / 350, y, width - Screen_Width / 40, height - Screen_Height / 18)
-
-    if pick == 10:
+    if pick == 3:
         Bonus = RedApple
         score = 40
         y = Screen_Height / 1.23
         hitbox = (x + Screen_Width / 350, y, width - Screen_Width / 40, height - Screen_Height / 18)
 
-    if pick == 11:
-        Bonus = YellowApple
-        score = 50
-        y = Screen_Height / 1.23
-        hitbox = (x + Screen_Width / 350, y, width - Screen_Width / 40, height - Screen_Height / 18)
-
-    if pick == 12:
+    if pick == 4:
         Bonus = Star
-        score = 100
+        score = 150
         y = Screen_Height / 1.23
         hitbox = (x + Screen_Width / 350, y, width - Screen_Width / 40, height - Screen_Height / 18)
 
-    if pick == 13:
+    if pick == 5:
         Bonus = RedStar
-        score = 110
-        y = Screen_Height / 1.23
-        hitbox = (x + Screen_Width / 350, y, width - Screen_Width / 40, height - Screen_Height / 18)
-
-    if pick == 14:
-        Bonus = BlackStar
-        score = 120
-        y = Screen_Height / 1.23
-        hitbox = (x + Screen_Width / 350, y, width - Screen_Width / 40, height - Screen_Height / 18)
-
-    if pick == 15:
-        Bonus = GreenStar
-        score = 130
-        y = Screen_Height / 1.23
-        hitbox = (x + Screen_Width / 350, y, width - Screen_Width / 40, height - Screen_Height / 18)
-
-    if pick == 16:
-        Bonus = PurpleStar
-        score = 140
-        y = Screen_Height / 1.23
-        hitbox = (x + Screen_Width / 350, y, width - Screen_Width / 40, height - Screen_Height / 18)
-
-    if pick == 17:
-        Bonus = MoonBonus
         score = 200
         y = Screen_Height / 1.23
-        hitbox = (x, y + Screen_Height / 200, width - Screen_Width / 80, height - Screen_Height / 18)
+        hitbox = (x + Screen_Width / 350, y, width - Screen_Width / 40, height - Screen_Height / 18)
 
-    if pick == 18:
+    if pick == 6:
         Bonus = RedMushroom
         score = 250
         y = Screen_Height / 1.18
         hitbox = (x, y + Screen_Height / 200, width - Screen_Width / 80, height - Screen_Height / 18)
 
-    if pick == 19:
+    if pick == 7:
         Bonus = ExtendedMushroom
         score = 300
         y = Screen_Height / 1.18
         hitbox = (x, y + Screen_Height / 200, width + Screen_Width / 400, height - Screen_Height / 18)
 
-    if pick == 20:
-        Bonus = BlueMushroom
-        score = 350
-        y = Screen_Height / 1.18
-        hitbox = (x, y + Screen_Height / 200, width - Screen_Width / 80, height - Screen_Height / 18)
-
-    if pick == 21:
-        Bonus = PurpleMushroom
-        score = 400
-        y = Screen_Height / 1.18
-        hitbox = (x, y + Screen_Height / 200, width - Screen_Width / 80, height - Screen_Height / 18)
-
-    if pick == 22:
-        Bonus = YellowFlowerBonus
-        score = 450
-        y = Screen_Height / 1.18
-        hitbox = (x, y + Screen_Height / 200, width - Screen_Width / 80, height - Screen_Height / 18)
-
-    if pick == 23:
+    if pick == 8:
         Bonus = Red_YellowFlowerBonus
         score = 500
-        y = Screen_Height / 1.18
-        hitbox = (x, y + Screen_Height / 200, width - Screen_Width / 80, height - Screen_Height / 18)
-
-    if pick == 24:
-        Bonus = BlueFlowerBonus
-        score = 550
-        y = Screen_Height / 1.18
-        hitbox = (x, y + Screen_Height / 200, width - Screen_Width / 80, height - Screen_Height / 18)
-
-    if pick == 25:
-        Bonus = HappyBonusPlant
-        score = 600
         y = Screen_Height / 1.18
         hitbox = (x, y + Screen_Height / 200, width - Screen_Width / 80, height - Screen_Height / 18)
 
