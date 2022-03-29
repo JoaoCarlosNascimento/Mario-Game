@@ -53,7 +53,7 @@ class logic:
                     state = "menu"
         elif state == "game":
             entities.clear()
-            entities.append(player((1920 / 10, 1080 / 1.3), (100, 95), True))
+            entities.append(player((1920 / 8, 1080 / 1.7), (100, 95), True))
             state = "game loop"
         elif state == "game loop":
             if feedback != None:

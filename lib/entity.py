@@ -75,8 +75,7 @@ class player(entity):
         self.runCount = 0
         self.duckUp = False
         self.LookingRight = LookingRight
-
-        self.floor = 860
+        self.floor = 780
 
         self.die_timer = int(round(time.time() * 1000))
         self.duck_timer = int(round(time.time() * 1000))
@@ -152,8 +151,8 @@ class player(entity):
             else:
                 # Comando run + duck
                 window.blit(self.sprites[self.direction]["duck"][self.animation_frame()],
-                            (self.position[0], self.position[1]+35))
-                self.hitbox = (self.position[0], self.position[1]+35,
+                            (self.position[0], self.position[1]+70))
+                self.hitbox = (self.position[0], self.position[1]+70,
                                self.sprites[self.direction]["duck"][self.animation_frame()].get_width(), 
                                self.sprites[self.direction]["duck"][self.animation_frame()].get_height())
 
@@ -282,10 +281,11 @@ class Bonus(entity):
         entity.__init__(self, pos=pos, size=size, name="Bonus")
         self.random_pick = random_pick
         self.score = 0
+        self.random_height = random.randrange(0, 2)
 
     def draw(self, window):
         img, self.position[1], self.hitbox, self.score = file.pick_bonus(self.random_pick, self.position[0], self.position[1], self.size[0],
-                                                                   self.size[1])
+                                                                   self.size[1], random_height = self.random_height)
         window.blit(img, (self.position[0], self.position[1]))
         # Desenho da Hitbox
         # pygame.draw.rect(window, (255, 0, 0), self.hitbox, 2)
