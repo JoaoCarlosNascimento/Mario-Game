@@ -141,7 +141,7 @@ class leaderboardEntry:
         else:
             self.rank = font.render(str(self.ranking), 1, white)
         
-        font = pygame.font.Font("./resources/SuperMario256.ttf", int(self.height*0.9))
+        font = pygame.font.Font("./resources/SuperMario256.ttf", int(self.height*0.5))
         self.score = font.render(str(score), 1, white)
     def render(self):
         self.surface.blit(self.picture, (self.height,0), self.picture.get_rect())
