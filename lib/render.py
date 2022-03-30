@@ -136,7 +136,8 @@ class render:
                         obstacles.append(entity)
                     elif entity.name == "Bonus":
                         bonus.append(entity)
-                self.redrawWindow(mario.position[0], entities, mario, score, lives, coins)
+                self.redrawWindow(
+                    mario.position[0], entities, mario, score, lives, coins, img)
                 self.check_BackGround()
             t = TextBox(self.__window, debug)
             t.display()
@@ -187,7 +188,7 @@ class render:
                 if com != (-1,-1):
                     pygame.draw.circle(self.__window, (191, 39, 28), (com.x,com.y), 15)
 
-    def __render_HUD(self, lives, score, coins):
+    def __render_HUD(self, lives, score, coins, image = []):
         # print(score) # Ajustar scores
         HUD = pygame.Surface((self.__window_size[0], self.__window_size[1]/8),  pygame.SRCALPHA, 32)
 
@@ -209,13 +210,15 @@ class render:
         HUD.blit(coin, (HUD.get_width() - coin.get_width(), 10))
         
         self.__window.blit(HUD, (0,0))
+        if image != []:
+            self.__render_camera(img=image,size=(480,270))
 
     # Função Utilizada Durante o Jogo Para Desenhar HUD(Score e Vidas), Inimigos, Bónus, Mario e Obstáculos
-    def redrawWindow(self,Movement_x, entities, runner, score, lives, coins):
+    def redrawWindow(self,Movement_x, entities, runner, score, lives, coins, image = []):
         file.window.blit(file.BackGround, (file.BackGroundX, 0))  # draws our first BackGround image
         file.window.blit(file.BackGround, (file.BackGroundX2, 0))  # draws the second BackGround image
 
-        self.__render_HUD(lives, score, coins)
+        self.__render_HUD(lives, score, coins, image=image)
         if entities:
             for entity in entities:
                 if entity.name == "Enemy" or entity.name == "Obstacle":

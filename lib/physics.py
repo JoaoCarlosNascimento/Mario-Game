@@ -51,12 +51,12 @@ class physics:
 
     # Constantes de aceleração
     __frict_const = np.array([3, 2])  # [acc_x,acc_y]
-    __com_acc = np.array([350, -60])+__frict_const  # [acc_x,acc_y]
+    __com_acc = np.array([450, -60])+__frict_const  # [acc_x,acc_y]
     __grav_acc = np.array([0, 110])  # [acc_x,acc_y]
     # __norm_acc = -__grav_acc  # [acc_x,acc_y]
 
     # Constantes de velocidade
-    __vel_lim = np.array([230, 210])  # [vel_x,vel_y]
+    __vel_lim = np.array([550, 210])  # [vel_x,vel_y]
     # __vel_jump = np.array([0, -100])  # [vel_x,vel_y]
 
 
@@ -91,7 +91,10 @@ class physics:
             self.jumping = True
             self.falling = False
         else:
-            friction[0]*=0.30
+            if np.abs(com_acc[0]) > 0:
+                friction[0]*=0.95
+            else:
+                friction[0]*=0.3
             acc = (com_acc+self.__grav_acc+friction)
             self.jumping = False
             self.falling = True
