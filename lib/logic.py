@@ -53,7 +53,7 @@ class logic:
                     state = "menu"
         elif state == "game":
             entities.clear()
-            entities.append(player((1920 / 10, 1080 / 1.3), (100, 95), True))
+            entities.append(player((1920 / 8, 1080 / 1.7), (100, 95), True))
             state = "game loop"
         elif state == "game loop":
             if feedback != None:
@@ -137,22 +137,22 @@ class logic:
             if rd in [0,5]:
                 # Escolhe Obstacle/Bónus Terrestres que Aparecem
                 if not self.land_cd():
-                    random_pick = random.randrange(0, 9)
+                    random_pick = random.randrange(0, 5)
                     entities.append(
                         Enemy((Screen_Width, Screen_Height / 1.27), (100, 130), random_pick))
             elif rd in [1,8]:
                 if not self.bonus_cd():
-                    random_pick = random.randrange(18, 25)
+                    random_pick = random.randrange(0, 8)
                     entities.append(
                         Bonus((Screen_Width, Screen_Height / 1.27), (100, 130), random_pick))
             elif rd in [2,3,6]:
                 if not self.air_cd():
-                    random_pick = random.randrange(10, 13)
+                    random_pick = random.randrange(6, 9)
                     entities.append(
                         Enemy((Screen_Width, Screen_Height / 1.27), (100, 130), random_pick))
             elif rd in [4,7]:
                 if not self.bonus_cd():
-                    random_pick = random.randrange(0, 17)
+                    random_pick = random.randrange(0, 8)
                     entities.append(Bonus((Screen_Width, Screen_Height / 1.2), (100, 130), random_pick))
             else:
                 pass

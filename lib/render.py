@@ -200,7 +200,7 @@ class render:
         lives = self.fonts["HUD"].render("{:02}".format(lives), 1, white)
         self.images["mario2"].resize((int(HUD.get_height()), int(HUD.get_height())))
         self.images["coin"].resize((int(HUD.get_height()), int(HUD.get_height())))
-        HUD.blit(self.images["mario2"].image, (0,0))
+        HUD.blit(self.images["mario2"].image, (0, 0))
         HUD.blit(self.text["x"], ((HUD.get_height(), self.text["x"].get_height()/3)))
         HUD.blit(lives, (HUD.get_height() + self.text["x"].get_width(), 10))
         HUD.blit(score, (HUD.get_width()/2-score.get_width()/2, 10))
