@@ -190,7 +190,8 @@ class render:
 
     def __render_HUD(self, lives, score, coins, image = []):
         # print(score) # Ajustar scores
-        HUD = pygame.Surface((self.__window_size[0], self.__window_size[1]/8),  pygame.SRCALPHA, 32)
+        #HUD = pygame.Surface((self.__window_size[0], self.__window_size[1]/8),  pygame.SRCALPHA, 32)
+        HUD = pygame.Surface((self.__window_size[0], self.__window_size[1] ), pygame.SRCALPHA, 32)
 
         # font = pygame.font.Font("./resources/SuperMario256.ttf", HUD.get_height(), bold=False)
         # font_s = pygame.font.Font("./resources/SuperMario256.ttf", int(HUD.get_height()*0.8), bold=False)
@@ -199,16 +200,19 @@ class render:
         coin = self.fonts["HUD"].render("{:03}".format(coins), 1, white)
         
         lives = self.fonts["HUD"].render("{:02}".format(lives), 1, white)
-        self.images["mario2"].resize((int(HUD.get_height()), int(HUD.get_height())))
-        self.images["coin"].resize((int(HUD.get_height()), int(HUD.get_height())))
-        HUD.blit(self.images["mario2"].image, (0, 0))
-        HUD.blit(self.text["x"], ((HUD.get_height(), self.text["x"].get_height()/3)))
-        HUD.blit(lives, (HUD.get_height() + self.text["x"].get_width(), 10))
-        HUD.blit(score, (HUD.get_width()/2-score.get_width()/2, 10))
-        HUD.blit(self.images["coin"].image, (HUD.get_width() - HUD.get_height() - self.text["x"].get_width() - coin.get_width(),0))
+        self.images["mario2"].resize((int(HUD.get_height()/9), int(HUD.get_height()/9)))
+        self.images["coin"].resize((int(HUD.get_height()/9), int(HUD.get_height()/9)))
+        #HUD.blit(self.images["mario2"].image, (0, 0))
+        HUD.blit(self.images["mario2"].image, (HUD.get_width() - 2*coin.get_width(),150))
+        HUD.blit(self.text["x"], (HUD.get_width() - coin.get_width() - self.text["x"].get_width(),180))
+        #HUD.blit(lives, (HUD.get_height() + self.text["x"].get_width(), 10))
+        HUD.blit(lives, (HUD.get_width() - lives.get_width(), 170))
+        #HUD.blit(self.text["x"], (HUD.get_width() - lives.get_width() - self.text["x"].get_width(), self.text["x"].get_height()))
+        HUD.blit(score, (HUD.get_width()/2 - score.get_width()/2, 10))
+        HUD.blit(self.images["coin"].image, (HUD.get_width() - 2*coin.get_width(),10))
         HUD.blit(self.text["x"], (HUD.get_width() - coin.get_width() - self.text["x"].get_width(), self.text["x"].get_height()/3))
         HUD.blit(coin, (HUD.get_width() - coin.get_width(), 10))
-        
+
         self.__window.blit(HUD, (0,0))
         if image != []:
             self.__render_camera(img=image,size=(480,270))

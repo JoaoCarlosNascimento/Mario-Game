@@ -42,11 +42,13 @@ class logic:
         
 
         if state == "menu":
-            if feedback != None:
-                if "play" in feedback:
-                    state = "game"
-                elif "ctrl" in feedback:
-                    state = "control"
+            if diff_time > 4000:
+                self.time = int(round(time.time() * 1000))
+                if feedback != None:
+                    if "play" in feedback:
+                        state = "game"
+                    elif "ctrl" in feedback:
+                        state = "control"
         elif state == "control":
             if feedback != None:
                 if "back" in feedback:

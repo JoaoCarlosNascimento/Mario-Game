@@ -244,22 +244,22 @@ def pick_enemie(pick, x, y, width, height):
 
     if pick == 6:
         Enemie = LeftBullet
-        y = Screen_Height / 1.6
+        y = Screen_Height / 1.52
         hitbox = (x, y, width - Screen_Width / 150, height - Screen_Height / 30)
 
     if pick == 7:
         Enemie = RedGhost
-        y = Screen_Height / 1.6
+        y = Screen_Height / 1.52
         hitbox = (x, y, width - Screen_Width / 250, height - Screen_Height / 30)
 
     if pick == 8:
         Enemie = ScaredRedFish
-        y = Screen_Height / 1.6
+        y = Screen_Height / 1.52
         hitbox = (x, y, width - Screen_Width / 100, height - Screen_Height / 20)
 
     if pick == 9:
         Enemie = AngryGhost
-        y = Screen_Height / 1.6
+        y = Screen_Height / 1.52
         hitbox = (x, y, width - Screen_Width / 100, height - Screen_Height / 20)
 
     return Enemie, y, hitbox
