@@ -56,7 +56,7 @@ class physics:
     # __norm_acc = -__grav_acc  # [acc_x,acc_y]
 
     # Constantes de velocidade
-    __vel_lim = np.array([550, 210])  # [vel_x,vel_y]
+    __vel_lim = np.array([550, 280])  # [vel_x,vel_y]
     # __vel_jump = np.array([0, -100])  # [vel_x,vel_y]
 
 
