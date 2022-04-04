@@ -46,13 +46,16 @@ class logic:
                 self.time = int(round(time.time() * 1000))
                 if feedback != None:
                     if "play" in feedback:
-                        state = "game"
+                        state = "control"
                     elif "ctrl" in feedback:
                         state = "control"
         elif state == "control":
             if feedback != None:
                 if "back" in feedback:
                     state = "menu"
+            if diff_time > 4000:
+                self.time = int(round(time.time() * 1000))
+                state = "game"
         elif state == "game":
             entities.clear()
             entities.append(player((1920 / 8, 1080 / 1.7), (100, 95), True))
