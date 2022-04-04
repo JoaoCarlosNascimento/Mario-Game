@@ -149,12 +149,12 @@ class render:
             self.__render_camera(img)
             self.__render_face_command(landmarks)
         elif(state == -13):
-            self.__render_camera(img)
+            outputFactor = self.__render_camera(img)
             if landmarks:
-                self.__render_body_command(landmarks)
-            mytext = TextBox(self.__window, size=20)
-            mytext.updateText(debug)
-            mytext.display()
+                self.__render_body_command(landmarks, outputFactor)
+            # mytext = TextBox(self.__window, size=20)
+            # mytext.updateText(debug)
+            # mytext.display()
         
         pygame.display.update()
         return feedback
@@ -181,13 +181,13 @@ class render:
                 if com != (-1,-1):
                     pygame.draw.circle(self.__window, (191, 39, 28), com, 15)
     
-    def __render_body_command(self,command = []):
+    def __render_body_command(self,command = [],outputFactor = (1,1)):
         if command:
             # print(command)
             for com in command:
                 if com != (-1,-1):
-                    pygame.draw.circle(self.__window, (191, 39, 28), (com.x,com.y), 15)
 
+                    pygame.draw.circle(self.__window, (191, 39, 28), (com.x*outputFactor[0],com.y*outputFactor[1]), 15)
     def __render_HUD(self, lives, score, coins, image = []):
         # print(score) # Ajustar scores
         #HUD = pygame.Surface((self.__window_size[0], self.__window_size[1]/8),  pygame.SRCALPHA, 32)

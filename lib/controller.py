@@ -25,7 +25,7 @@ class controller:
     ## JUMP ##
     # jump parameters
     __jump_ang_lim = 175
-    __jump_pos_lim = 9
+    __jump_pos_lim = 10
     __jump_delta_lim = 18
     __buffer_samples = 5
     # jump variables

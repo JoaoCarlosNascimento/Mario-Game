@@ -103,21 +103,21 @@ class logic:
 
 
     def land_cd(self):
-        if int(round(time.time() * 1000)) - self.land_timer < 4500:
+        if int(round(time.time() * 1000)) - self.land_timer < 5500:
             return True
         else:
             self.land_timer = int(round(time.time() * 1000))
             return False
 
     def air_cd(self):
-        if int(round(time.time() * 1000)) - self.air_timer < 3500:
+        if int(round(time.time() * 1000)) - self.air_timer < 4000:
             return True
         else:
             self.air_timer = int(round(time.time() * 1000))
             return False
 
     def bonus_cd(self):
-        if int(round(time.time() * 1000)) - self.bonus_timer < 3000:
+        if int(round(time.time() * 1000)) - self.bonus_timer < 3500:
             return True
         else:
             self.bonus_timer = int(round(time.time() * 1000))
