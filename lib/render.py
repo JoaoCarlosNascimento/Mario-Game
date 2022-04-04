@@ -1,3 +1,4 @@
+from hashlib import new
 from cv2 import pyrMeanShiftFiltering
 import pygame
 import numpy as np
@@ -15,7 +16,6 @@ white = (255, 255, 255)
 black = (0, 0, 0)
 
 
-
 class render:
     def __init__(self, window_size=(1920,1080)):
         self.__window = file.window
@@ -26,7 +26,9 @@ class render:
         self.__load_images()
         self.__load_fonts()
         self.__load_text()
+        self.time = int(round(time.time() * 1000))
     def draw(self, state=0, img=[], entities=[], command=[], landmarks=[],debug="", bonus_val = 0, lives = 3, score = 0, coins = 0, final_score = 0):
+        diff_time = int(round(time.time() * 1000)) - self.time
         enemies = []
         obstacles = []
         bonus = []
@@ -193,21 +195,16 @@ class render:
         #HUD = pygame.Surface((self.__window_size[0], self.__window_size[1]/8),  pygame.SRCALPHA, 32)
         HUD = pygame.Surface((self.__window_size[0], self.__window_size[1] ), pygame.SRCALPHA, 32)
 
-        # font = pygame.font.Font("./resources/SuperMario256.ttf", HUD.get_height(), bold=False)
-        # font_s = pygame.font.Font("./resources/SuperMario256.ttf", int(HUD.get_height()*0.8), bold=False)
-        
         score = self.fonts["HUD"].render(str(score), 1, white)
         coin = self.fonts["HUD"].render("{:03}".format(coins), 1, white)
         
         lives = self.fonts["HUD"].render("{:02}".format(lives), 1, white)
         self.images["mario2"].resize((int(HUD.get_height()/9), int(HUD.get_height()/9)))
         self.images["coin"].resize((int(HUD.get_height()/9), int(HUD.get_height()/9)))
-        #HUD.blit(self.images["mario2"].image, (0, 0))
+
         HUD.blit(self.images["mario2"].image, (HUD.get_width() - 2*coin.get_width(),150))
         HUD.blit(self.text["x"], (HUD.get_width() - coin.get_width() - self.text["x"].get_width(),180))
-        #HUD.blit(lives, (HUD.get_height() + self.text["x"].get_width(), 10))
         HUD.blit(lives, (HUD.get_width() - lives.get_width(), 170))
-        #HUD.blit(self.text["x"], (HUD.get_width() - lives.get_width() - self.text["x"].get_width(), self.text["x"].get_height()))
         HUD.blit(score, (HUD.get_width()/2 - score.get_width()/2, 10))
         HUD.blit(self.images["coin"].image, (HUD.get_width() - 2*coin.get_width(),10))
         HUD.blit(self.text["x"], (HUD.get_width() - coin.get_width() - self.text["x"].get_width(), self.text["x"].get_height()/3))
@@ -277,7 +274,7 @@ class render:
         self.images["boo1"] = image("./resources/boo1.png", self.__window, (int(self.__window.get_height()/3), 
                                                                            int(self.__window.get_height()/3)))
         # main menu 
-        self.images["play"] = image("Images/play_menu.png", self.__window, size, (2.6, 2))
+        self.images["play"] = image("Images/play_menu.png", self.__window, size, (1, 2))
         self.images["ctrl_menu"] = image("Images/controls_menu.png", self.__window, size, (-0.6, 2))
         self.images["score"] = image("Images/scores_menu.png", self.__window, size, (1, -1))
         self.images["logo"] = image("Images/logo_menu.png", self.__window, logo_size, (1, 3))
@@ -324,8 +321,6 @@ class render:
         
         self.images["background"].display()
         self.images["play"].display()
-        self.images["ctrl_menu"].display()
-        self.images["score"].display()
         self.images["score"].display()
         self.images["logo"].display()
         
@@ -335,8 +330,6 @@ class render:
             self.__render_cursor(landmarks)
             if self.images["play"].collide(landmarks[0]) or self.images["play"].collide(landmarks[1]):
                 return "play"
-            elif self.images["ctrl_menu"].collide(landmarks[0]) or self.images["ctrl_menu"].collide(landmarks[1]):
-                return "ctrl"
             elif self.images["score"].collide(landmarks[0]) or self.images["score"].collide(landmarks[1]):
                 self.scoreboard.show(self.__window)
                 return
@@ -361,13 +354,13 @@ class render:
         if len(landmarks) != 2:
             return
         if landmarks[0] != (-1, -1):
-                self.__window.blit(self.images["star"].image, 
-                                   (landmarks[0][0] - self.images["star"].get_width()/2, 
-                                   landmarks[0][1] - self.images["star"].get_height()/2))
+            self.__window.blit(self.images["star"].image, 
+                                (landmarks[0][0] - self.images["star"].get_width()/2, 
+                                landmarks[0][1] - self.images["star"].get_height()/2))
         elif landmarks[1] != (-1, -1):
-                self.__window.blit(self.images["star"].image, 
-                                   (landmarks[1][0] - self.images["star"].get_width()/2, 
-                                   landmarks[1][1] - self.images["star"].get_height()/2))
+            self.__window.blit(self.images["star"].image, 
+                                (landmarks[1][0] - self.images["star"].get_width()/2, 
+                                landmarks[1][1] - self.images["star"].get_height()/2))
     def __render_gameOver(self):
         self.images["game_over_background"].display()
         self.images["well_done"].display()
@@ -395,3 +388,24 @@ class render:
                 return 1
             elif(no_rect.collidepoint(landmarks)):
                 return 0
+
+
+# class cursor():
+#     def __init__(self, img, landmarks, window):
+#         self.image = img
+#         self.landmarks = landmarks
+#         self.window = window
+#         self.progress = 0
+#     def render(self):
+#         if len(self.landmarks) != 2:
+#             return
+#         if self.landmarks[0] != (-1, -1):
+#             self.window.blit(self.image,  (self.landmarks[0][0] - self.image.get_width()/2, 
+#                                            self.landmarks[0][1] - self.image.get_height()/2))
+#         elif self.landmarks[1] != (-1, -1):
+#             self.window.blit(self.image, (self.landmarks[1][0] - self.image.get_width()/2, 
+#                                           self.landmarks[1][1] - self.image.get_height()/2))
+#     def update_progress(self, new_progress):
+#         self.progress = new_progress
+
+#         self.progress_bar = pygame.rect()
