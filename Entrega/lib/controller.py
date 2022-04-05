@@ -2,7 +2,6 @@ from cv2 import KeyPoint
 import mediapipe as mp
 from google.protobuf.json_format import MessageToDict
 import numpy as np
-# from mediapipe.framework.formats import landmark_pb2
 
 import cv2
 hand_detector = mp.solutions.hands
@@ -14,7 +13,6 @@ class controller:
     # move Left/Right parameters
     __move_LR_distance_lim = 999#(75,105)
     __move_LR_angle_lim = (72, 105) #90
-    # __move_L_angle_lim = (75, 105) #45(35, 53) #45
     __move_LR_visibility_lim = -999
 
     ## CROUCH ##
@@ -117,10 +115,6 @@ class controller:
 
         if self.__res == (0,0):
             self.__res = (img.shape[1],img.shape[0])
-
-        # command = 0
-        # landmarks = []
-        # debug = ""
 
         frameCV_RGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
@@ -287,17 +281,6 @@ class controller:
             return cond, "AngleR: {angR:3.2f} | AngleL: {angL:3.2f} | {cond}".format(angR=angle_r, angL=angle_l, mean=mean, act=m1, cond=vc)
         return False, "AngleR: {angR:3.2f} | AngleL: {angL:3.2f}".format(angR=-1, angL=-1)
         
-    # def __body_rightArm(self,landmarks):
-    #     pass
-
-    # def __body_leftArm(self,landmarks):
-    #     pass
-
-    # def __body_rightLeg(self,lanfmarks):
-    #     pass
-
-    # def __body_leftLeg(self,landmarks):
-    #     pass
 
     def __cehck_visibility(landmarks,lim):
         for landmark in landmarks:

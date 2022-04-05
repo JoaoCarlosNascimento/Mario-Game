@@ -1,0 +1,3 @@
+game.py - É o arquivo principal do jogo. Na linha 46 existem instruções sobre como alterar o parametro "__state" para visualizar melhor a captura de imagem
+
+clear_db.py - É um scrip para limpara a base de dados dos scores

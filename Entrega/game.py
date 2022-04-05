@@ -16,17 +16,7 @@ from lib.map_gen import map_gen
 from lib.camera import camera
 import lib.load_files as file
 import os
-## States
-#
-# Utilizar valores negativos para os cenarios de testes
-#
-# -9/-8 - Teste de foto
-# -1xx  - Testes de inputs
-# -11   - Teste de inputs de mãos
-# -12   - Teste de inputs de face
-# -13   - Teste de inputs de corpo
 
-# -135  - Teste De Geração do Mapa
 class game:
     __loop_cond = True
 
@@ -54,6 +44,13 @@ class game:
         self.__score = 0
         self.__lives = 5
         self.__state = "menu"
+        ## States
+        #
+        # Utilizar valores negativos para os cenarios de testes
+
+        # -13   - Mostrar keypoints do corpo e ver enquadramento da cena
+
+        # "menu"  - Menu Inicial do jogo
 
         self.__final_score = -999
     def start(self):
@@ -118,23 +115,10 @@ class game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.__quit_game()
-                # self.__close()
-                # pygame.quit()
-                # sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.__quit_game()
-                    # print("ESC")
-                    # self.__close()
-                    # pygame.quit()
-                    # sys.exit()
-
-            # if event.type == event_ACCELERATE:
-            #     self.__fps += 1
         return self.__fake_inputs()
-        
-    # def __event(self):
-    #     for event in pygame.event.get():
             
     def __quit_game(self):
         self.__close()
@@ -146,16 +130,12 @@ class game:
         command = 0b0000
         if pressed_keys[pygame.K_d]:
             command = command | 0b1000
-            # print("Fake Input (D)")
         if pressed_keys[pygame.K_a]:
             command = command | 0b0100
-            # print("Fake Input (A)")
         if pressed_keys[pygame.K_w]:
             command = command | 0b0001
-            # print("Fake Input (W)")
         if pressed_keys[pygame.K_s]:
             command = command | 0b0010
-            # print("Fake Input (S)")
         if pressed_keys[pygame.K_ESCAPE]:
             self.__quit_game()
 

@@ -31,9 +31,6 @@ class entity:
 
 
 
-        # if self.name == "Player":
-        #     # print('Position: ({pos:.2f})\nSpeed: ({spe:.2f})'.format(pos=self.position,spe=self.velocity))
-        #     print('X Speed: ({speX:.2f}), Y Speed: ({speY:.2f})'.format(speX=self.velocity[0],speY=self.velocity[1]))
     def collide(self, ent):
         # 0 - x
         # 1 - y
@@ -49,10 +46,6 @@ class entity:
                 (ent.hitbox[1] + ent.hitbox[3] > self.hitbox[1])
             ):
                 return True
-        # self.hitbox[0] and ent.hitbox[0] < self.hitbox[0] + self.hitbox[2]:
-            # Verifica Colisão em Coordenada y
-            # if ent.hitbox[1] + ent.hitbox[3] > self.hitbox[1]:
-            #     return True
         return False
 
     def __set_hitbox(self):
@@ -89,9 +82,6 @@ class player(entity):
         self.animationPose = self.position
         self.lastAnimationFrame = False
         self.direction = True
-        # self.sprites["right"] = [file.run_anim,file.jump,file.duck,file.fall]
-        # self.sprites["left"] = [file.flip_run_anim,
-        #                         file.flip_jump, file.flip_duck, file.flip_fall]
 
         self.hit = False
         self.initCD = True
@@ -165,71 +155,6 @@ class player(entity):
 
         return
 
-        # if self.position[1] < 829:
-        #     if self.falling:
-        #         self.hitbox = (0, 0, 0, 0)
-        #         # self.position[1] -= file.jumpList[self.jumpCount] * 1.2
-        #         window.blit(self.fall[0], (self.position[0], self.position[1]))
-        #     else:
-        #         # Hitbox do Mario a Saltar
-        #         self.hitbox = (self.position[0] + x_offset, self.position[1] + 30, self.size[0] - 24, self.size[1] + 20)
-        #         # self.position[1] -= file.jumpList[self.jumpCount] * 1.2
-        #         window.blit(self.jump[self.jumpCount // 18], (self.position[0], self.position[1]))
-
-        #     self.jumpCount += 1
-        #     if self.jumpCount > 108:
-        #         self.jumpCount = 0
-        #         self.jumping = False
-        #         self.runCount = 0
-
-        # elif self.ducking or self.duckUp:
-        #     if self.falling:
-        #         self.hitbox = (0, 0, 0, 0)
-        #         window.blit(self.fall[0], (self.position[0], self.position[1]))
-        #     else:
-        #         # Hitbox do Mario a Fazer Duck
-        #         self.hitbox = (self.position[0] + x_offset, self.position[1] + 60, self.size[0] - 24, self.size[1] - 30)
-
-        #     if self.duckCount < 20:
-        #         self.position[1] += 1
-        #     elif self.duckCount == 70:
-        #         self.position[1] -= 19
-        #         self.ducking = False
-        #         self.duckUp = True
-        #     elif 20 < self.duckCount < 80:
-        #         if self.falling:
-        #             self.hitbox = (0, 0, 0, 0)
-        #         else:
-        #             # Hitbox do Mario a Fazer Duck
-        #             self.hitbox = (self.position[0] + x_offset, self.position[1] + 60, self.size[0] - 8, self.size[1] - 35)
-        #     if self.duckCount >= 100:
-        #         self.duckCount = 0
-        #         self.duckUp = False
-        #         self.runCount = 0
-        #     if not self.falling:
-        #         window.blit(self.duck[self.duckCount // 10], (self.position[0], self.position[1] + file.Screen_Height / 25))
-        #     else:
-        #         window.blit(self.fall[0], (self.position[0], self.position[1]))
-
-        #     self.duckCount += 1
-
-        # elif self.falling:
-        #     window.blit(self.fall[0], (self.position[0], self.position[1]))
-        # else:
-        #     if self.runCount > 42:
-        #         self.runCount = 0
-
-        #     if random.randint(0, 20) % 5 == 0:
-        #         self.runCount = 0
-        #     else:
-        #         self.runCount = 1
-        #     window.blit(self.run[self.runCount], (self.position[0], self.position[1]))
-        #     if self.falling:
-        #         self.hitbox = (0, 0, 0, 0)
-        #     else:
-        #         # Hitbox do Mario a Correr
-        #         self.hitbox = (self.position[0] + x_offset, self.position[1] + 30, self.size[0] - 24, self.size[1] + 20)
-        # Desenhar Hitbox Do Mario
 
     def draw_hitbox(self,window):
         if self.hit:
